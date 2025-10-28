@@ -29,12 +29,11 @@ dependencies {
     implementation ("org.springframework.boot:spring-boot-starter-mail")
     implementation("com.github.ben-manes.caffeine:caffeine")
 
-
     implementation("org.slf4j:slf4j-api")
-    implementation("com.h2database:h2")
+    implementation("org.postgresql:postgresql")
     implementation("org.flywaydb:flyway-core")
+    implementation("org.flywaydb:flyway-database-postgresql")
 
-    testImplementation(kotlin("test"))
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     implementation("org.springframework.security:spring-security-test")
 
