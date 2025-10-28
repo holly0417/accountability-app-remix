@@ -1,5 +1,5 @@
 CREATE TABLE "task_history" (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    id BIGSERIAL PRIMARY KEY NOT NULL,
     user_id BIGINT NOT NULL,
     task_id BIGINT NOT NULL,
     description VARCHAR(511),
@@ -10,7 +10,7 @@ CREATE TABLE "task_history" (
 );
 
 CREATE TABLE "wallet_history" (
-      id BIGINT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+      id BIGSERIAL PRIMARY KEY NOT NULL,
       wallet_id BIGINT NOT NULL,
       user_id BIGINT NOT NULL,
       balance DOUBLE PRECISION DEFAULT 0,
@@ -18,7 +18,7 @@ CREATE TABLE "wallet_history" (
 );
 
 CREATE TABLE "relationship_history"(
-       id BIGINT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+       id BIGSERIAL PRIMARY KEY NOT NULL,
        relationship_id BIGINT NOT NULL,
        partnerA_id BIGINT NOT NULL,
        partnerB_id BIGINT NOT NULL,
