@@ -1,4 +1,5 @@
 # Accountability App
+Note: This copy of my Accountability App uses Postgres instead of H2 and will switch over the frontend language from Vue.js to React/Remix. Work in progress.
 
 Accountability App is a web-based application designed to help you complete day-to-day tasks using a rewards-based accountability system. 
 The purpose of this app is to bring a form of instant gratification to our mundane, every-day tasks but in a way that feels more meaningful via actual accountability from other people. 
@@ -13,7 +14,7 @@ So if you'd like to pull this image, know that it may not run as smoothly as you
 * [Spring Boot 3.5+](https://spring.io/projects/spring-boot)
 * [Flyway](org.flywaydb:flyway-core) - Database Migration
 * [Gradle 9.0](https://gradle.org/) - Dependency Management
-* [H2](https://www.h2database.com/html/main.html) - Database
+* [Postgres] - Database
 * [Hibernate](https://hibernate.org/) - ORM
 * [Docker](https://www.docker.com/) - Containerization
 
@@ -29,41 +30,37 @@ So if you'd like to pull this image, know that it may not run as smoothly as you
 - Gradle 9.0+
 - Docker
 
-**To pull the image from the command line, use:**
-`$ docker pull ghcr.io/holly0417/accountability:latest`
-
-## For Docker containerization configuration
-To pull the image: `ghcr.io/holly0417/accountability:latest` <br>
-
-You should configure the application based on my [application.yml](https://github.com/holly0417/accountability-app-springboot/blob/master/src/main/resources/application.yml) file.
-
-Then, make sure you map this from your host server to your container:<br>
-	`/workspace/logs`<br>
-	`/workspace/database`<br>
-	`/workspace/application.yml`<br>
- 
-Set the container port to port `8080`<br>
-
-See example here:<br>
+# Setting up your Postgres database
+### In your `docker-compose.yml`
+You can set the Postgres image as well as the name, username, and password for the database. 
+In the terminal, run `docker compose up` to run the container alongside the app. 
 ```
-services:  
-  accountability-app:  
-    container_name: accountability-app  
-    image: ghcr.io/holly0417/accountability:latest  
-    ports:  
-      - "8080:8080"  
-    volumes:  
-      - /accountability-app/logs:/workspace/logs  
-      - /accountability-app/database:/workspace/database  
-      - /accountability-app/application.yml:/workspace/application.yml
-```
+services:
+  postgres:
+    image: postgres:18
+    environment:
+      POSTGRES_DB: <database name>
+      POSTGRES_USER: <username>
+      POSTGRES_PASSWORD: <password>
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql
 
-# Database and log file configuration
+volumes:
+  postgres_data:
+```
 ### In your `application.yml`
-See the full [application.yml](https://github.com/holly0417/accountability-app-springboot/blob/master/src/main/resources/application.yml) example here. 
-
-In this file, you can set the database URL, username, password, as well as the log level and file path for messages from this application.<br>
-In my version, it's set to an H2 database, but you can connect yours to PostgreSQL or any other relational database service. <br>
+Set up the url, username, password, and driver class. 
+```
+spring:
+  datasource:
+    url: "jdbc:postgresql://localhost:5432/<database name>"
+    username: <username>
+    password: <password>
+    hikari:
+      driver-class-name: org.postgresql.Driver
+```
 
 ### Gmail SMTP server setup
 You can also set a [Gmail SMTP server](https://support.google.com/a/answer/176600?hl=en) in your `application.yml` so that you can send emails with password reset links if needed. <br>
