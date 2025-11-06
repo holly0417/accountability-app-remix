@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted, ref} from 'vue';
+import {onMounted, ref, watch} from 'vue';
 import {QMarkupTable} from 'quasar';
 import {RelationshipDto} from 'components/dto/relationship/RelationshipDto.ts';
 import {UserDto} from 'components/dto/UserDto.ts';
@@ -27,11 +27,7 @@ const currentUser = ref<UserDto>({
   email: ''
 });
 
-const userSearch = ref<UserDto>({
-  id: 0,
-  username: '',
-  email: ''
-});
+const userSearch = ref<string>('');
 
 const searchResult = ref<RelationshipDto[]>([]);
 const approvedRelationships = ref<Page<RelationshipDto>>(DefaultPage as Page<RelationshipDto>);
@@ -59,17 +55,16 @@ onMounted( async () => {
   const list2 = (rejectionsReceived.value.content.length);
   rejectionListTotal.value = list1.valueOf() + list2.valueOf();
 
-  showRejectionList.value = rejectionListTotal.value < 1 ? false : true;
-
+  showRejectionList.value = rejectionListTotal.value >= 1;
 })
 
-const searchFriend = async () => {
-  searchResult.value = await search(userSearch.value.username);
+const searchFriend = async (searchTerm: string) => {
+  searchResult.value = await search(searchTerm);
 };
 
 async function sendPartnershipRequest(partnerId: number) {
   await sendRequest(partnerId);
-  await searchFriend();
+  await searchFriend(userSearch.value);
   await reloadRequestsToWait();
 }
 
@@ -93,12 +88,17 @@ async function reloadRejectedPartners() {
   const list2 = (rejectionsReceived.value.content.length);
   rejectionListTotal.value = list1.valueOf() + list2.valueOf();
 
-  showRejectionList.value = rejectionListTotal.value < 1 ? false : true;
+  showRejectionList.value = rejectionListTotal.value >= 1;
 }
 
 async function reloadListsAfterAnswering() {
   await Promise.all([reloadRequestsToAnswer(), reloadApprovedPartners(), reloadRejectedPartners()]);
 }
+
+watch(userSearch, (newSearch: string) => {
+  searchFriend(newSearch);
+});
+
 
 </script>
 
@@ -115,11 +115,9 @@ async function reloadListsAfterAnswering() {
 
           <q-card-section>
               <q-input
-                v-on:keyup="searchFriend"
-                v-model="userSearch.username"
-                label="To search, type in a username"
-                filled
-                type="textarea"
+                v-model="userSearch"
+                placeholder="To search, type in a username"
+                type="text"
                 name="partner search bar"
                 class="inner-card-section"
               />
