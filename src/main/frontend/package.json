@@ -1,49 +1,32 @@
 {
-  "name": "accountability",
-  "version": "0.0.1",
-  "description": "Music manager",
-  "productName": "accountability",
-  "author": "holly",
-  "type": "module",
+  "name": "my-react-router-app",
   "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.20.0",
   "scripts": {
-    "lint": "eslint --ext .js,.ts,.vue ./",
-    "lint:fix": "eslint --ext .js,.ts,.vue ./ --fix",
-    "clean": "echo \"No clean specified\" && exit 0",
-    "format": "prettier --write \"**/*.{js,ts,vue,scss,html,md,json}\" --ignore-path .gitignore",
-    "test": "echo \"No test specified\" && exit 0",
-    "dev": "quasar dev",
-    "build": "quasar build"
+    "build": "react-router build",
+    "dev": "react-router dev",
+    "start": "react-router-serve ./build/client/index.html",
+    "typecheck": "react-router typegen && tsc"
   },
   "dependencies": {
-    "@quasar/extras": "^1.16.13",
-    "axios": "^1.11.0",
-    "quasar": "^2.17.2",
-    "vue": "^3.5.12",
-    "vue-router": "^4.4.5",
-    "@vueuse/core": "^13.9.0",
-    "@vueuse/router": "^13.9.0",
-    "vue-echarts": "^7.0.3",
-    "echarts": "^5.5.1"
+    "@react-router/node": "^7.9.2",
+    "@react-router/serve": "^7.9.2",
+    "isbot": "^5.1.31",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-router": "^7.9.2",
+    "react-router-dom": "^7.9.5"
   },
   "devDependencies": {
-    "@quasar/app-vite": "2.0.0-beta.24",
-    "@types/node": "^20.17.6",
-    "@typescript-eslint/eslint-plugin": "^7.18.0",
-    "@typescript-eslint/parser": "^7.18.0",
-    "autoprefixer": "^10.4.20",
-    "eslint": "^8.57.1",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-vue": "^9.30.0",
-    "prettier": "^3.3.3",
-    "typescript": "~5.5.4",
-    "vite-plugin-checker": "^0.8.0",
-    "vue-tsc": "^2.1.10"
-  },
-  "engines": {
-    "node": "^24 || ^22 || ^20 || ^18",
-    "npm": ">= 6.13.4",
-    "yarn": ">= 1.21.1"
-  },
-  "packageManager": "pnpm@9.12.3"
+    "@react-router/dev": "^7.9.2",
+    "@tailwindcss/vite": "^4.1.13",
+    "@types/node": "^22",
+    "@types/react": "^19.1.13",
+    "@types/react-dom": "^19.1.9",
+    "tailwindcss": "^4.1.13",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.7",
+    "vite-tsconfig-paths": "^5.1.4"
+  }
 }
