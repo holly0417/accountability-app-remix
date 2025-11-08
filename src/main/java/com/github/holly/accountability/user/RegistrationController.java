@@ -58,6 +58,11 @@ public class RegistrationController {
             return new ResponseEntity<>(new BindingResultWrapper(bindingResult), HttpStatus.BAD_REQUEST);
         }
 
+        if (userRepository.findUserByEmail(registerUser.getEmail()).isPresent()) {
+            bindingResult.rejectValue("email", "Sorry, a user with this email already exists.");
+            return new ResponseEntity<>(new BindingResultWrapper(bindingResult), HttpStatus.BAD_REQUEST);
+        }
+
 
         User user = userRepository.save(
                         new User(
