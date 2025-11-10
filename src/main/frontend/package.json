@@ -2,7 +2,7 @@
   "name": "my-react-router-app",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@10.20.0",
+  "packageManager": "pnpm@10.21.0+sha512.da3337267e400fdd3d479a6c68079ac6db01d8ca4f67572083e722775a796788a7a9956613749e000fac20d424b594f7a791a5f4e2e13581c5ef947f26968a40",
   "scripts": {
     "build": "react-router build",
     "dev": "react-router dev",
@@ -23,6 +23,7 @@
     "@react-router/serve": "^7.9.2",
     "@react-spring/web": "^10.0.3",
     "axios": "^1.13.2",
+    "clsx": "^2.1.1",
     "dayjs": "^1.11.19",
     "echarts-for-react": "^3.0.5",
     "isbot": "^5.1.31",
