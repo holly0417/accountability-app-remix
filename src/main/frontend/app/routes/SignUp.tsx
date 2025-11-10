@@ -16,7 +16,7 @@ import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
 import AppTheme from '../components/shared-theme/AppTheme';
 import ColorModeSelect from '../components/shared-theme/ColorModeSelect';
-import { GoogleIcon, FacebookIcon, SitemarkIcon } from '~/components/templates/components/CustomIcons';
+import { GoogleIcon, FacebookIcon, SitemarkIcon } from '~/components/ui/SignIn/CustomIcons';
 import { NavLink } from "react-router";
 import Popover from '@mui/material/Popover';
 import axios from 'axios';
