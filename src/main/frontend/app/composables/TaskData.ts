@@ -1,10 +1,12 @@
 import type { TaskDataDto } from '~/components/dto/task/TaskDataDto';
 import type {TaskEditRequestDto} from '~/components/dto/task/TaskEditRequestDto';
-import api from 'axios';
+
 import type {TaskCalculatorDto} from '~/components/dto/task/TaskCalculatorDto';
 import type {TaskStatusDto} from '~/components/dto/task/TaskStatusDto';
 import type {TaskStatus} from '~/components/dto/task/TaskStatus';
 import type {Page} from '~/components/pagination/Page';
+import {api} from "~/axios";
+
 
 export function taskData() {
 
