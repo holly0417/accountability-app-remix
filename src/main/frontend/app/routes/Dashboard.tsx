@@ -17,7 +17,7 @@ import {
   dataGridCustomizations,
   datePickersCustomizations,
   treeViewCustomizations,
-} from '../components/dashboard/theme/customizations';
+} from '~/components/ui/Dashboard/theme/customizations';
 
 const xThemeComponents = {
   ...chartsCustomizations,

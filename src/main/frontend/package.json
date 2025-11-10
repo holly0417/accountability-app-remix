@@ -24,6 +24,7 @@
     "@react-spring/web": "^10.0.3",
     "axios": "^1.13.2",
     "dayjs": "^1.11.19",
+    "echarts-for-react": "^3.0.5",
     "isbot": "^5.1.31",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",

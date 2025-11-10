@@ -11,7 +11,7 @@ type Info = GetInfo<{
 
 type Matches = [{
   id: "root";
-  module: typeof import("../../root.js");
+  module: typeof import("~/root");
 }, {
   id: "routes/home";
   module: typeof import("../home.js");

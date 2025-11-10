@@ -1,10 +1,10 @@
-import { TaskDataDto } from 'components/dto/task/TaskDataDto.ts';
-import {TaskEditRequestDto} from 'components/dto/task/TaskEditRequestDto.ts';
-import {api} from 'boot/axios.ts';
-import {TaskCalculatorDto} from 'components/dto/task/TaskCalculatorDto.ts';
-import {TaskStatusDto} from 'components/dto/task/TaskStatusDto.ts';
-import {TaskStatus} from 'components/dto/task/TaskStatus.ts';
-import {Page} from 'components/paging/Page.ts';
+import type { TaskDataDto } from '~/components/dto/task/TaskDataDto';
+import type {TaskEditRequestDto} from '~/components/dto/task/TaskEditRequestDto';
+import api from 'axios';
+import type {TaskCalculatorDto} from '~/components/dto/task/TaskCalculatorDto';
+import type {TaskStatusDto} from '~/components/dto/task/TaskStatusDto';
+import type {TaskStatus} from '~/components/dto/task/TaskStatus';
+import type {Page} from '~/components/pagination/Page';
 
 export function taskData() {
 

@@ -1,6 +1,6 @@
-import {api} from 'boot/axios.ts';
-import {UserDto} from 'components/dto/UserDto.ts';
-import {Page} from 'components/paging/Page.ts';
+import api from 'axios';
+import type {UserDto} from '~/components/dto/UserDto';
+import type {Page} from '~/components/pagination/Page';
 
 export function userData() {
 
