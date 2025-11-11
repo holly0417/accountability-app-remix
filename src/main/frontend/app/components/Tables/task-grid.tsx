@@ -1,8 +1,38 @@
-import {DataGrid, type GridColDef} from '@mui/x-data-grid';
+import {DataGrid, type GridCellParams, type GridColDef} from '@mui/x-data-grid';
 import {clientLoader} from "~/routes/task";
 import {useLoaderData} from "react-router-dom";
+import {SparkLineChart} from "@mui/x-charts/SparkLineChart";
+import Button from "@mui/material/Button";
+import Chip from "@mui/material/Chip";
+import type {TaskDataDto} from "~/components/dto/task/TaskDataDto";
+import {useState} from "react";
 
 export default function TaskDataGrid() {
+
+
+    function renderButton(status: 'pending' | 'approved' | 'completed' | 'rejected' | 'in-progress') {
+        const [actionLabel, setActionLabel] = useState('');
+
+        if(status === "pending"){
+            setActionLabel("START");
+        }
+
+        return (
+            <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
+                <Button variant="outlined">{actionLabel}</Button>
+            </div>
+        );
+    }
+
+    function renderStatus(status: 'Online' | 'Offline') {
+        const colors: { [index: string]: 'success' | 'default' } = {
+            Online: 'success',
+            Offline: 'default',
+        };
+
+        return <Chip label={status} color={colors[status]} size="small" />;
+    }
+
     const rows = useLoaderData<typeof clientLoader>();
 
     const columns: GridColDef[] = [
@@ -45,6 +75,13 @@ export default function TaskDataGrid() {
         {
             field: 'status',
             headerName: 'status',
+            flex: 0.5,
+            minWidth: 80,
+            renderCell: (params) => renderButton(params.value as any),
+        },
+        {
+            field: 'action',
+            headerName: 'Action',
             flex: 0.5,
             minWidth: 80,
         },

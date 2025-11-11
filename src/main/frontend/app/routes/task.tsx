@@ -17,11 +17,23 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
         console.log("The status is not defined in the URL.");
     }
 
-    if(status === "pending"){
-        return await getTasksByCurrentUserAndStatus(TaskStatus.PENDING);
+    if(status === "in-progress"){
+        return await getTasksByCurrentUserAndStatus(TaskStatus.IN_PROGRESS);
     }
 
-    return await getTasksByCurrentUserAndStatus(TaskStatus.APPROVED);
+    if(status === "approved"){
+        return await getTasksByCurrentUserAndStatus(TaskStatus.APPROVED);
+    }
+
+    if(status === "rejected"){
+        return await getTasksByCurrentUserAndStatus(TaskStatus.REJECTED);
+    }
+
+    if(status === "completed"){
+        return await getTasksByCurrentUserAndStatus(TaskStatus.COMPLETED);
+    }
+
+    return await getTasksByCurrentUserAndStatus(TaskStatus.PENDING);
 
 }
 
