@@ -1,8 +1,6 @@
-
 import { Form } from "react-router";
 
 export default function TaskForm() {
-
     return (
         <div>
             <Form method="post">
