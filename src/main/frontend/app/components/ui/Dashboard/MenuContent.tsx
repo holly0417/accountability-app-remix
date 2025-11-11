@@ -14,9 +14,9 @@ import HelpRoundedIcon from '@mui/icons-material/HelpRounded';
 
 const mainListItems = [
   { text: 'Home', icon: <HomeRoundedIcon />, link: '' },
-  { text: 'Analytics', icon: <AnalyticsRoundedIcon />, link: '' },
-  { text: 'Clients', icon: <PeopleRoundedIcon />, link: '' },
-  { text: 'Tasks', icon: <AssignmentRoundedIcon />, link: '/task'},
+  { text: 'TaskPage', icon: <AnalyticsRoundedIcon />, link: 'task' },
+  { text: 'TaskForm', icon: <PeopleRoundedIcon />, link: 'task-form' },
+  { text: 'TaskList', icon: <AssignmentRoundedIcon />, link: '/task-list'},
 ];
 
 const secondaryListItems = [

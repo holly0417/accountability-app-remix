@@ -21,7 +21,7 @@ export default [
     //both logged in/out users and non-user visitors have access to this page.
     route("registration", "./routes/SignUp.tsx"),
 
-    route("task", "./routes/task.tsx"),
+    route("task", "./routes/Task.tsx"),
 
     //Nested routes
 
