@@ -1,13 +1,18 @@
 import TaskForm from '../components/Forms/TaskForm';
-import type {Route} from "../../.react-router/types/app/+types/root";
+
 import {taskData} from "~/composables/TaskData";
 import {TaskStatus} from "~/components/dto/task/TaskStatus";
-import {type ActionFunctionArgs} from "react-router";
+import {type ActionFunctionArgs, useParams} from "react-router";
 import TaskDataGrid from "~/components/Tables/task-grid";
+import {type Page} from "~/components/pagination/Page";
+import {type TaskDataDto} from "~/components/dto/task/TaskDataDto";
+import type {Route} from "../../.react-router/types/app/+types/root";
 
-export async function clientLoader({params,}: Route.ClientLoaderArgs) {
+export async function clientLoader() {
     const { getTasksByCurrentUserAndStatus } = taskData();
+
     return await getTasksByCurrentUserAndStatus(TaskStatus.PENDING);
+
 }
 
 export async function clientAction({request}: ActionFunctionArgs) {

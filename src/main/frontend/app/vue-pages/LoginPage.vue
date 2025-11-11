@@ -34,7 +34,7 @@
             </q-avatar>
             <div class="row no-wrap items-center">
               <div class="col text-h6 ellipsis">
-                Log in to Dashboard
+                Log in to _index
               </div>
             </div>
           </q-card-section>

@@ -69,7 +69,7 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
   },
 }));
 
-export default function SignIn(props: { disableCustomTheme?: boolean }) {
+export default function Login(props: { disableCustomTheme?: boolean }) {
     const { register, handleSubmit } = useForm({
         defaultValues: {
             username: '',

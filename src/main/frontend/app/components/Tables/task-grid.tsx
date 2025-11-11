@@ -1,5 +1,5 @@
 import {DataGrid, type GridColDef} from '@mui/x-data-grid';
-import {clientLoader} from "~/routes/Task";
+import {clientLoader} from "~/routes/task";
 import {useLoaderData} from "react-router-dom";
 
 export default function TaskDataGrid() {

@@ -114,7 +114,7 @@ export default defineComponent({
             <q-icon name="dashboard"/>
           </q-item-section>
           <q-item-section>
-            <q-item-label>Dashboard</q-item-label>
+            <q-item-label>_index</q-item-label>
           </q-item-section>
         </q-item>
 

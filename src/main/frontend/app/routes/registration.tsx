@@ -65,7 +65,7 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
     },
 }));
 
-export default function SignUp(props: { disableCustomTheme?: boolean }) {
+export default function Registration(props: { disableCustomTheme?: boolean }) {
     //RegisterUser info
     const { register, handleSubmit } = useForm({
         defaultValues: {

@@ -12,16 +12,16 @@ import {type RouteConfig, index, route} from "@react-router/dev/routes";
 
 export default [
     //this is NOT the same thing as index.html.
-    //this would connect "/" to "Dashboard.tsx" if security permissions from backend allow (AKA: if signed in successfully).
-    index("./routes/Dashboard.tsx"),
+    //this would connect "/" to "_index.tsx" if security permissions from backend allow (AKA: if signed in successfully).
+    index("./routes/_index.tsx"),
 
     //all non-logged in users will be rerouted here if they're trying to access a restricted page
-    route("login", "./routes/SignIn.tsx"),
+    route("login", "./routes/login.tsx"),
 
     //both logged in/out users and non-user visitors have access to this page.
-    route("registration", "./routes/SignUp.tsx"),
+    route("registration", "./routes/registration.tsx"),
 
-    route("task", "./routes/Task.tsx"),
+    route("task/:status?", "./routes/task.tsx"),
 
     //Nested routes
 
