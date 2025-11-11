@@ -1,17 +1,27 @@
 import TaskForm from '../components/Forms/TaskForm';
-
 import {taskData} from "~/composables/TaskData";
 import {TaskStatus} from "~/components/dto/task/TaskStatus";
-import {type ActionFunctionArgs, useParams} from "react-router";
+import {type ActionFunctionArgs} from "react-router";
 import TaskDataGrid from "~/components/Tables/task-grid";
-import {type Page} from "~/components/pagination/Page";
-import {type TaskDataDto} from "~/components/dto/task/TaskDataDto";
-import type {Route} from "../../.react-router/types/app/+types/root";
+import type {Route} from "./+types/task"; //this is OK!
 
-export async function clientLoader() {
+export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
     const { getTasksByCurrentUserAndStatus } = taskData();
 
-    return await getTasksByCurrentUserAndStatus(TaskStatus.PENDING);
+    const { status } = params;
+
+    // Now you can use the status variable
+    if (status) {
+        console.log("The status is:", status);
+    } else {
+        console.log("The status is not defined in the URL.");
+    }
+
+    if(status === "pending"){
+        return await getTasksByCurrentUserAndStatus(TaskStatus.PENDING);
+    }
+
+    return await getTasksByCurrentUserAndStatus(TaskStatus.APPROVED);
 
 }
 
