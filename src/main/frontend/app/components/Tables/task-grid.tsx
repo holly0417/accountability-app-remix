@@ -1,39 +1,54 @@
-import {DataGrid, type GridCellParams, type GridColDef} from '@mui/x-data-grid';
+import {
+    DataGrid,
+    GridActionsCellItem, type GridActionsCellItemProps,
+    type GridCellParams,
+    type GridColDef, type GridRenderCellParams, type GridRowId,
+    type GridRowParams, type GridRowsProp
+} from '@mui/x-data-grid';
 import {clientLoader} from "~/routes/task";
 import {useLoaderData} from "react-router-dom";
 import {SparkLineChart} from "@mui/x-charts/SparkLineChart";
 import Button from "@mui/material/Button";
 import Chip from "@mui/material/Chip";
 import type {TaskDataDto} from "~/components/dto/task/TaskDataDto";
-import {useState} from "react";
+import React, {useState} from "react";
+import {taskData} from "~/composables/TaskData";
+import {grid} from "@mui/system";
+import {TaskStatus} from "~/components/dto/task/TaskStatus";
 
 export default function TaskDataGrid() {
+    const [actionOption, setActionOption] = useState('');
 
+    const row = useLoaderData<typeof clientLoader>();
 
-    function renderButton(status: 'pending' | 'approved' | 'completed' | 'rejected' | 'in-progress') {
-        const [actionLabel, setActionLabel] = useState('');
+    const { startTask } = taskData();
 
-        if(status === "pending"){
-            setActionLabel("START");
+    function TaskActionButton({
+                                      rowId,
+                                  taskStatus,
+                                      ...props
+                                  }: GridActionsCellItemProps & {
+        rowId: GridRowId;
+        taskStatus: (string);
+        showInMenu: true;
+    }) {
+
+        if (taskStatus === TaskStatus.PENDING){
+            setActionOption("START");
+        } else {
+            setActionOption("NOTHING");
         }
 
+        let taskId = Number(rowId);
+
         return (
-            <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
-                <Button variant="outlined">{actionLabel}</Button>
-            </div>
+            <GridActionsCellItem
+                {...(props as any)}
+                onClick={() => startTask(taskId)}
+                closeMenuOnClick={false}
+            />
         );
     }
-
-    function renderStatus(status: 'Online' | 'Offline') {
-        const colors: { [index: string]: 'success' | 'default' } = {
-            Online: 'success',
-            Offline: 'default',
-        };
-
-        return <Chip label={status} color={colors[status]} size="small" />;
-    }
-
-    const rows = useLoaderData<typeof clientLoader>();
 
     const columns: GridColDef[] = [
         {
@@ -77,20 +92,29 @@ export default function TaskDataGrid() {
             headerName: 'status',
             flex: 0.5,
             minWidth: 80,
-            renderCell: (params) => renderButton(params.value as any),
         },
         {
-            field: 'action',
+            field: 'actions',
             headerName: 'Action',
+            type: 'actions',
             flex: 0.5,
             minWidth: 80,
+            getActions: (params:GridRowParams<TaskDataDto>) => [
+                <TaskActionButton
+                    label={actionOption}
+                    rowId={params.id}
+                    taskStatus={params.row.status}
+                    showInMenu={true}                />,
+            ],
         },
     ];
+
+
 
     return (
         <DataGrid
             checkboxSelection
-            rows={rows.content}
+            rows={row.content}
             columns={columns}
             getRowClassName={(params) =>
                 params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'

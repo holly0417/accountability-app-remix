@@ -4,9 +4,12 @@ import {TaskStatus} from "~/components/dto/task/TaskStatus";
 import {type ActionFunctionArgs} from "react-router";
 import TaskDataGrid from "~/components/Tables/task-grid";
 import type {Route} from "./+types/task"; //this is OK!
+import {userData} from "~/composables/UserData";
+import {TaskRouteStatus} from "~/components/dto/task/TaskRouteStatus";
 
 export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
-    const { getTasksByCurrentUserAndStatus } = taskData();
+    const { getTasksByCurrentUserAndStatus, getAllTasksByUserList } = taskData();
+    const {getCurrentUserInfo} = userData();
 
     const { status } = params;
 
@@ -17,27 +20,25 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
         console.log("The status is not defined in the URL.");
     }
 
-    if(status === "in-progress"){
-        return await getTasksByCurrentUserAndStatus(TaskStatus.IN_PROGRESS);
+    const userId = await getCurrentUserInfo();
+
+    switch(status) {
+        case TaskRouteStatus.IN_PROGRESS:
+            return await getTasksByCurrentUserAndStatus(TaskStatus.IN_PROGRESS);
+        case TaskRouteStatus.APPROVED:
+            return await getTasksByCurrentUserAndStatus(TaskStatus.APPROVED);
+        case TaskRouteStatus.REJECTED:
+            return await getTasksByCurrentUserAndStatus(TaskStatus.REJECTED);
+        case TaskRouteStatus.COMPLETED:
+            return await getTasksByCurrentUserAndStatus(TaskStatus.COMPLETED);
+        case TaskRouteStatus.PENDING:
+            return await getTasksByCurrentUserAndStatus(TaskStatus.PENDING);
     }
 
-    if(status === "approved"){
-        return await getTasksByCurrentUserAndStatus(TaskStatus.APPROVED);
-    }
-
-    if(status === "rejected"){
-        return await getTasksByCurrentUserAndStatus(TaskStatus.REJECTED);
-    }
-
-    if(status === "completed"){
-        return await getTasksByCurrentUserAndStatus(TaskStatus.COMPLETED);
-    }
-
-    return await getTasksByCurrentUserAndStatus(TaskStatus.PENDING);
-
+    return await getAllTasksByUserList([userId.id]);
 }
 
-export async function clientAction({request}: ActionFunctionArgs) {
+export async function clientAction({ request, params }: ActionFunctionArgs) {
     const { addTask } = taskData();
     const formData = await request.formData();
     const description = formData.get("newTaskDescription") as string;
