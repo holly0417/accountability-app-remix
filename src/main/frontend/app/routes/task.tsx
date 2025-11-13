@@ -6,6 +6,7 @@ import TaskDataGrid from "~/components/Tables/task-grid";
 import type {Route} from "./+types/task"; //this is OK!
 import {userData} from "~/composables/UserData";
 import {TaskRouteStatus} from "~/components/dto/task/TaskRouteStatus";
+import {TaskAction} from "~/components/dto/task/TaskAction";
 
 export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
     const { getTasksByCurrentUserAndStatus, getAllTasksByUserList } = taskData();
@@ -39,13 +40,33 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
 }
 
 export async function clientAction({ request, params }: ActionFunctionArgs) {
-    const { addTask } = taskData();
+    const { startTask, endTask, deleteTask } = taskData();
     const formData = await request.formData();
-    const description = formData.get("newTaskDescription") as string;
-    if(!description){
-        return {error: "missing description"};
+    const intent = formData.get('intent');
+
+    if (intent === TaskAction.ADD) {
+        const { addTask } = taskData();
+        const description = formData.get("newTaskDescription") as string;
+        if(!description){
+            return {error: "missing description"};
+        }
+        return await addTask({description: description});
     }
-    return await addTask({description: description});
+
+    const taskId = formData.get('taskId');
+    const taskIdNumber = Number(taskId);
+
+    if (intent === TaskAction.START) {
+        return await startTask(taskIdNumber);
+    }
+
+    if (intent === TaskAction.END) {
+        return await endTask(taskIdNumber);
+    }
+
+    if (intent === TaskAction.DELETE) {
+        return await deleteTask(taskIdNumber);
+    }
 }
 
 export default function Task(){

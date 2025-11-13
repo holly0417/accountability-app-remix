@@ -1,73 +1,43 @@
-import {
-    DataGrid,
-    GridActionsCellItem, type GridActionsCellItemProps,
-    type GridCellParams,
-    type GridColDef, type GridRenderCellParams, type GridRowId,
-    type GridRowParams, type GridRowsProp
-} from '@mui/x-data-grid';
+import {DataGrid, type GridColDef} from '@mui/x-data-grid';
 import {clientLoader} from "~/routes/task";
 import {useLoaderData} from "react-router-dom";
-import {SparkLineChart} from "@mui/x-charts/SparkLineChart";
 import Button from "@mui/material/Button";
-import Chip from "@mui/material/Chip";
-import type {TaskDataDto} from "~/components/dto/task/TaskDataDto";
-import React, {useState} from "react";
-import {taskData} from "~/composables/TaskData";
-import {grid} from "@mui/system";
+import React from "react";
 import {TaskStatus} from "~/components/dto/task/TaskStatus";
-import { PlayArrow } from '@mui/icons-material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import AlarmIcon from '@mui/icons-material/Alarm';
+import {TaskAction} from "~/components/dto/task/TaskAction";
+import {useSubmit} from "react-router";
 
 export default function TaskDataGrid() {
-    const [actionOption, setActionOption] = useState('');
-
     const row = useLoaderData<typeof clientLoader>();
 
-    const { startTask, endTask, deleteTask } = taskData();
-
-    function TaskActionButton({
-                                      rowId,
-                                  taskStatus,
-                                      ...props
-                                  }: GridActionsCellItemProps & {
-        rowId: GridRowId;
-        taskStatus: (string);
-        showInMenu: true;
-
-    }) {
-
-        let taskId = Number(rowId);
-
-        if (taskStatus === TaskStatus.PENDING){
-            setActionOption("START");
-            return (
-                <GridActionsCellItem
-                    {...(props as any)}
-                    icon={<PlayArrow />}
-                    onClick={() => startTask(taskId)}
-                />
-            );
-        } else if (taskStatus === TaskStatus.IN_PROGRESS){
-            setActionOption("END");
-            return (
-                <GridActionsCellItem
-                    {...(props as any)}
-                    icon={<AlarmIcon />}
-                    onClick={() => endTask(taskId)}
-                />
-            );
-        } else {
-            setActionOption("DELETE");
-            return (
-                <GridActionsCellItem
-                    {...(props as any)}
-                    icon={<DeleteIcon />}
-                    onClick={() => deleteTask(taskId)}
-                />
-            );
+    const buttonLabel = (value: TaskStatus) => {
+        switch(value) {
+            case TaskStatus.PENDING:
+                return TaskAction.START;
+            case TaskStatus.IN_PROGRESS:
+                return TaskAction.END;
+            default:
+                return TaskAction.DELETE;
         }
     }
+    const submit = useSubmit(); // 2. Get the submit function
+
+    const handleTask = (id: string, status: TaskStatus) => {
+
+        const formData = new FormData();
+        formData.append('taskId', id);
+
+        if(status === TaskStatus.PENDING){
+            formData.append('intent', TaskAction.START);
+        }else if(status === TaskStatus.IN_PROGRESS){
+            formData.append('intent', TaskAction.END);
+        } else {
+            formData.append('intent', TaskAction.DELETE);
+        }
+
+        // 4. Programmatically submit the data to the action
+        submit(formData, { method: 'post' });
+    };
 
     const columns: GridColDef[] = [
         {
@@ -109,20 +79,25 @@ export default function TaskDataGrid() {
         {
             field: 'actions',
             headerName: 'Action',
-            type: 'actions',
             flex: 0.5,
             minWidth: 150,
-            getActions: (params:GridRowParams<TaskDataDto>) => [
-                <TaskActionButton
-                    label={actionOption}
-                    rowId={params.id}
-                    taskStatus={params.row.status}
-                    showInMenu={true}
-                                   />,
-            ],
+            renderCell: (params) => {
+                const {id, status} = params.row
+
+                const action = buttonLabel(status);
+
+                return (
+                        <Button
+                            value={action}
+                            onClick={() => handleTask(id, status)}
+                            name="intent"
+                        >
+                            {action}
+                        </Button>
+                );
+            }
         },
     ];
-
 
 
     return (
