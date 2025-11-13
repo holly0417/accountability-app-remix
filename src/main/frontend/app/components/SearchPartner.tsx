@@ -1,26 +1,15 @@
 import * as React from 'react';
 import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
 import CircularProgress from '@mui/material/CircularProgress';
-import {useLoaderData} from "react-router-dom";
-import {clientLoader} from "~/routes/task";
-import type {RelationshipDto} from "./dto/relationship/RelationshipDto";
 import {relationshipData} from "~/composables/RelationshipData";
 import {
-    DataGrid, GridActionsCellItem,
-    type GridActionsCellItemProps,
+    DataGrid,
     type GridColDef,
-    type GridRowId,
-    type GridRowParams
 } from "@mui/x-data-grid";
-import type {TaskDataDto} from "~/components/dto/task/TaskDataDto";
-import {useState} from "react";
-import {taskData} from "~/composables/TaskData";
-import {TaskStatus} from "~/components/dto/task/TaskStatus";
-import {PlayArrow} from "@mui/icons-material";
-import AlarmIcon from "@mui/icons-material/Alarm";
-import DeleteIcon from "@mui/icons-material/Delete";
 import type {RelationshipStatusDto} from "~/components/dto/relationship/RelationshipStatusDto";
+import Button from "@mui/material/Button";
+import {RelationshipStatus} from "~/components/dto/relationship/RelationshipStatus";
+import {useSubmit} from "react-router";
 
 export default function SearchPartner() {
     const {search} = relationshipData();
@@ -67,6 +56,36 @@ export default function SearchPartner() {
         })();
     }, [inputValue]); // This effect runs whenever the inputValue changes
 
+    const buttonLabel = (value: RelationshipStatus) => {
+
+        switch(value) {
+            case RelationshipStatus.PENDING:
+            case RelationshipStatus.APPROVED:
+            case RelationshipStatus.REJECTED:
+            case RelationshipStatus.REQUESTED:
+                return true;
+            default:
+                return false;
+        }
+
+    }
+    const submit = useSubmit(); // 2. Get the submit function
+
+    const sendRequest = (id: number, status: RelationshipStatus) => {
+
+        const partnerId = id.toString();
+
+        if(status != null){
+            return;
+        }
+
+        const SendPartnershipRequest = new FormData();
+        SendPartnershipRequest.append('id', partnerId);
+        SendPartnershipRequest.append('intent', "REQUEST");
+        // 4. Programmatically submit the data to the action
+        submit(SendPartnershipRequest, { method: 'post' });
+    };
+
     function getRowId(row:partnership) {
         return row.partnerId;
     }
@@ -83,6 +102,21 @@ export default function SearchPartner() {
             headerName: 'Action',
             flex: 0.5,
             minWidth: 150,
+            renderCell: (params) => {
+                const {partnerId, status} = params.row
+
+                const action = buttonLabel(status);
+
+                return (
+                    <Button
+                        onClick={() => sendRequest(partnerId, status)}
+                        name="intent"
+                        disabled={action}
+                    >
+                        SEND REQUEST
+                    </Button>
+                );
+            }
         },
     ];
 

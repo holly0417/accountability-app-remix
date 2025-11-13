@@ -39,7 +39,7 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
     return await getAllTasksByUserList([userId.id]);
 }
 
-export async function clientAction({ request, params }: ActionFunctionArgs) {
+export async function clientAction({ request }: ActionFunctionArgs) {
     const { startTask, endTask, deleteTask } = taskData();
     const formData = await request.formData();
     const intent = formData.get('intent');
