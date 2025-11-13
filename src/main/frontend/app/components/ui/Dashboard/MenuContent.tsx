@@ -13,11 +13,15 @@ import InfoRoundedIcon from '@mui/icons-material/InfoRounded';
 import HelpRoundedIcon from '@mui/icons-material/HelpRounded';
 
 const mainListItems = [
+  { text: 'all tasks', icon: <HomeRoundedIcon />, link: '/task' },
   { text: 'task pending', icon: <HomeRoundedIcon />, link: '/task/pending' },
-  { text: 'task approved', icon: <AnalyticsRoundedIcon />, link: '/task/approved' },
-  { text: 'task in progress', icon: <PeopleRoundedIcon />, link: '/task/in-progress' },
-  { text: 'task completed', icon: <AssignmentRoundedIcon />, link: '/task/completed'},
-  { text: 'task rejected', icon: <AssignmentRoundedIcon />, link: '/task/rejected'},
+  { text: 'task approved', icon: <HomeRoundedIcon />, link: '/task/approved' },
+  { text: 'task in progress', icon: <HomeRoundedIcon />, link: '/task/in-progress' },
+  { text: 'task completed', icon: <HomeRoundedIcon />, link: '/task/completed'},
+  { text: 'task rejected', icon: <HomeRoundedIcon />, link: '/task/rejected'},
+    { text: 'partners & their tasks', icon: <PeopleRoundedIcon />, link: '/partner-task'},
+    { text: 'wallet, wishlist & purchases', icon: <AnalyticsRoundedIcon />, link: '/partner-task'},
+    { text: 'wishlist', icon: <AssignmentRoundedIcon />, link: '/partner-task'},
 ];
 
 const secondaryListItems = [

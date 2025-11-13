@@ -15,13 +15,16 @@ import React, {useState} from "react";
 import {taskData} from "~/composables/TaskData";
 import {grid} from "@mui/system";
 import {TaskStatus} from "~/components/dto/task/TaskStatus";
+import { PlayArrow } from '@mui/icons-material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AlarmIcon from '@mui/icons-material/Alarm';
 
 export default function TaskDataGrid() {
     const [actionOption, setActionOption] = useState('');
 
     const row = useLoaderData<typeof clientLoader>();
 
-    const { startTask } = taskData();
+    const { startTask, endTask, deleteTask } = taskData();
 
     function TaskActionButton({
                                       rowId,
@@ -31,23 +34,39 @@ export default function TaskDataGrid() {
         rowId: GridRowId;
         taskStatus: (string);
         showInMenu: true;
-    }) {
 
-        if (taskStatus === TaskStatus.PENDING){
-            setActionOption("START");
-        } else {
-            setActionOption("NOTHING");
-        }
+    }) {
 
         let taskId = Number(rowId);
 
-        return (
-            <GridActionsCellItem
-                {...(props as any)}
-                onClick={() => startTask(taskId)}
-                closeMenuOnClick={false}
-            />
-        );
+        if (taskStatus === TaskStatus.PENDING){
+            setActionOption("START");
+            return (
+                <GridActionsCellItem
+                    {...(props as any)}
+                    icon={<PlayArrow />}
+                    onClick={() => startTask(taskId)}
+                />
+            );
+        } else if (taskStatus === TaskStatus.IN_PROGRESS){
+            setActionOption("END");
+            return (
+                <GridActionsCellItem
+                    {...(props as any)}
+                    icon={<AlarmIcon />}
+                    onClick={() => endTask(taskId)}
+                />
+            );
+        } else {
+            setActionOption("DELETE");
+            return (
+                <GridActionsCellItem
+                    {...(props as any)}
+                    icon={<DeleteIcon />}
+                    onClick={() => deleteTask(taskId)}
+                />
+            );
+        }
     }
 
     const columns: GridColDef[] = [
@@ -82,12 +101,6 @@ export default function TaskDataGrid() {
             minWidth: 80,
         },
         {
-            field: 'durationString',
-            headerName: 'durationString',
-            flex: 0.5,
-            minWidth: 80,
-        },
-        {
             field: 'status',
             headerName: 'status',
             flex: 0.5,
@@ -98,13 +111,14 @@ export default function TaskDataGrid() {
             headerName: 'Action',
             type: 'actions',
             flex: 0.5,
-            minWidth: 80,
+            minWidth: 150,
             getActions: (params:GridRowParams<TaskDataDto>) => [
                 <TaskActionButton
                     label={actionOption}
                     rowId={params.id}
                     taskStatus={params.row.status}
-                    showInMenu={true}                />,
+                    showInMenu={true}
+                                   />,
             ],
         },
     ];
