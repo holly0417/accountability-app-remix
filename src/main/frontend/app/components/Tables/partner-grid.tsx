@@ -1,16 +1,12 @@
 import {DataGrid, type GridColDef} from '@mui/x-data-grid';
-import {clientLoader} from "~/routes/partner-tasks";
-import {useLoaderData} from "react-router-dom";
 import React from "react";
 import {useSubmit} from "react-router";
 import {RelationshipStatus} from "~/components/dto/relationship/RelationshipStatus";
 import {RelationshipAction} from "~/components/dto/relationship/RelationshipAction";
-import {userData} from "~/composables/UserData";
 import Button from "@mui/material/Button";
 import type {UserDto} from "~/components/dto/UserDto";
 import type {Page} from "~/components/pagination/Page";
 import type {RelationshipDto} from "~/components/dto/relationship/RelationshipDto";
-import {useRouteLoaderData} from "react-router-dom";
 
 type PartnerDataGridProps = {
     listType: string;
@@ -29,28 +25,31 @@ export default function PartnerDataGrid({listType, friends, currentUser}: Partne
 
     const checkButtonOptions = () => {
         if(listType == "answer"){
-            return (<Button value="accept" name="intent">ACCEPT</Button>);
+            return "APPROVE";
         }
-
-        return (<Button value="delete" name="intent">DELETE</Button>);
+        return "DELETE";
     }
 
     const checkSecondButtonOptions = () => {
         if(listType == "answer"){
-            return (<Button value="reject" name="intent">REJECT</Button>);
+            return "REJECT";
         }
-        return ("");
+        return null;
     }
 
-    const approvePartner = (id: string, status: RelationshipStatus) => {
-        const answerPartner = new FormData();
-        answerPartner.append('id', id);
+    const relationshipHandler = (relationshipId: number, intent: string) => {
+        const handlePartner = new FormData();
+        handlePartner.append('id', relationshipId.toString());
 
-        if(status === RelationshipStatus.REQUESTED){
-            answerPartner.append('intent', RelationshipAction.APPROVE);
+        if (intent == "APPROVE"){
+            handlePartner.append('intent', RelationshipAction.APPROVE);
+        } else if (intent == "REJECT"){
+            handlePartner.append('intent', RelationshipAction.REJECT);
+        } else if (intent == "DELETE"){
+            handlePartner.append('intent', RelationshipAction.DELETE);
         }
         // 4. Programmatically submit the data to the action
-        submit(answerPartner, { method: 'post' });
+        submit(handlePartner, { method: 'post' });
     };
 
     const columns: GridColDef[] = [
@@ -87,7 +86,11 @@ export default function PartnerDataGrid({listType, friends, currentUser}: Partne
             flex: 0.5,
             minWidth: 150,
             renderCell: (params) => {
-                return checkButtonOptions();
+                const {id} = params.row
+                const option = checkButtonOptions();
+                return (<Button value={option}
+                                onClick={() => relationshipHandler(id, option)}
+                                name="intent">{option}</Button>);
             }
         },
         {
@@ -96,7 +99,13 @@ export default function PartnerDataGrid({listType, friends, currentUser}: Partne
             flex: 0.5,
             minWidth: 150,
             renderCell: (params) => {
-                return checkSecondButtonOptions();
+                const {id} = params.row
+                const option = checkSecondButtonOptions();
+                if(option){
+                    return (<Button value={option}
+                                    onClick={() => relationshipHandler(id, option)}
+                                    name="intent">{option}</Button>);
+                }
             }
         },
     ];
