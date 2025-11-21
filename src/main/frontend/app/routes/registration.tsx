@@ -77,18 +77,6 @@ export default function Registration(props: { disableCustomTheme?: boolean }) {
         } as RegisterUser
     });
 
-    //error messages for frontend simple validation
-    const [emailError, setEmailError] = React.useState(false);
-    const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
-    const [passwordError, setPasswordError] = React.useState(false);
-    const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
-    const [nameError, setNameError] = React.useState(false);
-    const [nameErrorMessage, setNameErrorMessage] = React.useState('');
-    const [usernameError, setUsernameError] = React.useState(false);
-    const [usernameErrorMessage, setUsernameErrorMessage] = React.useState('');
-    const [passwordRepeatedError, setPasswordRepeatedError] = React.useState(false);
-    const [passwordRepeatedErrorMessage, setPasswordRepeatedErrorMessage] = React.useState('');
-
     //setup for Popover form submit error message
     const [submitError, setSubmitError] = React.useState(false);
     const [submitErrorMessage, setSubmitErrorMessage] = React.useState('');
@@ -106,45 +94,36 @@ export default function Registration(props: { disableCustomTheme?: boolean }) {
         setAnchorEl(null);
     };
 
-    //simple frontend validation before submitting
-    const validateInputs = () => {
-        const email = document.getElementById('email') as HTMLInputElement;
-
-        let isValid = true;
-
-        if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
-            setEmailError(true);
-            setEmailErrorMessage('Please enter a valid email address.');
-            isValid = false;
-        } else {
-            setEmailError(false);
-            setEmailErrorMessage('');
-        }
-
-        return isValid;
-    };
-
     const onSubmit = (data: RegisterUser) => {
+            const api = axios.create({
+                baseURL: '/',
+                headers: { 'Content-Type': 'application/json', },
+                maxRedirects: 0
+            });
 
-        const api = axios.create({
-            baseURL: '/',
-            headers: { 'Content-Type': 'application/json', },
-            maxRedirects: 0
-        });
+            api.post<RegisterUser>('/registration', data)
+                .catch (function (error){
+                    if(error.response) {
+                        console.log('Error message:', error.response.data.violations[0].messages[3]);
+                        console.log(error.response.data);
+                        console.log(error.response.status);
+                        console.log(error.response.headers);
 
-        api.post<RegisterUser>('/registration', data)
-            .then(response => {
-                if (response.headers['Content-Type'] !== 'application/json') {
-                    window.location.href = response.headers['Location']
-                }
-                console.log(response);
-            })
-            .catch(error => {
-                console.log(error);
-                setSubmitError(true);
-                setSubmitErrorMessage(error);
-            })
+                        const errorMessage = error.response.data.violations[0].messages[3];
 
+                        setSubmitErrorMessage(errorMessage);
+                        setSubmitError(true);
+                    } else if (error.request) {
+                        // The request was made but no response was received
+                        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+                        // http.ClientRequest in node.js
+                        console.log(error.request);
+                    } else {
+                        // Something happened in setting up the request that triggered an Error
+                        console.log('Error', error.message);
+                    }
+                    console.log(error.config);
+            });
     };
 
     return (
@@ -175,9 +154,6 @@ export default function Registration(props: { disableCustomTheme?: boolean }) {
                                 fullWidth
                                 id="username"
                                 placeholder="JonSnow45"
-                                error={usernameError}
-                                helperText={usernameErrorMessage}
-                                color={usernameError ? 'error' : 'primary'}
                             />
                         </FormControl>
                         <FormControl>
@@ -188,9 +164,6 @@ export default function Registration(props: { disableCustomTheme?: boolean }) {
                                 fullWidth
                                 id="name"
                                 placeholder="Jon Snow"
-                                error={nameError}
-                                helperText={nameErrorMessage}
-                                color={nameError ? 'error' : 'primary'}
                                 {...register("name")}
                             />
                         </FormControl>
@@ -204,9 +177,6 @@ export default function Registration(props: { disableCustomTheme?: boolean }) {
                                 id="email"
                                 autoComplete="email"
                                 variant="outlined"
-                                error={emailError}
-                                helperText={emailErrorMessage}
-                                color={passwordError ? 'error' : 'primary'}
                             />
                         </FormControl>
                         <FormControl>
@@ -220,9 +190,6 @@ export default function Registration(props: { disableCustomTheme?: boolean }) {
                                 id="password"
                                 autoComplete="new-password"
                                 variant="outlined"
-                                error={passwordError}
-                                helperText={passwordErrorMessage}
-                                color={passwordError ? 'error' : 'primary'}
                             />
                         </FormControl>
                         <FormControl>
@@ -236,16 +203,8 @@ export default function Registration(props: { disableCustomTheme?: boolean }) {
                                 id="passwordRepeated"
                                 autoComplete="new-passwordRepeated"
                                 variant="outlined"
-                                error={passwordRepeatedError}
-                                helperText={passwordRepeatedErrorMessage}
-                                color={passwordRepeatedError ? 'error' : 'primary'}
-                                onChange={validateInputs}
                             />
                         </FormControl>
-                        <FormControlLabel
-                            control={<Checkbox value="allowExtraEmails" color="primary" />}
-                            label="I want to receive updates via email."
-                        />
                         <Button
                             type="submit"
                             fullWidth
@@ -254,41 +213,26 @@ export default function Registration(props: { disableCustomTheme?: boolean }) {
                         >
                             Sign up
                         </Button>
-
-                        <Popover
-                            id={id}
-                            open={submitError}
-                            anchorEl={anchorEl}
-                            onClose={handleClose}
-                            anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'left',
-                            }}
-                        >
-                            <Typography sx={{ p: 2 }}>{submitErrorMessage}</Typography>
-                        </Popover>
-
                     </Box>
+
+                    <Popover
+                        id={id}
+                        open={submitError}
+                        anchorEl={anchorEl}
+                        onClose={handleClose}
+                        anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'left',
+                        }}
+                    >
+                        <Typography sx={{ p: 2 }}>{submitErrorMessage}</Typography>
+                    </Popover>
+
                     <Divider>
                         <Typography sx={{ color: 'text.secondary' }}>or</Typography>
                     </Divider>
+
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                        <Button
-                            fullWidth
-                            variant="outlined"
-                            onClick={() => alert('Sign up with Google')}
-                            startIcon={<GoogleIcon />}
-                        >
-                            Sign up with Google
-                        </Button>
-                        <Button
-                            fullWidth
-                            variant="outlined"
-                            onClick={() => alert('Sign up with Facebook')}
-                            startIcon={<FacebookIcon />}
-                        >
-                            Sign up with Facebook
-                        </Button>
                         <Typography sx={{ textAlign: 'center' }}>
                             Already have an account?{' '}
                             <NavLink to="/login">Click me</NavLink>
