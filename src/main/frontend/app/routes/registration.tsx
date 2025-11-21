@@ -17,9 +17,9 @@ import { styled } from '@mui/material/styles';
 import AppTheme from '../components/shared-theme/AppTheme';
 import ColorModeSelect from '../components/shared-theme/ColorModeSelect';
 import { GoogleIcon, FacebookIcon, SitemarkIcon } from '~/components/ui/SignIn/CustomIcons';
-import { NavLink } from "react-router";
+import {NavLink, useNavigate} from "react-router";
 import Popover from '@mui/material/Popover';
-import axios from 'axios';
+import axios, {type AxiosError, type AxiosResponse} from 'axios';
 import type {RegisterUser} from "~/components/dto/RegisterUser";
 import { useForm } from 'react-hook-form';
 
@@ -94,15 +94,23 @@ export default function Registration(props: { disableCustomTheme?: boolean }) {
         setAnchorEl(null);
     };
 
-    const onSubmit = (data: RegisterUser) => {
-            const api = axios.create({
-                baseURL: '/',
-                headers: { 'Content-Type': 'application/json', },
-                maxRedirects: 0
-            });
+    const navigate = useNavigate();
 
-            api.post<RegisterUser>('/registration', data)
-                .catch (function (error){
+    const api = axios.create({
+        baseURL: '/',
+        headers: { 'Content-Type': 'application/json', },
+        maxRedirects: 0
+    });
+
+    const onSubmit =  async (data: RegisterUser) => {
+            await api.post<RegisterUser>('/registration', data)
+                .then(response => {
+                    if (response.headers['Content-Type'] !== 'application/json') {
+                        navigate('/');
+                    }
+                    console.log(response);
+                })
+                .catch ((error)=> {
                     if(error.response) {
                         console.log('Error message:', error.response.data.violations[0].messages[3]);
                         console.log(error.response.data);
