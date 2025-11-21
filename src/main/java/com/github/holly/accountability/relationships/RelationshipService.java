@@ -132,12 +132,16 @@ public class RelationshipService {
                                             List<RelationshipStatus> statuses,
                                             List<RelationshipDirection> directions,
                                             Pageable pageable){
+        //REQUESTED SENDER = PENDING RECEIVER
+        //REQUESTED RECEIVER = PENDING SENDER
+
         //current user is in the USER column of relationship
         if (directions.equals(List.of(RelationshipDirection.SENDER))) {
             return relationshipRepository
                     .getRelationshipsByUserIdAndStatus(
                             currentUserId, statuses, pageable);
-            //pending: requests the user has to answer
+            //requested: user requested
+            //pending: requests where the user has to answer
             //reject: rejections sent by the user
         }
 
@@ -146,7 +150,8 @@ public class RelationshipService {
             return relationshipRepository
                     .getRelationshipsByPartnerIdAndStatus(
                             currentUserId, statuses, pageable);
-            //pending: requests where the user has to wait for a response
+            //requested: requests where the user has to wait
+            //pending: requests where the user has to wait
             //reject: rejections received by the user from others
         }
 

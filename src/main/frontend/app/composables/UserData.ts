@@ -1,4 +1,4 @@
-import api from 'axios';
+import {api} from '~/axios';
 import type {UserDto} from '~/components/dto/UserDto';
 import type {Page} from '~/components/pagination/Page';
 

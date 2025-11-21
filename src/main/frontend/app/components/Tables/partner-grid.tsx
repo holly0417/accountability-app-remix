@@ -12,38 +12,32 @@ import type {Page} from "~/components/pagination/Page";
 import type {RelationshipDto} from "~/components/dto/relationship/RelationshipDto";
 import {useRouteLoaderData} from "react-router-dom";
 
-export default function PartnerDataGrid() {
-    const {answerList, waitList, rejectList, approveList, user, userId, userName, userEmail} = useLoaderData<typeof clientLoader>();
+type PartnerDataGridProps = {
+    listType: string;
+    friends: Page<RelationshipDto>;
+    currentUser: UserDto;
+};
 
-    const row = answerList;
-
-    if (user) {
-        console.log("The user exists:", userId, userName, userEmail);
-    } else {
-        console.log("didn't work", userId, userName, userEmail);
-    }
+export default function PartnerDataGrid({listType, friends, currentUser}: PartnerDataGridProps) {
+    const row = friends;
 
     const submit = useSubmit(); // 2. Get the submit function
 
     const checkIdDoesNotMatchCurrentUserId = (value: number) => {
-            return value != userId;
+        return value != currentUser.id;
     }
 
-    const checkButtonOptions = (userId: number, status: RelationshipStatus) => {
-        if(status === RelationshipStatus.PENDING){
-            if(checkIdDoesNotMatchCurrentUserId(userId)){
-                return (<Button disabled> WAIT FOR RESPONSE </Button>);
-            }
-            return (<Button value="approve" name="intent"> APPROVE </Button>);
+    const checkButtonOptions = () => {
+        if(listType == "answer"){
+            return (<Button value="accept" name="intent">ACCEPT</Button>);
         }
-        return (<Button value="delete" name="intent"> DELETE </Button>);
+
+        return (<Button value="delete" name="intent">DELETE</Button>);
     }
 
-    const checkSecondButtonOptions = (userId: number, status: RelationshipStatus) => {
-        if(status === RelationshipStatus.PENDING){
-            if(!checkIdDoesNotMatchCurrentUserId(userId)){
-                return (<Button value="reject" name="intent"> REJECT </Button>);
-            }
+    const checkSecondButtonOptions = () => {
+        if(listType == "answer"){
+            return (<Button value="reject" name="intent">REJECT</Button>);
         }
         return ("");
     }
@@ -52,7 +46,7 @@ export default function PartnerDataGrid() {
         const answerPartner = new FormData();
         answerPartner.append('id', id);
 
-        if(status === RelationshipStatus.PENDING){
+        if(status === RelationshipStatus.REQUESTED){
             answerPartner.append('intent', RelationshipAction.APPROVE);
         }
         // 4. Programmatically submit the data to the action
@@ -73,7 +67,7 @@ export default function PartnerDataGrid() {
             minWidth: 80,
             renderCell: (params) => {
                 const {partner, user} = params.row
-                const userId = params.row.user.id;
+                const userId = user.id;
                 if(checkIdDoesNotMatchCurrentUserId(userId)){
                     return user.username;
                 } else {
@@ -93,18 +87,16 @@ export default function PartnerDataGrid() {
             flex: 0.5,
             minWidth: 150,
             renderCell: (params) => {
-                const {user, status} = params.row
-                return checkButtonOptions(user.id, status);
+                return checkButtonOptions();
             }
         },
         {
-            field: 'actions',
-            headerName: 'Action',
+            field: 'second-action',
+            headerName: 'More Actions',
             flex: 0.5,
             minWidth: 150,
             renderCell: (params) => {
-                const {user, status} = params.row
-                return checkSecondButtonOptions(user.id, status);
+                return checkSecondButtonOptions();
             }
         },
     ];
