@@ -208,9 +208,9 @@ public class RelationshipService {
         relationshipRepository.delete(relationshipOtherDirection);
     }
 
-    public Relationship answerRequest(Long relationshipId, RelationshipStatusDto status){
+    public Relationship answerRequest(Long relationshipId, RelationshipStatus status){
         Relationship relationship = relationshipRepository.getReferenceById(relationshipId);
-        relationship.setStatus(status.getStatus());
+        relationship.setStatus(status);
         relationshipRepository.save(relationship);
         return relationship;
     }

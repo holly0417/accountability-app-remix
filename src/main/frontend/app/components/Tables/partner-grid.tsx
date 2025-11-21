@@ -34,7 +34,7 @@ export default function PartnerDataGrid({listType, friends, currentUser}: Partne
         if(listType == "answer"){
             return "REJECT";
         }
-        return null;
+        return "";
     }
 
     const relationshipHandler = (relationshipId: number, intent: string) => {
@@ -43,13 +43,23 @@ export default function PartnerDataGrid({listType, friends, currentUser}: Partne
 
         if (intent == "APPROVE"){
             handlePartner.append('intent', RelationshipAction.APPROVE);
-        } else if (intent == "REJECT"){
-            handlePartner.append('intent', RelationshipAction.REJECT);
         } else if (intent == "DELETE"){
             handlePartner.append('intent', RelationshipAction.DELETE);
         }
         // 4. Programmatically submit the data to the action
         submit(handlePartner, { method: 'post' });
+    };
+
+    const rejectionHandler = (relationshipId: number, intent: string) => {
+        const handleRejection = new FormData();
+        handleRejection.append('id', relationshipId.toString());
+
+        if (intent == "REJECT"){
+            handleRejection.append('intent', RelationshipAction.REJECT);
+        }
+
+        // 4. Programmatically submit the data to the action
+        submit(handleRejection, { method: 'post' });
     };
 
     const columns: GridColDef[] = [
@@ -101,11 +111,12 @@ export default function PartnerDataGrid({listType, friends, currentUser}: Partne
             renderCell: (params) => {
                 const {id} = params.row
                 const option = checkSecondButtonOptions();
-                if(option){
+                if(option=="REJECT"){
                     return (<Button value={option}
-                                    onClick={() => relationshipHandler(id, option)}
+                                    onClick={() => rejectionHandler(id, option)} //gets confused about intent from having 2 buttons at once
                                     name="intent">{option}</Button>);
                 }
+                return (<Button>{option}</Button>);
             }
         },
     ];

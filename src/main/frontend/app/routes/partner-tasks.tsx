@@ -4,12 +4,10 @@ import {RelationshipStatus} from "~/components/dto/relationship/RelationshipStat
 import {relationshipData} from "~/composables/RelationshipData";
 import {userData} from "~/composables/UserData";
 import {RelationshipDirection} from "~/components/dto/relationship/RelationshipDirection";
-import type {RelationshipDto} from "~/components/dto/relationship/RelationshipDto";
-import {DefaultPage} from "~/components/pagination/Page";
-import type {Page} from "~/components/pagination/Page";
 import PartnerDataGrid from "~/components/Tables/partner-grid";
 import type { Route } from "./+types/partner-tasks";
 import {useLoaderData} from "react-router-dom";
+import {RelationshipAction} from "~/components/dto/relationship/RelationshipAction";
 import type {RelationshipStatusDto} from "~/components/dto/relationship/RelationshipStatusDto";
 
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
@@ -22,11 +20,8 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
     const rejectedList = await getRequests(RelationshipStatus.REJECTED, RelationshipDirection.SENDER);
     const approvedList = await getRelationshipsByStatus(RelationshipStatus.APPROVED);
 
-    //TODO: get these lists into one and load them to partner-grid.tsx
-
    return {answerList, waitList, rejectedList, approvedList, currentUser};
 }
-
 
 export async function clientAction({ request }: ActionFunctionArgs) {
     const formData = await request.formData();
@@ -36,23 +31,27 @@ export async function clientAction({ request }: ActionFunctionArgs) {
     const thisId = formData.get("id") as string; //can be partnerID or relationshipID
     const idNumber = Number(thisId);
 
-    //delete this later
-    const newStatus: RelationshipStatusDto = {
-        status: RelationshipStatus.APPROVED
-    }
-
-    if(intent === "REQUEST"){
+    if(intent === RelationshipAction.REQUEST){
         return await sendRequest(idNumber);
     }
 
-    if(intent === "APPROVE"){
-        return await updateRelationship(idNumber, newStatus);
-    }
-
-    if(intent === "DELETE"){
+    if(intent === RelationshipAction.DELETE) {
         return await deleteRelationship(idNumber);
     }
 
+    const newStatus: RelationshipStatusDto = {
+        status: RelationshipStatus.PENDING
+    }
+
+    if(intent === RelationshipAction.APPROVE){
+        newStatus.status = RelationshipStatus.APPROVED;
+    }
+
+    if(intent === RelationshipAction.REJECT){
+        newStatus.status = RelationshipStatus.REJECTED;
+    }
+
+    return await updateRelationship(idNumber, newStatus);
 }
 
 

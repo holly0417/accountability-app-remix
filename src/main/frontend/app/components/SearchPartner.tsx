@@ -10,6 +10,7 @@ import type {RelationshipStatusDto} from "~/components/dto/relationship/Relation
 import Button from "@mui/material/Button";
 import {RelationshipStatus} from "~/components/dto/relationship/RelationshipStatus";
 import {useSubmit} from "react-router";
+import {RelationshipAction} from "~/components/dto/relationship/RelationshipAction";
 
 export default function SearchPartner() {
     const {search} = relationshipData();
@@ -81,7 +82,7 @@ export default function SearchPartner() {
 
         const SendPartnershipRequest = new FormData();
         SendPartnershipRequest.append('id', partnerId);
-        SendPartnershipRequest.append('intent', "REQUEST");
+        SendPartnershipRequest.append('intent', RelationshipAction.REQUEST);
         // 4. Programmatically submit the data to the action
         submit(SendPartnershipRequest, { method: 'post' });
     };
