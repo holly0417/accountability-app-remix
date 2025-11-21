@@ -1,12 +1,12 @@
 import {DataGrid, type GridColDef} from '@mui/x-data-grid';
 import React from "react";
 import {useSubmit} from "react-router";
-import {RelationshipStatus} from "~/components/dto/relationship/RelationshipStatus";
 import {RelationshipAction} from "~/components/dto/relationship/RelationshipAction";
 import Button from "@mui/material/Button";
 import type {UserDto} from "~/components/dto/UserDto";
 import type {Page} from "~/components/pagination/Page";
 import type {RelationshipDto} from "~/components/dto/relationship/RelationshipDto";
+import Typography from "@mui/material/Typography";
 
 type PartnerDataGridProps = {
     listType: string;
@@ -123,8 +123,12 @@ export default function PartnerDataGrid({listType, friends, currentUser}: Partne
 
 
     return (
+        <>
+        <Typography fontWeight="medium" sx={{ flex: 1, mx: 0.5 }}>
+            {listType}
+        </Typography>
+
         <DataGrid
-            checkboxSelection
             rows={row.content}
             columns={columns}
             getRowClassName={(params) =>
@@ -163,5 +167,7 @@ export default function PartnerDataGrid({listType, friends, currentUser}: Partne
                 },
             }}
         />
+
+        </>
     );
 }

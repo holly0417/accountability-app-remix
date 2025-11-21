@@ -4,6 +4,7 @@
     "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^7.3.5",
     "@mui/material": "^7.3.5",
+    "Typography": "link:@mui/material/Typography",
     "axios": "^1.13.2"
   }
 }
