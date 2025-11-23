@@ -1,13 +1,42 @@
-import { Form } from "react-router";
+import {type ActionFunctionArgs, Form, useFetcher} from "react-router";
 import {TaskAction} from "~/components/dto/task/TaskAction";
+import {taskData} from "~/composables/TaskData";
+import {useEffect, useRef} from "react";
+
 
 export default function TaskForm() {
+    const fetcher = useFetcher();
+    const formRef = useRef<HTMLFormElement>(null);
+
+    const isSubmitting = fetcher.state === "submitting";
+
+    useEffect(() => {
+        if (fetcher.state === "idle" && fetcher.data?.ok) {
+            formRef.current?.reset();
+        }
+    }, [fetcher.state, fetcher.data]);
+
     return (
         <div>
-            <Form method="post">
-                <input type="text" name="newTaskDescription" required />
-                <button type="submit" name="intent" value={TaskAction.ADD}>Submit task</button>
-            </Form>
+            <fetcher.Form method="post" ref={formRef}>
+                <input
+                    id="newTaskDescription"
+                    type="text"
+                    name="newTaskDescription"
+                    required
+                    disabled={isSubmitting}
+                />
+
+                <button
+                    type="submit"
+                    name="intent"
+                    value={TaskAction.ADD}
+                    disabled={isSubmitting}
+                >
+                    {isSubmitting ? "Sending..." : "Submit"}
+                </button>
+
+            </fetcher.Form>
         </div>
     );
 }

@@ -5,7 +5,7 @@ import {relationshipData} from "~/composables/RelationshipData";
 import {userData} from "~/composables/UserData";
 import {RelationshipDirection} from "~/components/dto/relationship/RelationshipDirection";
 import PartnerDataGrid from "~/components/Tables/partner-grid";
-import type { Route } from "./+types/partner-tasks";
+import type { Route } from "./+types/partners";
 import {useLoaderData} from "react-router-dom";
 import {RelationshipAction} from "~/components/dto/relationship/RelationshipAction";
 import type {RelationshipStatusDto} from "~/components/dto/relationship/RelationshipStatusDto";
@@ -55,7 +55,7 @@ export async function clientAction({ request }: ActionFunctionArgs) {
 }
 
 
-export default function PartnerTasks(){
+export default function Partners(){
     const {answerList, waitList, rejectedList, approvedList, currentUser} = useLoaderData<typeof clientLoader>();
 
     return(

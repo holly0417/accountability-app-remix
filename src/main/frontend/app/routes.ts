@@ -23,7 +23,7 @@ export default [
 
     route("task/:status?", "./routes/task.tsx"),
 
-    route("partner-task", "./routes/partner-tasks.tsx"),
+    route("partners", "./routes/partners.tsx"),
 
     //Nested routes
 

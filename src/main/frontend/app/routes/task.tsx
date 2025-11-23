@@ -7,11 +7,11 @@ import type {Route} from "./+types/task"; //this is OK!
 import {userData} from "~/composables/UserData";
 import {TaskRouteStatus} from "~/components/dto/task/TaskRouteStatus";
 import {TaskAction} from "~/components/dto/task/TaskAction";
+import React from "react";
 
 export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
     const { getTasksByCurrentUserAndStatus, getAllTasksByUserList } = taskData();
     const {getCurrentUserInfo} = userData();
-
     const { status } = params;
 
     // Now you can use the status variable
@@ -47,32 +47,38 @@ export async function clientAction({ request }: ActionFunctionArgs) {
     if (intent === TaskAction.ADD) {
         const { addTask } = taskData();
         const description = formData.get("newTaskDescription") as string;
+
         if(!description){
             return {error: "missing description"};
         }
-        return await addTask({description: description});
+
+        await addTask({description: description});
+        return { ok: true };
     }
 
     const taskId = formData.get('taskId');
     const taskIdNumber = Number(taskId);
 
-    if (intent === TaskAction.START) {
-        return await startTask(taskIdNumber);
+    switch(intent) {
+        case TaskAction.START:
+            await startTask(taskIdNumber);
+            return { ok: true };
+        case TaskAction.END:
+            await endTask(taskIdNumber);
+            return { ok: true };
+        case TaskAction.DELETE:
+            await deleteTask(taskIdNumber);
+            return { ok: true };
     }
 
-    if (intent === TaskAction.END) {
-        return await endTask(taskIdNumber);
-    }
-
-    if (intent === TaskAction.DELETE) {
-        return await deleteTask(taskIdNumber);
-    }
 }
 
 export default function Task(){
+
+
     return(
         <div>
-            <TaskForm />
+            <TaskForm/>
             <TaskDataGrid />
         </div>
     );
