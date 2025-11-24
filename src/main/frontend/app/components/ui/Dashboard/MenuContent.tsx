@@ -19,9 +19,18 @@ const mainListItems = [
   { text: 'task in progress', icon: <HomeRoundedIcon />, link: '/task/in-progress' },
   { text: 'task completed', icon: <HomeRoundedIcon />, link: '/task/completed'},
   { text: 'task rejected', icon: <HomeRoundedIcon />, link: '/task/rejected'},
-    { text: 'partners & their tasks', icon: <PeopleRoundedIcon />, link: '/partner-task'},
-    { text: 'wallet, wishlist & purchases', icon: <AnalyticsRoundedIcon />, link: '/partner-task'},
-    { text: 'wishlist', icon: <AssignmentRoundedIcon />, link: '/partner-task'},
+
+  { text: 'partners', icon: <PeopleRoundedIcon />, link: '/partners'},
+
+  { text: 'all partner tasks', icon: <PeopleRoundedIcon />, link: '/partner-task'},
+  { text: 'partner task pending', icon: <HomeRoundedIcon />, link: '/partner-task/pending' },
+  { text: 'partner task approved', icon: <HomeRoundedIcon />, link: '/partner-task/approved' },
+  { text: 'partner task in progress', icon: <HomeRoundedIcon />, link: '/partner-task/in-progress' },
+  { text: 'partner task completed', icon: <HomeRoundedIcon />, link: '/partner-task/completed'},
+  { text: 'partner task rejected', icon: <HomeRoundedIcon />, link: '/partner-task/rejected'},
+
+  { text: 'wallet, wishlist & purchases', icon: <AnalyticsRoundedIcon />, link: '/partner-task'},
+  { text: 'wishlist', icon: <AssignmentRoundedIcon />, link: '/partner-task'},
 ];
 
 const secondaryListItems = [

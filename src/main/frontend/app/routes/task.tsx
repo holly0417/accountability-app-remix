@@ -74,11 +74,9 @@ export async function clientAction({ request }: ActionFunctionArgs) {
 }
 
 export default function Task(){
-
-
     return(
         <div>
-            <TaskForm/>
+            <TaskForm />
             <TaskDataGrid />
         </div>
     );

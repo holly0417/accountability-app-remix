@@ -3,41 +3,46 @@ import {clientLoader} from "~/routes/task";
 import {useLoaderData} from "react-router-dom";
 import Button from "@mui/material/Button";
 import React from "react";
-import {TaskStatus} from "~/components/dto/task/TaskStatus";
-import {TaskAction} from "~/components/dto/task/TaskAction";
 import {useSubmit} from "react-router";
+import type {TaskDataDto} from "~/components/dto/task/TaskDataDto";
+import {PartnerTaskAction} from "~/components/dto/task/PartnerTaskAction";
 
+interface PartnerTaskDataGridProps{
+    actionAllowed: boolean;
+    data: TaskDataDto[];
+}
 
-export default function TaskDataGrid() {
-    const row = useLoaderData<typeof clientLoader>();
+export default function PartnerTaskDataGrid({data, actionAllowed}:PartnerTaskDataGridProps) {
+    const row = data;
+    const partnerTaskAction = actionAllowed;
 
-    const buttonLabel = (value: TaskStatus) => {
-        switch(value) {
-            case TaskStatus.PENDING:
-                return TaskAction.START;
-            case TaskStatus.IN_PROGRESS:
-                return TaskAction.END;
-            default:
-                return TaskAction.DELETE;
-        }
-    }
     const submit = useSubmit(); // 2. Get the submit function
 
-    const handleTask = (id: string, status: TaskStatus) => {
-
-        const formData = new FormData();
-        formData.append('taskId', id);
-
-        if (status === TaskStatus.PENDING) {
-            formData.append('intent', TaskAction.START);
-        } else if (status === TaskStatus.IN_PROGRESS) {
-            formData.append('intent', TaskAction.END);
-        } else {
-            formData.append('intent', TaskAction.DELETE);
+    const checkButtonOptions = () => {
+        if(partnerTaskAction){
+            return "APPROVE";
         }
+        return "";
+    }
 
+    const checkSecondButtonOptions = () => {
+        if(partnerTaskAction){
+            return "REJECT";
+        }
+        return "";
+    }
+
+    const partnerTaskHandler = (taskId: number, intent: string) => {
+        const handlePartnerTask = new FormData();
+        handlePartnerTask.append('taskId', taskId.toString());
+
+        if (intent == "APPROVE"){
+            handlePartnerTask.append('intent', PartnerTaskAction.APPROVE);
+        } else if (intent == "REJECT"){
+            handlePartnerTask.append('intent', PartnerTaskAction.REJECT);
+        }
         // 4. Programmatically submit the data to the action
-        submit(formData, { method: 'post' });
+        submit(handlePartnerTask, { method: 'post' });
     };
 
     const columns: GridColDef[] = [
@@ -79,23 +84,34 @@ export default function TaskDataGrid() {
         },
         {
             field: 'actions',
-            headerName: 'Action',
+            headerName: 'Approve',
             flex: 0.5,
             minWidth: 150,
             renderCell: (params) => {
-                const {id, status} = params.row
-
-                const action = buttonLabel(status);
-
-                return (
-                        <Button
-                            value={action}
-                            onClick={() => handleTask(id, status)}
-                            name="intent"
-                        >
-                            {action}
-                        </Button>
-                );
+                const {id} = params.row
+                const option = checkButtonOptions();
+                if(option=="APPROVE"){
+                    return (<Button value={option}
+                                    onClick={() => partnerTaskHandler(id, option)} //gets confused about intent from having 2 buttons at once
+                                    name="intent">{option}</Button>);
+                }
+                return (<Button disabled={true}>{option}</Button>);
+            }
+        },
+        {
+            field: 'second-action',
+            headerName: 'Reject',
+            flex: 0.5,
+            minWidth: 150,
+            renderCell: (params) => {
+                const {id} = params.row
+                const option = checkSecondButtonOptions();
+                if(option=="REJECT"){
+                    return (<Button value={option}
+                                    onClick={() => partnerTaskHandler(id, option)} //gets confused about intent from having 2 buttons at once
+                                    name="intent">{option}</Button>);
+                }
+                return (<Button disabled={true}>{option}</Button>);
             }
         },
     ];
@@ -104,7 +120,7 @@ export default function TaskDataGrid() {
     return (
         <DataGrid
             checkboxSelection
-            rows={row.content}
+            rows={row}
             columns={columns}
             getRowClassName={(params) =>
                 params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'

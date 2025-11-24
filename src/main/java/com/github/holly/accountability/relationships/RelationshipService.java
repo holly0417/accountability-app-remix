@@ -125,7 +125,12 @@ public class RelationshipService {
         List<UserDto> partnerDtos = getPartnersUserInfoFromGivenListForGivenUser(
                 currentUserId, relationships.getContent());
 
-        return partnerDtos.stream().map(UserDto::getId).toList();
+        List<Long> finalList = partnerDtos.stream().map(UserDto::getId).toList();
+
+        if(finalList.isEmpty()){
+            return List.of();
+        }
+        return finalList;
     }
 
     public Page<Relationship> getRelationshipsByStatus(Long currentUserId,

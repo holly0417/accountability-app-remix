@@ -25,6 +25,7 @@ export default [
 
     route("partners", "./routes/partners.tsx"),
 
+    route("partner-task/:status?", "./routes/PartnerTask.tsx"),
     //Nested routes
 
 
