@@ -6,6 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class PurchaseService {
 
@@ -23,6 +25,10 @@ public class PurchaseService {
 
     public Page<Purchase> getPurchasesByUserIdDescTime(Long userId, Pageable pageable){
         return purchaseRepository.findByUserIdOrderByPurchaseTimeDesc(userId, pageable);
+    }
+
+    public Page<Purchase> findByUserIdAndStatus(Long userId, PurchaseStatus status, Pageable pageable){
+        return purchaseRepository.findByUserIdAndStatus(userId, status, pageable);
     }
 
     public Purchase makePurchase(Long purchaseId){

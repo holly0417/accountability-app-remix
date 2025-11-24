@@ -1,5 +1,5 @@
 import {type ActionFunctionArgs} from "react-router";
-import type {Route} from "./+types/wallet-purchases"; //this is OK!
+import type {Route} from "./+types/purchases"; //this is OK!
 import React from "react";
 import PurchaseDataGrid from "~/components/Tables/purchase-grid";
 import PurchaseForm from "~/components/Forms/PurchaseForm";
@@ -9,12 +9,29 @@ import {useLoaderData} from "react-router-dom";
 import {WishlistAction} from "~/components/dto/WishlistAction";
 import type {PurchaseDto} from "~/components/dto/PurchaseDto";
 import {PurchaseStatus} from "~/components/dto/PurchaseStatus";
+import {PurchaseRouteStatus} from "~/components/dto/PurchaseRouteStatus";
+import type {Page} from "~/components/pagination/Page";
 
 export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
-    const {getCurrentUserWallet, getCurrentUserPurchaseHistory} = walletData();
+    const {getCurrentUserWallet, getCurrentUserPurchaseHistory, getCurrentUserWishList, getCurrentUserPurchases} = walletData();
     const wallet = await getCurrentUserWallet();
-    const thisUserPurchaseHistory = await getCurrentUserPurchaseHistory();
-    const title = "ALL ITEMS";
+    const { status } = params;
+    let thisUserPurchaseHistory: Page<PurchaseDto>;
+    let title: string;
+
+    switch(status) {
+        case PurchaseRouteStatus.LISTED:
+            thisUserPurchaseHistory = await getCurrentUserWishList();
+            title = "WISHLIST"
+            break;
+        case PurchaseRouteStatus.PURCHASED:
+            thisUserPurchaseHistory = await getCurrentUserPurchases();
+            title = "PAST PURCHASES"
+            break;
+        default:
+            thisUserPurchaseHistory = await getCurrentUserPurchaseHistory();
+            title = "ALL ITEMS"
+    }
 
     return {wallet, thisUserPurchaseHistory, title};
 }
@@ -56,19 +73,14 @@ export async function clientAction({ request }: ActionFunctionArgs) {
         } catch(e) {
             return { ok: false };
         }
-
     }
-
-
 }
 
-export default function WalletPurchases(){
+export default function Purchases(){
     const {wallet, thisUserPurchaseHistory, title} = useLoaderData<typeof clientLoader>();
 
     return(
         <div>
-            <Wallet wallet={wallet}/>
-            <PurchaseForm />
             <PurchaseDataGrid data={thisUserPurchaseHistory} wallet={wallet} title={title}/>
         </div>
     );

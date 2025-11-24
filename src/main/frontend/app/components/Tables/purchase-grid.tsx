@@ -7,13 +7,15 @@ import type {Page} from "~/components/pagination/Page";
 import {WishlistAction} from "~/components/dto/WishlistAction";
 import {PurchaseStatus} from "~/components/dto/PurchaseStatus";
 import type {WalletDto} from "~/components/dto/WalletDto";
+import Typography from "@mui/material/Typography";
 
 interface PurchaseDataGridProps {
     data: Page<PurchaseDto>;
     wallet: WalletDto;
+    title: string,
 }
 
-export default function PurchaseDataGrid({data, wallet}: PurchaseDataGridProps) {
+export default function PurchaseDataGrid({data, wallet, title}: PurchaseDataGridProps) {
     const row = data.content;
     const thisUserWalletBalance = wallet.balance;
 
@@ -85,7 +87,7 @@ export default function PurchaseDataGrid({data, wallet}: PurchaseDataGridProps) 
 
                 const action = buttonLabel(status, price);
 
-                if(action == WishlistAction.OUT_OF_BUDGET) {
+                if(action == WishlistAction.OUT_OF_BUDGET || action == WishlistAction.DELETE) {
                     return (
                         <Button
                             name="intent"
@@ -111,44 +113,50 @@ export default function PurchaseDataGrid({data, wallet}: PurchaseDataGridProps) 
 
 
     return (
-        <DataGrid
-            rows={row}
-            columns={columns}
-            getRowClassName={(params) =>
-                params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
-            }
-            initialState={{
-                pagination: { paginationModel: { pageSize: 20 } },
-            }}
-            pageSizeOptions={[10, 20, 50]}
-            disableColumnResize
-            density="compact"
-            slotProps={{
-                filterPanel: {
-                    filterFormProps: {
-                        logicOperatorInputProps: {
-                            variant: 'outlined',
-                            size: 'small',
-                        },
-                        columnInputProps: {
-                            variant: 'outlined',
-                            size: 'small',
-                            sx: { mt: 'auto' },
-                        },
-                        operatorInputProps: {
-                            variant: 'outlined',
-                            size: 'small',
-                            sx: { mt: 'auto' },
-                        },
-                        valueInputProps: {
-                            InputComponentProps: {
+        <>
+        <Typography fontWeight="medium" sx={{ flex: 1, mx: 0.5 }}>
+            {title}
+        </Typography>
+            <DataGrid
+                rows={row}
+                columns={columns}
+                getRowClassName={(params) =>
+                    params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
+                }
+                initialState={{
+                    pagination: { paginationModel: { pageSize: 20 } },
+                }}
+                pageSizeOptions={[10, 20, 50]}
+                disableColumnResize
+                density="compact"
+                slotProps={{
+                    filterPanel: {
+                        filterFormProps: {
+                            logicOperatorInputProps: {
                                 variant: 'outlined',
                                 size: 'small',
                             },
+                            columnInputProps: {
+                                variant: 'outlined',
+                                size: 'small',
+                                sx: { mt: 'auto' },
+                            },
+                            operatorInputProps: {
+                                variant: 'outlined',
+                                size: 'small',
+                                sx: { mt: 'auto' },
+                            },
+                            valueInputProps: {
+                                InputComponentProps: {
+                                    variant: 'outlined',
+                                    size: 'small',
+                                },
+                            },
                         },
                     },
-                },
-            }}
-        />
+                }}
+            />
+        </>
+
     );
 }

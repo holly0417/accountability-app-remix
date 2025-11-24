@@ -2,6 +2,7 @@ import {api} from "~/axios";
 import type {WalletDto} from '~/components/dto/WalletDto.ts';
 import type {Page} from '~/components/pagination/Page';
 import type {PurchaseDto} from '~/components/dto/PurchaseDto.ts';
+import {PurchaseStatus} from "~/components/dto/PurchaseStatus";
 
 export function walletData() {
 
@@ -18,7 +19,8 @@ export function walletData() {
   }
 
   const getCurrentUserPurchaseHistory
-        = async (page: number = 0,
+        = async (
+                 page: number = 0,
                  size: number = 50): Promise<Page<PurchaseDto>> => {
 
     return (await api.get<Page<PurchaseDto>>('/wallet/getPurchases', {
@@ -31,6 +33,39 @@ export function walletData() {
       }
     })).data;
   }
+    const getCurrentUserWishList
+        = async (status: PurchaseStatus.LISTED,
+                 page: number = 0,
+                 size: number = 50): Promise<Page<PurchaseDto>> => {
+
+        return (await api.get<Page<PurchaseDto>>('/wallet/getPurchases', {
+            params: {
+                status: status,
+                page: page,
+                size: size
+            },
+            paramsSerializer: {
+                indexes: null
+            }
+        })).data;
+    }
+
+    const getCurrentUserPurchases
+        = async (status: PurchaseStatus.PURCHASED,
+                 page: number = 0,
+                 size: number = 50): Promise<Page<PurchaseDto>> => {
+
+        return (await api.get<Page<PurchaseDto>>('/wallet/getPurchases', {
+            params: {
+                status: status,
+                page: page,
+                size: size
+            },
+            paramsSerializer: {
+                indexes: null
+            }
+        })).data;
+    }
 
   const getWalletsByUserIds = async(userIds: number[]): Promise<Page<WalletDto>> => {
     return (await api.get<Page<WalletDto>>('/wallet/get-wallets', {
@@ -43,5 +78,5 @@ export function walletData() {
     })).data;
   }
 
-  return { addToWishList, getWalletsByUserIds, getCurrentUserWallet, getCurrentUserPurchaseHistory, makePurchase };
+  return { getCurrentUserPurchases, getCurrentUserWishList, addToWishList, getWalletsByUserIds, getCurrentUserWallet, getCurrentUserPurchaseHistory, makePurchase };
 }

@@ -3,6 +3,7 @@ package com.github.holly.accountability.wallet;
 import com.github.holly.accountability.purchase.Purchase;
 import com.github.holly.accountability.purchase.PurchaseDto;
 import com.github.holly.accountability.purchase.PurchaseService;
+import com.github.holly.accountability.purchase.PurchaseStatus;
 import com.github.holly.accountability.user.AccountabilitySessionUser;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -47,9 +48,25 @@ public class WalletController {
 
     @GetMapping("/getPurchases")
     public Page<PurchaseDto> getPurchases(@AuthenticationPrincipal AccountabilitySessionUser user,
+                                          @RequestParam(required = false) Long userId,
+                                          @RequestParam(required = false) PurchaseStatus status,
                                           @PageableDefault() Pageable pageable){
 
-        return purchaseService.getPurchasesByUserIdDescTime(user.getId(), pageable)
+        if(status == null){
+            if (userId == null) {
+                return purchaseService.getPurchasesByUserIdDescTime(user.getId(), pageable)
+                        .map(this::convertPurchaseToDto);
+            }
+            return purchaseService.getPurchasesByUserIdDescTime(userId, pageable)
+                    .map(this::convertPurchaseToDto);
+        }
+
+        if(userId == null){
+            return purchaseService.findByUserIdAndStatus(user.getId(), status, pageable)
+                    .map(this::convertPurchaseToDto);
+        }
+
+        return purchaseService.findByUserIdAndStatus(userId, status, pageable)
                 .map(this::convertPurchaseToDto);
     }
 
