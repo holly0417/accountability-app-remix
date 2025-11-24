@@ -1,7 +1,7 @@
-import {api} from 'boot/axios.ts';
-import {WalletDto} from 'components/dto/WalletDto.ts';
-import {Page} from 'components/paging/Page.ts';
-import {PurchaseDto} from 'components/dto/PurchaseDto.ts';
+import {api} from "~/axios";
+import type {WalletDto} from '~/components/dto/WalletDto.ts';
+import type {Page} from '~/components/pagination/Page';
+import type {PurchaseDto} from '~/components/dto/PurchaseDto.ts';
 
 export function walletData() {
 
@@ -15,7 +15,7 @@ export function walletData() {
 
   const getCurrentUserPurchaseHistory
         = async (page: number = 0,
-                 size: number = 20): Promise<Page<PurchaseDto>> => {
+                 size: number = 50): Promise<Page<PurchaseDto>> => {
 
     return (await api.get<Page<PurchaseDto>>('/wallet/getPurchases', {
       params: {

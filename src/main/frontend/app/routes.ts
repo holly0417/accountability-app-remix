@@ -26,6 +26,8 @@ export default [
     route("partners", "./routes/partners.tsx"),
 
     route("partner-task/:status?", "./routes/PartnerTask.tsx"),
+
+    route("wallet-purchases", "./routes/wallet-purchases.tsx"),
     //Nested routes
 
 

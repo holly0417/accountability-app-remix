@@ -71,8 +71,8 @@ export default function PartnerTaskDataGrid({data, actionAllowed}:PartnerTaskDat
             minWidth: 80,
         },
         {
-            field: 'durationNumber',
-            headerName: 'durationNumber',
+            field: 'durationString',
+            headerName: 'duration',
             flex: 0.5,
             minWidth: 80,
         },

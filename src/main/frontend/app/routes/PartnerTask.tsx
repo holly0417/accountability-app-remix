@@ -27,20 +27,20 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
     } else {
         switch(status) {
             case TaskRouteStatus.IN_PROGRESS:
-                totalPage = await getTasksByUserListAndStatus(partnerIdList, TaskStatus.IN_PROGRESS, 0, 5);
+                totalPage = await getTasksByUserListAndStatus(partnerIdList, TaskStatus.IN_PROGRESS, 0, 50);
                 break;
             case TaskRouteStatus.APPROVED:
-                totalPage = await getTasksByUserListAndStatus(partnerIdList, TaskStatus.APPROVED, 0, 5);
+                totalPage = await getTasksByUserListAndStatus(partnerIdList, TaskStatus.APPROVED, 0, 50);
                 break;
             case TaskRouteStatus.REJECTED:
-                totalPage = await getTasksByUserListAndStatus(partnerIdList, TaskStatus.REJECTED, 0, 5);
+                totalPage = await getTasksByUserListAndStatus(partnerIdList, TaskStatus.REJECTED, 0, 50);
                 break;
             case TaskRouteStatus.COMPLETED:
-                totalPage = await getTasksByUserListAndStatus(partnerIdList, TaskStatus.COMPLETED, 0, 5);
+                totalPage = await getTasksByUserListAndStatus(partnerIdList, TaskStatus.COMPLETED, 0, 50);
                 actionAllowed = true;
                 break;
             case TaskRouteStatus.PENDING:
-                totalPage = await getTasksByUserListAndStatus(partnerIdList, TaskStatus.PENDING, 0, 5);
+                totalPage = await getTasksByUserListAndStatus(partnerIdList, TaskStatus.PENDING, 0, 50);
                 break;
         }
         finalList = totalPage.content;

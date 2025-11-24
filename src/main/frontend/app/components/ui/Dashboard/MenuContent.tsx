@@ -29,8 +29,7 @@ const mainListItems = [
   { text: 'partner task completed', icon: <HomeRoundedIcon />, link: '/partner-task/completed'},
   { text: 'partner task rejected', icon: <HomeRoundedIcon />, link: '/partner-task/rejected'},
 
-  { text: 'wallet, wishlist & purchases', icon: <AnalyticsRoundedIcon />, link: '/partner-task'},
-  { text: 'wishlist', icon: <AssignmentRoundedIcon />, link: '/partner-task'},
+  { text: 'wallet, wishlist & purchases', icon: <AnalyticsRoundedIcon />, link: '/wallet-purchases'},
 ];
 
 const secondaryListItems = [

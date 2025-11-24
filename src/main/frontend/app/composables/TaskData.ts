@@ -53,7 +53,7 @@ export function taskData() {
   const getAllTasksByUserList
     = async (usersById: number[],
              page: number = 0,
-             size: number = 20): Promise<Page<TaskDataDto>> => {
+             size: number = 50): Promise<Page<TaskDataDto>> => {
 
     return (await api.get<Page<TaskDataDto>>('/tasks', {
       params: {
@@ -70,7 +70,7 @@ export function taskData() {
   const getTasksByCurrentUserAndStatus
     = async (status: TaskStatus,
              page: number = 0,
-             size: number = 20): Promise<Page<TaskDataDto>> => {
+             size: number = 50): Promise<Page<TaskDataDto>> => {
 
     return (await api.get<Page<TaskDataDto>>('/tasks', {
       params: {
@@ -89,7 +89,7 @@ export function taskData() {
     = async (usersById: number[],
              status: TaskStatus,
              page: number = 0,
-             size: number = 20): Promise<Page<TaskDataDto>> => {
+             size: number = 50): Promise<Page<TaskDataDto>> => {
 
       return (await api.get<Page<TaskDataDto>>('/tasks', {
         params: {
@@ -109,7 +109,7 @@ export function taskData() {
     = async (usersById: number[],
              status: TaskStatus,
              page: number = 0,
-             size: number = 5): Promise<Page<TaskDataDto>> => {
+             size: number = 50): Promise<Page<TaskDataDto>> => {
 
     return (await api.get<Page<TaskDataDto>>('/tasks/order-by-duration', {
       params: {
