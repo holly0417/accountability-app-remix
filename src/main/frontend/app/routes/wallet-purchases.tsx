@@ -68,7 +68,7 @@ export default function WalletPurchases(){
         <div>
             <Wallet wallet={wallet}/>
             <PurchaseForm />
-            <PurchaseDataGrid data={thisUserPurchaseHistory}/>
+            <PurchaseDataGrid data={thisUserPurchaseHistory} wallet={wallet}/>
         </div>
     );
 }

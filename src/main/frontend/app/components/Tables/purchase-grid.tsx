@@ -1,38 +1,46 @@
 import {DataGrid, type GridColDef} from '@mui/x-data-grid';
-import {clientLoader} from "~/routes/task";
-import {useLoaderData} from "react-router-dom";
 import Button from "@mui/material/Button";
 import React from "react";
-import {TaskStatus} from "~/components/dto/task/TaskStatus";
-import {TaskAction} from "~/components/dto/task/TaskAction";
 import {useSubmit} from "react-router";
 import type {PurchaseDto} from "~/components/dto/PurchaseDto";
 import type {Page} from "~/components/pagination/Page";
 import {WishlistAction} from "~/components/dto/WishlistAction";
+import {PurchaseStatus} from "~/components/dto/PurchaseStatus";
+import type {WalletDto} from "~/components/dto/WalletDto";
 
 interface PurchaseDataGridProps {
     data: Page<PurchaseDto>;
+    wallet: WalletDto;
 }
 
-export default function PurchaseDataGrid({data}: PurchaseDataGridProps) {
+export default function PurchaseDataGrid({data, wallet}: PurchaseDataGridProps) {
     const row = data.content;
+    const thisUserWalletBalance = wallet.balance;
 
-    const buttonLabel = (value: TaskStatus) => {
-        switch(value) {
-            case TaskStatus.PENDING:
-                return TaskAction.START;
-            case TaskStatus.IN_PROGRESS:
-                return TaskAction.END;
-            default:
-                return TaskAction.DELETE;
+    const buttonLabel = (status: PurchaseStatus, price: number) => {
+        switch(status) {
+            case PurchaseStatus.PURCHASED:
+                return WishlistAction.DELETE;
+            case PurchaseStatus.LISTED:
+                if(price <= thisUserWalletBalance){
+                    return WishlistAction.PURCHASE;
+                } else {
+                    return WishlistAction.OUT_OF_BUDGET;
+                }
         }
     }
     const submit = useSubmit(); // 2. Get the submit function
 
-    const handlePurchase = (id: string, price: number) => {
+    const handleAction = (id: string, action: WishlistAction) => {
         const formData = new FormData();
         formData.append('itemId', id);
-        formData.append('intent', WishlistAction.PURCHASE);
+
+        if (action == WishlistAction.PURCHASE) {
+            formData.append('intent', WishlistAction.PURCHASE);
+        } else {
+            formData.append('intent', WishlistAction.DELETE);
+        }
+
         submit(formData, { method: 'post' });
     };
 
@@ -73,14 +81,25 @@ export default function PurchaseDataGrid({data}: PurchaseDataGridProps) {
             flex: 0.5,
             minWidth: 150,
             renderCell: (params) => {
-                const {id, price} = params.row
+                const {id, price, status} = params.row
 
-                const action = buttonLabel(price);
+                const action = buttonLabel(status, price);
+
+                if(action == WishlistAction.OUT_OF_BUDGET) {
+                    return (
+                        <Button
+                            name="intent"
+                            disabled={true}
+                        >
+                            {action}
+                        </Button>
+                    );
+                }
 
                 return (
                         <Button
                             value={action}
-                            onClick={() => handlePurchase(id, price)}
+                            onClick={() => handleAction(id, action)}
                             name="intent"
                         >
                             {action}
@@ -93,7 +112,6 @@ export default function PurchaseDataGrid({data}: PurchaseDataGridProps) {
 
     return (
         <DataGrid
-            checkboxSelection
             rows={row}
             columns={columns}
             getRowClassName={(params) =>
