@@ -2,9 +2,11 @@ package com.github.holly.accountability.purchase;
 
 public class PurchaseDto {
     private Long id;
+    private Long userId;
     private Double price = 0.00D;
     private String description;
     private String purchaseTimeString;
+    private PurchaseStatus status;
 
     public Double getPrice() {
         return price;
@@ -36,4 +38,20 @@ public class PurchaseDto {
     public Long getId() {
         return id;
     }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setStatus(PurchaseStatus status) {
+        this.status = status;
+    }
+    public PurchaseStatus getStatus() {
+        return status;
+    }
+
 }

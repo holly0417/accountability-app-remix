@@ -5,8 +5,12 @@ import type {PurchaseDto} from '~/components/dto/PurchaseDto.ts';
 
 export function walletData() {
 
-  const makePurchase = async (purchase: PurchaseDto): Promise<PurchaseDto> => {
-    return (await api.post<PurchaseDto>('/wallet/makePurchase', purchase)).data;
+  const makePurchase = async (purchaseId: number): Promise<PurchaseDto> => {
+    return (await api.post<PurchaseDto>(`/wallet/makePurchase/${purchaseId}`)).data;
+  }
+
+  const addToWishList = async (purchase: PurchaseDto): Promise<PurchaseDto> => {
+    return (await api.post<PurchaseDto>('/wallet/add-to-wishlist', purchase)).data;
   }
 
   const getCurrentUserWallet = async (): Promise<WalletDto> => {
@@ -39,5 +43,5 @@ export function walletData() {
     })).data;
   }
 
-  return { getWalletsByUserIds, getCurrentUserWallet, getCurrentUserPurchaseHistory, makePurchase };
+  return { addToWishList, getWalletsByUserIds, getCurrentUserWallet, getCurrentUserPurchaseHistory, makePurchase };
 }

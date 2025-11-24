@@ -27,6 +27,13 @@ export default function PurchaseForm() {
                     required
                     disabled={isSubmitting}
                 />
+                <input
+                    id="newPurchasePrice"
+                    type="number"
+                    name="newPurchasePrice"
+                    required
+                    disabled={isSubmitting}
+                />
 
                 <button
                     type="submit"

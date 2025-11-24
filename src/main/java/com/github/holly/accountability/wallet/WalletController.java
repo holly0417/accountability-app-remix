@@ -53,14 +53,23 @@ public class WalletController {
                 .map(this::convertPurchaseToDto);
     }
 
-    @PostMapping("/makePurchase")
-    public PurchaseDto purchase(@AuthenticationPrincipal AccountabilitySessionUser user,
-                                @RequestBody PurchaseDto purchaseDto){
-        Purchase purchase = purchaseService.makePurchase(user.getId(), purchaseDto.getPrice(), purchaseDto.getDescription());
+    @PostMapping("/makePurchase/{purchaseId}")
+    public PurchaseDto purchase(@PathVariable Long purchaseId){
+
+        Purchase purchase = purchaseService.makePurchase(purchaseId);
 
         if (purchase == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Insufficient balance");
         }
+
+        return convertPurchaseToDto(purchase);
+    }
+
+    @PostMapping("/add-to-wishlist")
+    public PurchaseDto addToWishList(@AuthenticationPrincipal AccountabilitySessionUser user,
+                                @RequestBody PurchaseDto purchaseDto){
+
+        Purchase purchase = purchaseService.addToWishList(user.getId(), purchaseDto.getPrice(), purchaseDto.getDescription());
 
         return convertPurchaseToDto(purchase);
     }
@@ -70,6 +79,9 @@ public class WalletController {
         purchaseDto.setId(purchase.getId());
         purchaseDto.setDescription(purchase.getDescription());
         purchaseDto.setPrice(purchase.getPrice());
+        purchaseDto.setUserId(purchase.getUser().getId());
+        purchaseDto.setStatus(purchase.getStatus());
+
         if (purchase.getPurchaseTime() != null) {
             LocalDateTime purchaseTime = purchase.getPurchaseTime();
 

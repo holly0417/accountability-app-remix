@@ -1,6 +1,4 @@
 package com.github.holly.accountability.purchase;
-
-
 import com.github.holly.accountability.user.User;
 import jakarta.persistence.*;
 
@@ -25,6 +23,9 @@ public class Purchase {
 
     @Column(name="purchase_time", columnDefinition = "TIMESTAMP")
     private LocalDateTime purchaseTime = LocalDateTime.now();
+
+    @Column(name="status")
+    private PurchaseStatus status;
 
     public Purchase(){
 
@@ -68,5 +69,12 @@ public class Purchase {
 
     public void setPurchaseTime(LocalDateTime purchaseTime) {
         this.purchaseTime = purchaseTime;
+    }
+
+    public PurchaseStatus getStatus() {
+        return status;
+    }
+    public void setStatus(PurchaseStatus status) {
+        this.status = status;
     }
 }

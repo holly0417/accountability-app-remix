@@ -6,10 +6,16 @@ import React from "react";
 import {TaskStatus} from "~/components/dto/task/TaskStatus";
 import {TaskAction} from "~/components/dto/task/TaskAction";
 import {useSubmit} from "react-router";
+import type {PurchaseDto} from "~/components/dto/PurchaseDto";
+import type {Page} from "~/components/pagination/Page";
+import {WishlistAction} from "~/components/dto/WishlistAction";
 
+interface PurchaseDataGridProps {
+    data: Page<PurchaseDto>;
+}
 
-export default function PurchaseDataGrid() {
-    const row = useLoaderData<typeof clientLoader>();
+export default function PurchaseDataGrid({data}: PurchaseDataGridProps) {
+    const row = data.content;
 
     const buttonLabel = (value: TaskStatus) => {
         switch(value) {
@@ -25,15 +31,15 @@ export default function PurchaseDataGrid() {
 
     const handlePurchase = (id: string, price: number) => {
         const formData = new FormData();
-        formData.append('taskId', id);
-        formData.append('intent', TaskAction.START);
+        formData.append('itemId', id);
+        formData.append('intent', WishlistAction.PURCHASE);
         submit(formData, { method: 'post' });
     };
 
     const columns: GridColDef[] = [
         {
             field: 'id',
-            headerName: 'task id',
+            headerName: 'purchase id',
             flex: 0.5,
             minWidth: 80,
         },
@@ -46,6 +52,12 @@ export default function PurchaseDataGrid() {
         {
             field: 'price',
             headerName: 'price',
+            flex: 0.5,
+            minWidth: 80,
+        },
+        {
+            field: 'status',
+            headerName: 'status',
             flex: 0.5,
             minWidth: 80,
         },
@@ -82,7 +94,7 @@ export default function PurchaseDataGrid() {
     return (
         <DataGrid
             checkboxSelection
-            rows={row.content}
+            rows={row}
             columns={columns}
             getRowClassName={(params) =>
                 params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'

@@ -7,6 +7,8 @@ import Wallet from "~/components/Wallet";
 import {walletData} from "~/composables/WalletData";
 import {useLoaderData} from "react-router-dom";
 import {WishlistAction} from "~/components/dto/WishlistAction";
+import type {PurchaseDto} from "~/components/dto/PurchaseDto";
+import {PurchaseStatus} from "~/components/dto/PurchaseStatus";
 
 export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
     const {getCurrentUserWallet, getCurrentUserPurchaseHistory} = walletData();
@@ -17,11 +19,46 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
 }
 
 export async function clientAction({ request }: ActionFunctionArgs) {
+    const { addToWishList, makePurchase } = walletData();
     const formData = await request.formData();
     const intent = formData.get('intent');
+
     if (intent == WishlistAction.ADD) {
+        const description = formData.get('newPurchaseDescription');
+        const price = formData.get('newPurchasePrice');
+
+        if(description && price){
+            let newWishListItem: PurchaseDto = {
+                id: 0,
+                description: description.toString(),
+                price: Number(price),
+                purchaseTimeString: '',
+                status: PurchaseStatus.LISTED,
+            }
+
+            try {
+                await addToWishList(newWishListItem);
+                return { ok: true };
+            } catch(e) {
+                return { ok: false };
+            }
+
+        }
+    }
+
+    if (intent == WishlistAction.PURCHASE) {
+        const item = formData.get('itemId');
+
+        try {
+            await makePurchase(Number(item));
+            return { ok: true };
+        } catch(e) {
+            return { ok: false };
+        }
 
     }
+
+
 }
 
 export default function WalletPurchases(){
@@ -31,7 +68,7 @@ export default function WalletPurchases(){
         <div>
             <Wallet wallet={wallet}/>
             <PurchaseForm />
-            <PurchaseDataGrid />
+            <PurchaseDataGrid data={thisUserPurchaseHistory}/>
         </div>
     );
 }

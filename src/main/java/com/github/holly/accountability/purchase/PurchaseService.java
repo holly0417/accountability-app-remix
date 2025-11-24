@@ -25,16 +25,26 @@ public class PurchaseService {
         return purchaseRepository.findByUserIdOrderByPurchaseTimeDesc(userId, pageable);
     }
 
-    public Purchase makePurchase(Long userId, Double price, String description){
-        Purchase purchase = new Purchase();
+    public Purchase makePurchase(Long purchaseId){
 
-        if(!walletService.subtractBalance(userId, price)){
+        Purchase purchase = purchaseRepository.getReferenceById(purchaseId);
+
+        if(!walletService.subtractBalance(purchase.getUser().getId(), purchase.getPrice())){
             return null;
         }
+
+        purchase.setStatus(PurchaseStatus.PURCHASED);
+        purchaseRepository.save(purchase);
+        return purchase;
+    }
+
+    public Purchase addToWishList(Long userId, Double price, String description){
+        Purchase purchase = new Purchase();
 
         purchase.setPrice(price);
         purchase.setDescription(description);
         purchase.setUser(userService.findUserById(userId));
+        purchase.setStatus(PurchaseStatus.LISTED);
         purchaseRepository.save(purchase);
         return purchase;
     }
