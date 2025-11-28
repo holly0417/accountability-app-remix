@@ -32,6 +32,8 @@ const mainListItems = [
   { text: 'wallet, wishlist & purchases', icon: <AnalyticsRoundedIcon />, link: '/wallet-purchases'},
     { text: 'wishlist', icon: <AnalyticsRoundedIcon />, link: '/purchases/listed'},
     { text: 'past purchases', icon: <AnalyticsRoundedIcon />, link: '/purchases/purchased'},
+    { text: 'partners wishlist', icon: <AnalyticsRoundedIcon />, link: '/partner-purchases/listed'},
+    { text: 'partners past purchases', icon: <AnalyticsRoundedIcon />, link: '/partner-purchases/purchased'},
 ];
 
 const secondaryListItems = [

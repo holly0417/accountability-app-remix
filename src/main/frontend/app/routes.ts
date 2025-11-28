@@ -30,6 +30,8 @@ export default [
     route("wallet-purchases", "./routes/wallet-purchases.tsx"),
 
     route("purchases/:status?", "./routes/purchases.tsx"),
+
+    route("partner-purchases/:status?", "./routes/partner-purchases.tsx"),
     //Nested routes
 
 

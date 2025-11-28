@@ -57,7 +57,7 @@ export function walletData() {
 
         return (await api.get<Page<PurchaseDto>>('/wallet/get-purchase-list-by-type', {
             params: {
-                userId: usersById,
+                userIds: usersById,
                 status: status
             },
             paramsSerializer: {
@@ -65,6 +65,19 @@ export function walletData() {
             }
         })).data;
   }
+
+    const getPurchaseListByUserIds
+        = async (usersById: number[]): Promise<Page<PurchaseDto>> => {
+
+        return (await api.get<Page<PurchaseDto>>('/wallet/get-purchase-list-by-type', {
+            params: {
+                userId: usersById
+            },
+            paramsSerializer: {
+                indexes: null
+            }
+        })).data;
+    }
 
   const getWalletsByUserIds = async(userIds: number[]): Promise<Page<WalletDto>> => {
     return (await api.get<Page<WalletDto>>('/wallet/get-wallets', {
@@ -77,5 +90,5 @@ export function walletData() {
     })).data;
   }
 
-  return { getPurchaseListByStatus, getPurchaseListByStatusAndUserId, addToWishList, getWalletsByUserIds, getCurrentUserWallet, getCurrentUserPurchaseHistory, makePurchase };
+  return { getPurchaseListByUserIds, getPurchaseListByStatus, getPurchaseListByStatusAndUserId, addToWishList, getWalletsByUserIds, getCurrentUserWallet, getCurrentUserPurchaseHistory, makePurchase };
 }

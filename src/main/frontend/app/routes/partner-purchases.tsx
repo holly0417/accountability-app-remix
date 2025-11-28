@@ -12,77 +12,43 @@ import {PurchaseStatus} from "~/components/dto/PurchaseStatus";
 import {PurchaseRouteStatus} from "~/components/dto/PurchaseRouteStatus";
 import type {Page} from "~/components/pagination/Page";
 import {relationshipData} from "~/composables/RelationshipData";
+import PartnerWishlistGrid from "~/components/Tables/partner-wishlist-grid";
 
 export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
-    const {getCurrentUserWallet, getPurchaseListByStatusAndUserId} = walletData();
+    const {getWalletsByUserIds, getPurchaseListByStatusAndUserId, getPurchaseListByUserIds} = walletData();
     const {getPartnerIdList} = relationshipData();
     const partnerIdList = await getPartnerIdList();
-    const yourWallet = await getCurrentUserWallet();
+    const partnerWallets = await getWalletsByUserIds(partnerIdList);
     const { status } = params;
     let partnersPurchaseHistory: Page<PurchaseDto>;
     let title: string;
 
     switch(status) {
-        case PurchaseRouteStatus.PARTNER_LISTED:
+        case PurchaseRouteStatus.LISTED:
             partnersPurchaseHistory = await getPurchaseListByStatusAndUserId(partnerIdList, PurchaseStatus.LISTED);
+            console.log(partnerIdList);
+            console.log(partnersPurchaseHistory);
             title = "PARTNERS' WISHLIST ITEMS"
             break;
-        case PurchaseRouteStatus.PARTNER_PURCHASED:
+        case PurchaseRouteStatus.PURCHASED:
             partnersPurchaseHistory = await getPurchaseListByStatusAndUserId(partnerIdList, PurchaseStatus.PURCHASED);
             title = "PARTNERS' PAST PURCHASES"
             break;
+        default:
+            title = "PARTNERS' WISHLIST ITEMS AND PURCHASES"
+            partnersPurchaseHistory = await getPurchaseListByUserIds(partnerIdList);
     }
 
-    return {yourWallet, partnersPurchaseHistory, title};
+    return {partnerWallets, partnersPurchaseHistory, title};
 }
 
-export async function clientAction({ request }: ActionFunctionArgs) {
-    const { addToWishList, makePurchase } = walletData();
-    const formData = await request.formData();
-    const intent = formData.get('intent');
-
-    if (intent == WishlistAction.ADD) {
-        const description = formData.get('newPurchaseDescription');
-        const price = formData.get('newPurchasePrice');
-
-        if(description && price){
-            let newWishListItem: PurchaseDto = {
-                id: 0,
-                description: description.toString(),
-                price: Number(price),
-                purchaseTimeString: '',
-                status: PurchaseStatus.LISTED,
-            }
-
-            try {
-                await addToWishList(newWishListItem);
-                return { ok: true };
-            } catch(e) {
-                return { ok: false };
-            }
-
-        }
-    }
-
-    if (intent == WishlistAction.PURCHASE) {
-        const item = formData.get('itemId');
-
-        try {
-            await makePurchase(Number(item));
-            return { ok: true };
-        } catch(e) {
-            return { ok: false };
-        }
-    }
-}
 
 export default function Purchases(){
-    const {yourWallet, thisUserPurchaseHistory, title} = useLoaderData<typeof clientLoader>();
+    const {partnerWallets, partnersPurchaseHistory, title} = useLoaderData<typeof clientLoader>();
 
     return(
         <div>
-            <Wallet wallet={yourWallet}/>
-            <PurchaseDataGrid data={thisUserPurchaseHistory} wallet={yourWallet} title={title}/>
+            <PartnerWishlistGrid data={partnersPurchaseHistory} title={title}/>
         </div>
     );
 }
