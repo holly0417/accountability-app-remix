@@ -5,12 +5,12 @@ import type {Page} from '~/components/pagination/Page';
 export function walletData() {
 
   const getCurrentUserWallet = async (): Promise<WalletDto> => {
-    return (await api.get<WalletDto>('/wallet')).data;
+    return (await api.get<Page<WalletDto>>('/wallet')).data.content[0];
   }
 
   const getWalletsByUserIds
       = async( userIds: number[] ): Promise<Page<WalletDto>> => {
-    return (await api.get<Page<WalletDto>>('/wallet/get-wallet', {
+    return (await api.get<Page<WalletDto>>('/wallet', {
       params: {
         userIds: userIds
       },

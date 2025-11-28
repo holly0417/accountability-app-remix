@@ -24,16 +24,14 @@ public class WalletController {
     }
 
     @GetMapping("")
-    public WalletDto getWallet(@AuthenticationPrincipal AccountabilitySessionUser user){
+    public Page<WalletDto> getWallet(@AuthenticationPrincipal AccountabilitySessionUser user,
+                               @RequestParam(required = false) List<Long> userIds,
+                               @PageableDefault(size=20) Pageable pageable){
 
-        Wallet userWallet = walletService.findWalletByUserId(user.getId());
-        return convertWalletToWalletDto(userWallet);
-    }
-
-    @GetMapping("/get-wallet")
-    public Page<WalletDto> getWallets(@RequestParam(required = false) List<Long> userIds,
-                                     @PageableDefault(size=20) Pageable pageable){
-
+        if(userIds == null || userIds.isEmpty()) {
+            return walletService.findWalletsByUserIds(List.of(user.getId()), pageable)
+                    .map(this::convertWalletToWalletDto);
+        }
         return walletService.findWalletsByUserIds(userIds, pageable)
                 .map(this::convertWalletToWalletDto);
     }
