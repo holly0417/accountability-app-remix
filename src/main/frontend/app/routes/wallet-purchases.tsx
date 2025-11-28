@@ -10,9 +10,11 @@ import {WishlistAction} from "~/components/dto/WishlistAction";
 import type {PurchaseDto} from "~/components/dto/PurchaseDto";
 import {PurchaseStatus} from "~/components/dto/PurchaseStatus";
 import {userData} from "~/composables/UserData";
+import {purchaseData} from "~/composables/PurchaseData";
 
 export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
-    const {getCurrentUserWallet, getCurrentUserPurchaseHistory} = walletData();
+    const {getCurrentUserWallet} = walletData();
+    const { getCurrentUserPurchaseHistory } = purchaseData();
     const wallet = await getCurrentUserWallet();
     const thisUserPurchaseHistory = await getCurrentUserPurchaseHistory();
     const title = "ALL ITEMS";
@@ -21,7 +23,7 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
 }
 
 export async function clientAction({ request }: ActionFunctionArgs) {
-    const { addToWishList, makePurchase } = walletData();
+    const { addToWishList, makePurchase } = purchaseData();
     const {getCurrentUserInfo} = userData();
     const thisUser = await getCurrentUserInfo();
     const formData = await request.formData();

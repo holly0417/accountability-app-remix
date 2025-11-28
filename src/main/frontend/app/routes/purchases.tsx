@@ -12,9 +12,11 @@ import {PurchaseStatus} from "~/components/dto/PurchaseStatus";
 import {PurchaseRouteStatus} from "~/components/dto/PurchaseRouteStatus";
 import type {Page} from "~/components/pagination/Page";
 import {userData} from "~/composables/UserData";
+import {purchaseData} from "~/composables/PurchaseData";
 
 export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
-    const {getCurrentUserWallet, getCurrentUserPurchaseHistory, getCurrentUserPurchaseListByStatus} = walletData();
+    const {getCurrentUserWallet} = walletData();
+    const { getCurrentUserPurchaseHistory, getCurrentUserPurchaseListByStatus } = purchaseData();
     const yourWallet = await getCurrentUserWallet();
     const { status } = params;
     let thisUserPurchaseHistory: Page<PurchaseDto>;
@@ -38,7 +40,7 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
 }
 
 export async function clientAction({ request }: ActionFunctionArgs) {
-    const { addToWishList, makePurchase } = walletData();
+    const { addToWishList, makePurchase } = purchaseData();
     const formData = await request.formData();
     const {getCurrentUserInfo} = userData();
     const thisUser = await getCurrentUserInfo();

@@ -13,9 +13,11 @@ import {PurchaseRouteStatus} from "~/components/dto/PurchaseRouteStatus";
 import type {Page} from "~/components/pagination/Page";
 import {relationshipData} from "~/composables/RelationshipData";
 import PartnerWishlistGrid from "~/components/Tables/partner-wishlist-grid";
+import {purchaseData} from "~/composables/PurchaseData";
 
 export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
-    const {getWalletsByUserIds, getPurchaseListByStatusAndUserId, getPurchaseListByUserIds} = walletData();
+    const {getWalletsByUserIds } = walletData();
+    const { getPurchaseListByStatusAndUserId, getPurchaseListByUserIds } = purchaseData();
     const {getPartnerIdList} = relationshipData();
     const partnerIdList = await getPartnerIdList();
     const partnerWallets = await getWalletsByUserIds(partnerIdList);
