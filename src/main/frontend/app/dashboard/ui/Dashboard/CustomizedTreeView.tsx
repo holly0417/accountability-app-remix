@@ -19,6 +19,9 @@ import { TreeItemIcon } from '@mui/x-tree-view/TreeItemIcon';
 import { TreeItemProvider } from '@mui/x-tree-view/TreeItemProvider';
 import type {TreeViewBaseItem} from '@mui/x-tree-view/models';
 import { useTheme } from '@mui/material/styles';
+import { useTreeViewApiRef } from '@mui/x-tree-view/hooks';
+import {useChartRootRef} from "@mui/x-charts";
+import {href} from "react-router";
 
 type Color = 'blue' | 'green';
 
@@ -26,31 +29,35 @@ type ExtendedTreeItemProps = {
   color?: Color;
   id: string;
   label: string;
+  href?: string;
 };
 
 const ITEMS: TreeViewBaseItem<ExtendedTreeItemProps>[] = [
   {
     id: '1',
-    label: 'Website',
+    label: 'Your Accountability App',
     children: [
-      { id: '1.1', label: 'Home', color: 'green' },
-      { id: '1.2', label: 'Pricing', color: 'green' },
-      { id: '1.3', label: 'About us', color: 'green' },
+      { id: '1.1', label: 'Tasks', color: 'green',
+          children: [
+              { id: '1.1.1', label: 'All tasks', color: 'blue', href: '/task'},
+              { id: '1.1.2', label: 'Planned', color: 'blue', href: '/task/pending'},
+              { id: '1.1.3', label: 'In-progress', color: 'blue', href: '/task/in-progress'},
+              { id: '1.1.4', label: "Completed", color: 'blue', href: '/task/completed'},
+              { id: '1.1.5', label: 'Approved', color: 'blue', href: '/task/approved'},
+              { id: '1.1.6', label: 'Rejected', color: 'blue', href: '/task/rejected'},
+          ],
+      },
+      { id: '1.2', label: 'Partners', color: 'green' },
+      { id: '1.3', label: 'Wishlist', color: 'green' },
       {
         id: '1.4',
         label: 'Blog',
-        children: [
-          { id: '1.1.1', label: 'Announcements', color: 'blue' },
-          { id: '1.1.2', label: 'April lookahead', color: 'blue' },
-          { id: '1.1.3', label: "What's new", color: 'blue' },
-          { id: '1.1.4', label: 'Meet the team', color: 'blue' },
-        ],
       },
     ],
   },
   {
     id: '2',
-    label: 'Store',
+    label: 'Partners',
     children: [
       { id: '2.1', label: 'All products', color: 'green' },
       {
@@ -123,13 +130,15 @@ function CustomLabel({ color, expandable, children, ...other }: CustomLabelProps
 
 interface CustomTreeItemProps
   extends Omit<UseTreeItemParameters, 'rootRef'>,
-    Omit<React.HTMLAttributes<HTMLLIElement>, 'onFocus'> {}
+    Omit<React.HTMLAttributes<HTMLLIElement>, 'onFocus'> {
+    href?: string;
+}
 
 const CustomTreeItem = React.forwardRef(function CustomTreeItem(
   props: CustomTreeItemProps,
   ref: React.Ref<HTMLLIElement>,
 ) {
-  const { id, itemId, label, disabled, children, ...other } = props;
+  const { id, itemId, label, disabled, href, children, ...other } = props;
 
   const {
     getRootProps,
@@ -158,11 +167,22 @@ const CustomTreeItem = React.forwardRef(function CustomTreeItem(
         >
           {status.expandable && (
             <TreeItemIconContainer {...getIconContainerProps()}>
-              <TreeItemIcon status={status} />
+              <TreeItemIcon status={status}/>
             </TreeItemIconContainer>
           )}
 
-          <CustomLabel {...getLabelProps({ color })} />
+            {href ? (
+                    /* If an href exists, render a Link */
+                <a
+                    href={href}
+                    style={{ textDecoration: 'none', color: 'inherit', flexGrow: 1 }}
+                >
+                <CustomLabel {...getLabelProps({ color })} />
+                </a>
+            ) : (
+                <CustomLabel {...getLabelProps({ color })} />
+            )}
+
         </TreeItemContent>
         {children && (
           <TransitionComponent
