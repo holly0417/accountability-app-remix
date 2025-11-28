@@ -125,19 +125,28 @@ public class RelationshipService {
         List<UserDto> partnerDtos = getPartnersUserInfoFromGivenListForGivenUser(
                 currentUserId, relationships.getContent());
 
-        return partnerDtos.stream().map(UserDto::getId).toList();
+        List<Long> finalList = partnerDtos.stream().map(UserDto::getId).toList();
+
+        if(finalList.isEmpty()){
+            return List.of();
+        }
+        return finalList;
     }
 
     public Page<Relationship> getRelationshipsByStatus(Long currentUserId,
                                             List<RelationshipStatus> statuses,
                                             List<RelationshipDirection> directions,
                                             Pageable pageable){
+        //REQUESTED SENDER = PENDING RECEIVER
+        //REQUESTED RECEIVER = PENDING SENDER
+
         //current user is in the USER column of relationship
         if (directions.equals(List.of(RelationshipDirection.SENDER))) {
             return relationshipRepository
                     .getRelationshipsByUserIdAndStatus(
                             currentUserId, statuses, pageable);
-            //pending: requests the user has to answer
+            //requested: user requested
+            //pending: requests where the user has to answer
             //reject: rejections sent by the user
         }
 
@@ -146,7 +155,8 @@ public class RelationshipService {
             return relationshipRepository
                     .getRelationshipsByPartnerIdAndStatus(
                             currentUserId, statuses, pageable);
-            //pending: requests where the user has to wait for a response
+            //requested: requests where the user has to wait
+            //pending: requests where the user has to wait
             //reject: rejections received by the user from others
         }
 
@@ -203,9 +213,9 @@ public class RelationshipService {
         relationshipRepository.delete(relationshipOtherDirection);
     }
 
-    public Relationship answerRequest(Long relationshipId, RelationshipStatusDto status){
+    public Relationship answerRequest(Long relationshipId, RelationshipStatus status){
         Relationship relationship = relationshipRepository.getReferenceById(relationshipId);
-        relationship.setStatus(status.getStatus());
+        relationship.setStatus(status);
         relationshipRepository.save(relationship);
         return relationship;
     }

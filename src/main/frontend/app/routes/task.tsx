@@ -1,0 +1,83 @@
+import TaskForm from '../components/Forms/TaskForm';
+import {taskData} from "~/composables/TaskData";
+import {TaskStatus} from "~/components/dto/task/TaskStatus";
+import {type ActionFunctionArgs} from "react-router";
+import TaskDataGrid from "~/components/Tables/task-grid";
+import type {Route} from "./+types/task"; //this is OK!
+import {userData} from "~/composables/UserData";
+import {TaskRouteStatus} from "~/components/dto/task/TaskRouteStatus";
+import {TaskAction} from "~/components/dto/task/TaskAction";
+import React from "react";
+
+export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
+    const { getTasksByCurrentUserAndStatus, getAllTasksByUserList } = taskData();
+    const {getCurrentUserInfo} = userData();
+    const { status } = params;
+
+    // Now you can use the status variable
+    if (status) {
+        console.log("The status is:", status);
+    } else {
+        console.log("The status is not defined in the URL.");
+    }
+
+    const userId = await getCurrentUserInfo();
+
+    switch(status) {
+        case TaskRouteStatus.IN_PROGRESS:
+            return await getTasksByCurrentUserAndStatus(TaskStatus.IN_PROGRESS);
+        case TaskRouteStatus.APPROVED:
+            return await getTasksByCurrentUserAndStatus(TaskStatus.APPROVED);
+        case TaskRouteStatus.REJECTED:
+            return await getTasksByCurrentUserAndStatus(TaskStatus.REJECTED);
+        case TaskRouteStatus.COMPLETED:
+            return await getTasksByCurrentUserAndStatus(TaskStatus.COMPLETED);
+        case TaskRouteStatus.PENDING:
+            return await getTasksByCurrentUserAndStatus(TaskStatus.PENDING);
+    }
+
+    return await getAllTasksByUserList([userId.id]);
+}
+
+export async function clientAction({ request }: ActionFunctionArgs) {
+    const { startTask, endTask, deleteTask } = taskData();
+    const formData = await request.formData();
+    const intent = formData.get('intent');
+
+    if (intent === TaskAction.ADD) {
+        const { addTask } = taskData();
+        const description = formData.get("newTaskDescription") as string;
+
+        if(!description){
+            return {error: "missing description"};
+        }
+
+        await addTask({description: description});
+        return { ok: true };
+    }
+
+    const taskId = formData.get('taskId');
+    const taskIdNumber = Number(taskId);
+
+    switch(intent) {
+        case TaskAction.START:
+            await startTask(taskIdNumber);
+            return { ok: true };
+        case TaskAction.END:
+            await endTask(taskIdNumber);
+            return { ok: true };
+        case TaskAction.DELETE:
+            await deleteTask(taskIdNumber);
+            return { ok: true };
+    }
+
+}
+
+export default function Task(){
+    return(
+        <div>
+            <TaskForm />
+            <TaskDataGrid />
+        </div>
+    );
+}

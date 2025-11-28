@@ -10,18 +10,24 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     @Query(value = """
         SELECT
-            t.id, t.description, t.time_start, t.time_end, t.status, t.user_id,
-            TIMESTAMPDIFF('SECOND', t.time_start, COALESCE(t.time_end, CURRENT_TIMESTAMP)) as duration
-        FROM tasks AS t
-        WHERE t.status = :#{#status.name()}
-          AND t.user_id IN (:userIds)
-        GROUP BY (t.id) ORDER BY duration DESC;
+            t.id,
+            t.description,
+            t.time_start,
+            t.time_end,
+            t.status,
+            t.user_id,
+            EXTRACT(EPOCH FROM (COALESCE(t.time_end, CURRENT_TIMESTAMP) - t.time_start)) as duration
+        FROM
+            tasks AS t
+        WHERE
+            t.status = :#{#status.name()} AND t.user_id IN (:userIds)
+        ORDER BY duration DESC;
         """, nativeQuery = true)
     Page<Task> getTasksOrderByDurationFindByUserIdAndStatus(List<Long> userIds,
                                       TaskStatus status, Pageable pageable);
 
     @Query(value = """
-        SELECT SUM(TIMESTAMPDIFF('SECOND', t.time_start, t.time_end)) as total
+        SELECT SUM(EXTRACT(EPOCH FROM (t.time_end - t.time_start))) as total
         FROM tasks t
         WHERE t.status = :#{#status.name()}
         AND t.user_id = :userId
@@ -30,7 +36,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
                                       TaskStatus status);
 
     @Query(value = """
-        SELECT SUM(TIMESTAMPDIFF('SECOND', t.time_start, CURRENT_TIMESTAMP)) as total
+        SELECT SUM(EXTRACT(EPOCH FROM (CURRENT_TIMESTAMP - t.time_start))) as total
         FROM tasks t
         WHERE t.status = :#{#status.name()}
         AND t.user_id = :userId

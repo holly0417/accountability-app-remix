@@ -6,6 +6,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Component
 public class PurchaseService {
 
@@ -25,16 +28,31 @@ public class PurchaseService {
         return purchaseRepository.findByUserIdOrderByPurchaseTimeDesc(userId, pageable);
     }
 
-    public Purchase makePurchase(Long userId, Double price, String description){
-        Purchase purchase = new Purchase();
+    public Page<Purchase> findByUserIdAndStatus(List<Long> userIds, List<PurchaseStatus> statuses, Pageable pageable){
+        return purchaseRepository.findByUserIdAndStatus(userIds, statuses, pageable);
+    }
 
-        if(!walletService.subtractBalance(userId, price)){
+    public Purchase makePurchase(Long purchaseId){
+
+        Purchase purchase = purchaseRepository.getReferenceById(purchaseId);
+
+        if(!walletService.subtractBalance(purchase.getUser().getId(), purchase.getPrice())){
             return null;
         }
+
+        purchase.setStatus(PurchaseStatus.PURCHASED);
+        purchase.setPurchaseTime(LocalDateTime.now());
+        purchaseRepository.save(purchase);
+        return purchase;
+    }
+
+    public Purchase addToWishList(Long userId, Double price, String description){
+        Purchase purchase = new Purchase();
 
         purchase.setPrice(price);
         purchase.setDescription(description);
         purchase.setUser(userService.findUserById(userId));
+        purchase.setStatus(PurchaseStatus.LISTED);
         purchaseRepository.save(purchase);
         return purchase;
     }

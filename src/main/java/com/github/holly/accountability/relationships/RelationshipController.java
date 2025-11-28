@@ -90,7 +90,7 @@ public class RelationshipController {
             throw new IllegalArgumentException("You cannot change this relationship");
         }
 
-        Relationship relationship = relationshipService.answerRequest(relationshipId, status);
+        Relationship relationship = relationshipService.answerRequest(relationshipId, status.getStatus());
 
         return convertRelationshipToRelationshipData(relationship);
     }

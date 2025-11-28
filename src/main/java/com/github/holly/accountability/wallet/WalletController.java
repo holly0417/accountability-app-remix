@@ -1,19 +1,15 @@
 package com.github.holly.accountability.wallet;
 
-import com.github.holly.accountability.purchase.Purchase;
-import com.github.holly.accountability.purchase.PurchaseDto;
 import com.github.holly.accountability.purchase.PurchaseService;
 import com.github.holly.accountability.user.AccountabilitySessionUser;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.time.LocalDateTime;
+
 import java.util.List;
 
 @Controller
@@ -23,65 +19,21 @@ public class WalletController {
 
     private final WalletService walletService;
 
-    private final PurchaseService purchaseService;
-
     public WalletController(WalletService walletService, PurchaseService purchaseService) {
         this.walletService = walletService;
-        this.purchaseService = purchaseService;
     }
 
     @GetMapping("")
-    public WalletDto getWallet(@AuthenticationPrincipal AccountabilitySessionUser user){
+    public Page<WalletDto> getWallet(@AuthenticationPrincipal AccountabilitySessionUser user,
+                               @RequestParam(required = false) List<Long> userIds,
+                               @PageableDefault(size=20) Pageable pageable){
 
-        Wallet userWallet = walletService.findWalletByUserId(user.getId());
-        return convertWalletToWalletDto(userWallet);
-    }
-
-    @GetMapping("/get-wallets")
-    public Page<WalletDto> getWallets(@RequestParam(required = false) List<Long> userIds,
-                                     @PageableDefault(size=20) Pageable pageable){
-
+        if(userIds == null || userIds.isEmpty()) {
+            return walletService.findWalletsByUserIds(List.of(user.getId()), pageable)
+                    .map(this::convertWalletToWalletDto);
+        }
         return walletService.findWalletsByUserIds(userIds, pageable)
                 .map(this::convertWalletToWalletDto);
-    }
-
-    @GetMapping("/getPurchases")
-    public Page<PurchaseDto> getPurchases(@AuthenticationPrincipal AccountabilitySessionUser user,
-                                          @PageableDefault() Pageable pageable){
-
-        return purchaseService.getPurchasesByUserIdDescTime(user.getId(), pageable)
-                .map(this::convertPurchaseToDto);
-    }
-
-    @PostMapping("/makePurchase")
-    public PurchaseDto purchase(@AuthenticationPrincipal AccountabilitySessionUser user,
-                                @RequestBody PurchaseDto purchaseDto){
-        Purchase purchase = purchaseService.makePurchase(user.getId(), purchaseDto.getPrice(), purchaseDto.getDescription());
-
-        if (purchase == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Insufficient balance");
-        }
-
-        return convertPurchaseToDto(purchase);
-    }
-
-    private PurchaseDto convertPurchaseToDto(Purchase purchase){
-        PurchaseDto purchaseDto = new PurchaseDto();
-        purchaseDto.setId(purchase.getId());
-        purchaseDto.setDescription(purchase.getDescription());
-        purchaseDto.setPrice(purchase.getPrice());
-        if (purchase.getPurchaseTime() != null) {
-            LocalDateTime purchaseTime = purchase.getPurchaseTime();
-
-            String[] date = purchaseTime.toString().split("T");
-
-            String[] time = date[1].split(":");
-
-            String timestamp = date[0] + " " + time[0] + ":" + time[1];
-
-            purchaseDto.setPurchaseTimeString(timestamp);
-        }
-        return purchaseDto;
     }
 
     private WalletDto convertWalletToWalletDto(Wallet wallet){

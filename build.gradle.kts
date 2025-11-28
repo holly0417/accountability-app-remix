@@ -61,7 +61,7 @@ tasks.withType<JavaCompile> {
 
 frontend {
     nodeDistributionProvided.set(false)
-    nodeVersion.set("22.11.0")
+    nodeVersion.set("24.11.0")
     nodeInstallDirectory.set(project.layout.projectDirectory.dir("node"))
     corepackVersion.set("latest")
 
@@ -74,7 +74,7 @@ frontend {
 }
 
 tasks.register<Copy>("processFrontendResources") {
-    val frontendBuildDir = project.layout.projectDirectory.dir("src/main/frontend/dist/spa")
+    val frontendBuildDir = project.layout.projectDirectory.dir("src/main/frontend/build/client")
     val frontendResourcesDir = project.layout.buildDirectory.dir("resources/main/static")
 
     dependsOn(":assembleFrontend")
