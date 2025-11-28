@@ -97,6 +97,7 @@ public class WalletController {
         purchaseDto.setPrice(purchase.getPrice());
         purchaseDto.setUserId(purchase.getUser().getId());
         purchaseDto.setStatus(purchase.getStatus());
+        purchaseDto.setUserName(purchase.getUser().getUsername());
 
         if (purchase.getPurchaseTime() != null) {
             LocalDateTime purchaseTime = purchase.getPurchaseTime();

@@ -26,8 +26,6 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
     switch(status) {
         case PurchaseRouteStatus.LISTED:
             partnersPurchaseHistory = await getPurchaseListByStatusAndUserId(partnerIdList, PurchaseStatus.LISTED);
-            console.log(partnerIdList);
-            console.log(partnersPurchaseHistory);
             title = "PARTNERS' WISHLIST ITEMS"
             break;
         case PurchaseRouteStatus.PURCHASED:

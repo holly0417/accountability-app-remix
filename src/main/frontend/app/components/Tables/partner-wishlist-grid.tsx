@@ -25,6 +25,12 @@ export default function PartnerWishlistGrid({data, title}: PartnerWishlistGridPr
             minWidth: 80,
         },
         {
+            field: 'userName',
+            headerName: 'partner',
+            flex: 0.5,
+            minWidth: 80,
+        },
+        {
             field: 'description',
             headerName: 'description',
             flex: 0.5,
@@ -49,7 +55,6 @@ export default function PartnerWishlistGrid({data, title}: PartnerWishlistGridPr
             minWidth: 80,
         },
     ];
-
 
     return (
         <>
@@ -96,6 +101,5 @@ export default function PartnerWishlistGrid({data, title}: PartnerWishlistGridPr
                 }}
             />
         </>
-
     );
 }

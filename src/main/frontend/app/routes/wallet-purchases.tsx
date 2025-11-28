@@ -9,6 +9,7 @@ import {useLoaderData} from "react-router-dom";
 import {WishlistAction} from "~/components/dto/WishlistAction";
 import type {PurchaseDto} from "~/components/dto/PurchaseDto";
 import {PurchaseStatus} from "~/components/dto/PurchaseStatus";
+import {userData} from "~/composables/UserData";
 
 export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
     const {getCurrentUserWallet, getCurrentUserPurchaseHistory} = walletData();
@@ -21,6 +22,8 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
 
 export async function clientAction({ request }: ActionFunctionArgs) {
     const { addToWishList, makePurchase } = walletData();
+    const {getCurrentUserInfo} = userData();
+    const thisUser = await getCurrentUserInfo();
     const formData = await request.formData();
     const intent = formData.get('intent');
 
@@ -31,6 +34,8 @@ export async function clientAction({ request }: ActionFunctionArgs) {
         if(description && price){
             let newWishListItem: PurchaseDto = {
                 id: 0,
+                userId: thisUser.id,
+                username: thisUser.username,
                 description: description.toString(),
                 price: Number(price),
                 purchaseTimeString: '',
