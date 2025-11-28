@@ -5,7 +5,7 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import Chip from "@mui/material/Chip";
-import type {WalletDto} from "~/components/dto/WalletDto";
+import type {WalletDto} from "~/dto/WalletDto";
 
 interface WalletProps {
     wallet: WalletDto;

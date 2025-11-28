@@ -1,15 +1,15 @@
 import {taskData} from "~/composables/TaskData";
-import {TaskStatus} from "~/components/dto/task/TaskStatus";
+import {TaskStatus} from "~/dto/task/TaskStatus";
 import {type ActionFunctionArgs} from "react-router";
 import type {Route} from "./+types/PartnerTask"; //this is OK!
-import {TaskRouteStatus} from "~/components/dto/task/TaskRouteStatus";
+import {TaskRouteStatus} from "~/dto/task/TaskRouteStatus";
 import React from "react";
 import {relationshipData} from "~/composables/RelationshipData";
 import {useLoaderData} from "react-router-dom";
-import PartnerTaskDataGrid from "~/components/Tables/partner-task-grid";
-import type {TaskDataDto} from "~/components/dto/task/TaskDataDto";
-import {PartnerTaskAction} from "~/components/dto/task/PartnerTaskAction";
-import type {TaskStatusDto} from "~/components/dto/task/TaskStatusDto";
+import PartnerTaskDataGrid from "~/components/grids/partner-task-grid";
+import type {TaskDataDto} from "~/dto/task/TaskDataDto";
+import {PartnerTaskAction} from "~/dto/task/PartnerTaskAction";
+import type {TaskStatusDto} from "~/dto/task/TaskStatusDto";
 
 export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
     const { status } = params;

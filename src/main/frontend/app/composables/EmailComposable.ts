@@ -1,8 +1,8 @@
-import type {GenericResponseDto} from '~/components/dto/GenericResponseDto';
+import type {GenericResponseDto} from '~/dto/GenericResponseDto';
 import axios from 'axios';
-import type {ResetPasswordDto} from '~/components/dto/ResetPasswordDto';
-import type {SuccessfulPasswordChangeResponse} from '~/components/dto/SuccessfulPasswordChangeResponse.ts';
-import type {ErrorResponse} from '~/components/dto/ErrorResponse.ts';
+import type {ResetPasswordDto} from '~/dto/user/ResetPasswordDto';
+import type {SuccessfulPasswordChangeResponse} from '~/dto/user/SuccessfulPasswordChangeResponse.ts';
+import type {ErrorResponse} from '~/dto/ErrorResponse.ts';
 import {useState} from "react";
 
 export function email() {

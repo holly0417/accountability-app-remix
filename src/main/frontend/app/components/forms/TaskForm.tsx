@@ -1,11 +1,10 @@
 import {type ActionFunctionArgs, Form, useFetcher} from "react-router";
-import {TaskAction} from "~/components/dto/task/TaskAction";
+import {TaskAction} from "~/dto/task/TaskAction";
 import {taskData} from "~/composables/TaskData";
 import {useEffect, useRef} from "react";
-import {WishlistAction} from "~/components/dto/WishlistAction";
 
 
-export default function PurchaseForm() {
+export default function TaskForm() {
     const fetcher = useFetcher();
     const formRef = useRef<HTMLFormElement>(null);
 
@@ -21,16 +20,9 @@ export default function PurchaseForm() {
         <div>
             <fetcher.Form method="post" ref={formRef}>
                 <input
-                    id="newPurchaseDescription"
+                    id="newTaskDescription"
                     type="text"
-                    name="newPurchaseDescription"
-                    required
-                    disabled={isSubmitting}
-                />
-                <input
-                    id="newPurchasePrice"
-                    type="number"
-                    name="newPurchasePrice"
+                    name="newTaskDescription"
                     required
                     disabled={isSubmitting}
                 />
@@ -38,7 +30,7 @@ export default function PurchaseForm() {
                 <button
                     type="submit"
                     name="intent"
-                    value = {WishlistAction.ADD}
+                    value={TaskAction.ADD}
                     disabled={isSubmitting}
                 >
                     {isSubmitting ? "Sending..." : "Submit"}

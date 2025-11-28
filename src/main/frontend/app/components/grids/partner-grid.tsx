@@ -1,80 +1,88 @@
 import {DataGrid, type GridColDef} from '@mui/x-data-grid';
-import {clientLoader} from "~/routes/task";
-import {useLoaderData} from "react-router-dom";
-import Button from "@mui/material/Button";
 import React from "react";
 import {useSubmit} from "react-router";
-import type {TaskDataDto} from "~/components/dto/task/TaskDataDto";
-import {PartnerTaskAction} from "~/components/dto/task/PartnerTaskAction";
+import {RelationshipAction} from "~/dto/relationship/RelationshipAction";
+import Button from "@mui/material/Button";
+import type {UserDto} from "~/dto/user/UserDto";
+import type {Page} from "~/dto/pagination/Page";
+import type {RelationshipDto} from "~/dto/relationship/RelationshipDto";
+import Typography from "@mui/material/Typography";
 
-interface PartnerTaskDataGridProps{
-    actionAllowed: boolean;
-    data: TaskDataDto[];
-}
+type PartnerDataGridProps = {
+    listType: string;
+    friends: Page<RelationshipDto>;
+    currentUser: UserDto;
+};
 
-export default function PartnerTaskDataGrid({data, actionAllowed}:PartnerTaskDataGridProps) {
-    const row = data;
-    const partnerTaskAction = actionAllowed;
+export default function PartnerDataGrid({listType, friends, currentUser}: PartnerDataGridProps) {
+    const row = friends;
 
     const submit = useSubmit(); // 2. Get the submit function
 
+    const checkIdDoesNotMatchCurrentUserId = (value: number) => {
+        return value != currentUser.id;
+    }
+
     const checkButtonOptions = () => {
-        if(partnerTaskAction){
+        if(listType == "answer"){
             return "APPROVE";
         }
-        return "";
+        return "DELETE";
     }
 
     const checkSecondButtonOptions = () => {
-        if(partnerTaskAction){
+        if(listType == "answer"){
             return "REJECT";
         }
         return "";
     }
 
-    const partnerTaskHandler = (taskId: number, intent: string) => {
-        const handlePartnerTask = new FormData();
-        handlePartnerTask.append('taskId', taskId.toString());
+    const relationshipHandler = (relationshipId: number, intent: string) => {
+        const handlePartner = new FormData();
+        handlePartner.append('id', relationshipId.toString());
 
         if (intent == "APPROVE"){
-            handlePartnerTask.append('intent', PartnerTaskAction.APPROVE);
-        } else if (intent == "REJECT"){
-            handlePartnerTask.append('intent', PartnerTaskAction.REJECT);
+            handlePartner.append('intent', RelationshipAction.APPROVE);
+        } else if (intent == "DELETE"){
+            handlePartner.append('intent', RelationshipAction.DELETE);
         }
         // 4. Programmatically submit the data to the action
-        submit(handlePartnerTask, { method: 'post' });
+        submit(handlePartner, { method: 'post' });
+    };
+
+    const rejectionHandler = (relationshipId: number, intent: string) => {
+        const handleRejection = new FormData();
+        handleRejection.append('id', relationshipId.toString());
+
+        if (intent == "REJECT"){
+            handleRejection.append('intent', RelationshipAction.REJECT);
+        }
+
+        // 4. Programmatically submit the data to the action
+        submit(handleRejection, { method: 'post' });
     };
 
     const columns: GridColDef[] = [
         {
             field: 'id',
-            headerName: 'task id',
+            headerName: 'relationship id',
             flex: 0.5,
             minWidth: 80,
         },
         {
-            field: 'userId',
-            headerName: 'user',
+            field: 'username',
+            headerName: 'username',
             flex: 0.5,
             minWidth: 80,
-        },
-        {
-            field: 'userName',
-            headerName: 'userName',
-            flex: 0.5,
-            minWidth: 80,
-        },
-        {
-            field: 'description',
-            headerName: 'description',
-            flex: 0.5,
-            minWidth: 80,
-        },
-        {
-            field: 'durationString',
-            headerName: 'duration',
-            flex: 0.5,
-            minWidth: 80,
+            renderCell: (params) => {
+                const {partner, user} = params.row
+                const userId = user.id;
+                if(checkIdDoesNotMatchCurrentUserId(userId)){
+                    return user.username;
+                } else {
+                    return partner.username;
+                }
+            }
         },
         {
             field: 'status',
@@ -84,23 +92,20 @@ export default function PartnerTaskDataGrid({data, actionAllowed}:PartnerTaskDat
         },
         {
             field: 'actions',
-            headerName: 'Approve',
+            headerName: 'Action',
             flex: 0.5,
             minWidth: 150,
             renderCell: (params) => {
                 const {id} = params.row
                 const option = checkButtonOptions();
-                if(option=="APPROVE"){
-                    return (<Button value={option}
-                                    onClick={() => partnerTaskHandler(id, option)} //gets confused about intent from having 2 buttons at once
-                                    name="intent">{option}</Button>);
-                }
-                return (<Button disabled={true}>{option}</Button>);
+                return (<Button value={option}
+                                onClick={() => relationshipHandler(id, option)}
+                                name="intent">{option}</Button>);
             }
         },
         {
             field: 'second-action',
-            headerName: 'Reject',
+            headerName: 'More Actions',
             flex: 0.5,
             minWidth: 150,
             renderCell: (params) => {
@@ -108,19 +113,23 @@ export default function PartnerTaskDataGrid({data, actionAllowed}:PartnerTaskDat
                 const option = checkSecondButtonOptions();
                 if(option=="REJECT"){
                     return (<Button value={option}
-                                    onClick={() => partnerTaskHandler(id, option)} //gets confused about intent from having 2 buttons at once
+                                    onClick={() => rejectionHandler(id, option)} //gets confused about intent from having 2 buttons at once
                                     name="intent">{option}</Button>);
                 }
-                return (<Button disabled={true}>{option}</Button>);
+                return (<Button>{option}</Button>);
             }
         },
     ];
 
 
     return (
+        <>
+        <Typography fontWeight="medium" sx={{ flex: 1, mx: 0.5 }}>
+            {listType}
+        </Typography>
+
         <DataGrid
-            checkboxSelection
-            rows={row}
+            rows={row.content}
             columns={columns}
             getRowClassName={(params) =>
                 params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
@@ -158,5 +167,7 @@ export default function PartnerTaskDataGrid({data, actionAllowed}:PartnerTaskDat
                 },
             }}
         />
+
+        </>
     );
 }

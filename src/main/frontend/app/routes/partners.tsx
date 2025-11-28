@@ -1,14 +1,14 @@
-import SearchPartner from "../components/SearchPartner"
+import SearchPartner from "~/components/forms/SearchPartner"
 import type {ActionFunctionArgs} from "react-router";
-import {RelationshipStatus} from "~/components/dto/relationship/RelationshipStatus";
+import {RelationshipStatus} from "~/dto/relationship/RelationshipStatus";
 import {relationshipData} from "~/composables/RelationshipData";
 import {userData} from "~/composables/UserData";
-import {RelationshipDirection} from "~/components/dto/relationship/RelationshipDirection";
-import PartnerDataGrid from "~/components/Tables/partner-grid";
+import {RelationshipDirection} from "~/dto/relationship/RelationshipDirection";
+import PartnerDataGrid from "~/components/grids/partner-grid";
 import type { Route } from "./+types/partners";
 import {useLoaderData} from "react-router-dom";
-import {RelationshipAction} from "~/components/dto/relationship/RelationshipAction";
-import type {RelationshipStatusDto} from "~/components/dto/relationship/RelationshipStatusDto";
+import {RelationshipAction} from "~/dto/relationship/RelationshipAction";
+import type {RelationshipStatusDto} from "~/dto/relationship/RelationshipStatusDto";
 
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
     const { getRequests, getRelationshipsByStatus } = relationshipData();

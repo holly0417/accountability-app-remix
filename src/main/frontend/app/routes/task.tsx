@@ -1,12 +1,12 @@
-import TaskForm from '../components/Forms/TaskForm';
+import TaskForm from '~/components/forms/TaskForm';
 import {taskData} from "~/composables/TaskData";
-import {TaskStatus} from "~/components/dto/task/TaskStatus";
+import {TaskStatus} from "~/dto/task/TaskStatus";
 import {type ActionFunctionArgs} from "react-router";
-import TaskDataGrid from "~/components/Tables/task-grid";
+import TaskDataGrid from "~/components/grids/task-grid";
 import type {Route} from "./+types/task"; //this is OK!
 import {userData} from "~/composables/UserData";
-import {TaskRouteStatus} from "~/components/dto/task/TaskRouteStatus";
-import {TaskAction} from "~/components/dto/task/TaskAction";
+import {TaskRouteStatus} from "~/dto/task/TaskRouteStatus";
+import {TaskAction} from "~/dto/task/TaskAction";
 import React from "react";
 
 export async function clientLoader({ params, }: Route.ClientLoaderArgs) {

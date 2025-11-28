@@ -1,18 +1,18 @@
 import {type ActionFunctionArgs} from "react-router";
 import type {Route} from "./+types/partner-purchases"; //this is OK!
 import React from "react";
-import PurchaseDataGrid from "~/components/Tables/purchase-grid";
-import PurchaseForm from "~/components/Forms/PurchaseForm";
+import PurchaseDataGrid from "~/components/grids/purchase-grid";
+import PurchaseForm from "~/components/forms/PurchaseForm";
 import Wallet from "~/components/Wallet";
 import {walletData} from "~/composables/WalletData";
 import {useLoaderData} from "react-router-dom";
-import {WishlistAction} from "~/components/dto/WishlistAction";
-import type {PurchaseDto} from "~/components/dto/PurchaseDto";
-import {PurchaseStatus} from "~/components/dto/PurchaseStatus";
-import {PurchaseRouteStatus} from "~/components/dto/PurchaseRouteStatus";
-import type {Page} from "~/components/pagination/Page";
+import {WishlistAction} from "~/dto/purchase/WishlistAction";
+import type {PurchaseDto} from "~/dto/purchase/PurchaseDto";
+import {PurchaseStatus} from "~/dto/purchase/PurchaseStatus";
+import {PurchaseRouteStatus} from "~/dto/purchase/PurchaseRouteStatus";
+import type {Page} from "~/dto/pagination/Page";
 import {relationshipData} from "~/composables/RelationshipData";
-import PartnerWishlistGrid from "~/components/Tables/partner-wishlist-grid";
+import PartnerWishlistGrid from "~/components/grids/partner-wishlist-grid";
 import {purchaseData} from "~/composables/PurchaseData";
 
 export async function clientLoader({ params, }: Route.ClientLoaderArgs) {

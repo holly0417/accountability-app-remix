@@ -6,18 +6,18 @@ import { alpha } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
-import AppNavbar from '../components/ui/Dashboard/AppNavbar';
-import Header from '../components/ui/Dashboard/Header';
-import MainGrid from '../components/ui/Dashboard/MainGrid';
-import SideMenu from '../components/ui/Dashboard/SideMenu';
-import AppTheme from '../components/shared-theme/AppTheme';
+import AppNavbar from '~/dashboard/ui/Dashboard/AppNavbar';
+import Header from '~/dashboard/ui/Dashboard/Header';
+import MainGrid from '~/dashboard/ui/Dashboard/MainGrid';
+import SideMenu from '~/dashboard/ui/Dashboard/SideMenu';
+import AppTheme from '~/dashboard/shared-theme/AppTheme';
 
 import {
   chartsCustomizations,
   dataGridCustomizations,
   datePickersCustomizations,
   treeViewCustomizations,
-} from '~/components/ui/Dashboard/theme/customizations';
+} from '~/dashboard/ui/Dashboard/theme/customizations';
 
 const xThemeComponents = {
   ...chartsCustomizations,

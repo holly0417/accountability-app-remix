@@ -1,9 +1,9 @@
 import {api} from "~/axios";
-import type {WalletDto} from '~/components/dto/WalletDto.ts';
-import type {Page} from '~/components/pagination/Page';
-import type {PurchaseDto} from '~/components/dto/PurchaseDto.ts';
-import {PurchaseStatus} from "~/components/dto/PurchaseStatus";
-import type {PurchaseRouteStatus} from "~/components/dto/PurchaseRouteStatus";
+import type {WalletDto} from '~/dto/WalletDto.ts';
+import type {Page} from '~/dto/pagination/Page';
+import type {PurchaseDto} from '~/dto/purchase/PurchaseDto.ts';
+import {PurchaseStatus} from "~/dto/purchase/PurchaseStatus";
+import type {PurchaseRouteStatus} from "~/dto/purchase/PurchaseRouteStatus";
 
 export function purchaseData() {
 

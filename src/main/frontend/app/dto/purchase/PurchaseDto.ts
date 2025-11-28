@@ -1,4 +1,4 @@
-import type {PurchaseStatus} from "~/components/dto/PurchaseStatus";
+import type {PurchaseStatus} from "~/dto/purchase/PurchaseStatus";
 
 export interface PurchaseDto {
   id: number,

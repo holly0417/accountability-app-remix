@@ -1,4 +1,4 @@
-import type {ResetPasswordDto} from '../dto/ResetPasswordDto';
+import type {ResetPasswordDto} from './ResetPasswordDto';
 
 export interface SuccessfulPasswordChangeResponse {
   message: string;

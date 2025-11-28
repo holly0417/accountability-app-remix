@@ -15,17 +15,17 @@ import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
-import ForgotPassword from '../components/ui/SignIn/ForgotPassword';
-import AppTheme from '~/components/shared-theme/AppTheme';
-import ColorModeSelect from '~/components/shared-theme/ColorModeSelect';
-import { GoogleIcon, FacebookIcon, SitemarkIcon } from '~/components/ui/SignIn/CustomIcons';
+import ForgotPassword from '~/dashboard/ui/SignIn/ForgotPassword';
+import AppTheme from '~/dashboard/shared-theme/AppTheme';
+import ColorModeSelect from '~/dashboard/shared-theme/ColorModeSelect';
+import { GoogleIcon, FacebookIcon, SitemarkIcon } from '~/dashboard/ui/SignIn/CustomIcons';
 import {NavLink, useNavigate} from "react-router";
 import {api} from "~/axios";
 import type {AxiosError} from "axios";
 import {Alert, Snackbar} from "@mui/material";
 import { useForm } from 'react-hook-form';
-import type {RegisterUser} from "~/components/dto/RegisterUser";
-import type {LoginDto} from "~/components/dto/LoginDto";
+import type {RegisterUser} from "~/dto/user/RegisterUser";
+import type {LoginDto} from "~/dto/user/LoginDto";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',

@@ -6,11 +6,11 @@
 //Data manipulation stays in the backend mainly in the controller
 
 import {api} from '~/axios';
-import type {Page} from '~/components/pagination/Page';
-import type {RelationshipDto} from '~/components/dto/relationship/RelationshipDto';
-import {RelationshipStatus} from '~/components/dto/relationship/RelationshipStatus';
-import type {RelationshipStatusDto} from '~/components/dto/relationship/RelationshipStatusDto';
-import {RelationshipDirection} from '~/components/dto/relationship/RelationshipDirection';
+import type {Page} from '~/dto/pagination/Page';
+import type {RelationshipDto} from '~/dto/relationship/RelationshipDto';
+import {RelationshipStatus} from '~/dto/relationship/RelationshipStatus';
+import type {RelationshipStatusDto} from '~/dto/relationship/RelationshipStatusDto';
+import {RelationshipDirection} from '~/dto/relationship/RelationshipDirection';
 
 export function relationshipData() {
 

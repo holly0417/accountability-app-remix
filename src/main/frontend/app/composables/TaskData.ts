@@ -1,10 +1,10 @@
-import type { TaskDataDto } from '~/components/dto/task/TaskDataDto';
-import type {TaskEditRequestDto} from '~/components/dto/task/TaskEditRequestDto';
+import type { TaskDataDto } from '~/dto/task/TaskDataDto';
+import type {TaskEditRequestDto} from '~/dto/task/TaskEditRequestDto';
 
-import type {TaskCalculatorDto} from '~/components/dto/task/TaskCalculatorDto';
-import type {TaskStatusDto} from '~/components/dto/task/TaskStatusDto';
-import type {TaskStatus} from '~/components/dto/task/TaskStatus';
-import type {Page} from '~/components/pagination/Page';
+import type {TaskCalculatorDto} from '~/dto/task/TaskCalculatorDto';
+import type {TaskStatusDto} from '~/dto/task/TaskStatusDto';
+import type {TaskStatus} from '~/dto/task/TaskStatus';
+import type {Page} from '~/dto/pagination/Page';
 import {api} from "~/axios";
 
 

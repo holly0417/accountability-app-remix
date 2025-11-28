@@ -14,13 +14,13 @@ import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
-import AppTheme from '../components/shared-theme/AppTheme';
-import ColorModeSelect from '../components/shared-theme/ColorModeSelect';
-import { GoogleIcon, FacebookIcon, SitemarkIcon } from '~/components/ui/SignIn/CustomIcons';
+import AppTheme from '~/dashboard/shared-theme/AppTheme';
+import ColorModeSelect from '~/dashboard/shared-theme/ColorModeSelect';
+import { GoogleIcon, FacebookIcon, SitemarkIcon } from '~/dashboard/ui/SignIn/CustomIcons';
 import {NavLink, useNavigate} from "react-router";
 import Popover from '@mui/material/Popover';
 import axios, {type AxiosError, type AxiosResponse} from 'axios';
-import type {RegisterUser} from "~/components/dto/RegisterUser";
+import type {RegisterUser} from "~/dto/user/RegisterUser";
 import { useForm } from 'react-hook-form';
 
 const Card = styled(MuiCard)(({ theme }) => ({

@@ -6,11 +6,11 @@ import {
     DataGrid,
     type GridColDef,
 } from "@mui/x-data-grid";
-import type {RelationshipStatusDto} from "~/components/dto/relationship/RelationshipStatusDto";
+import type {RelationshipStatusDto} from "~/dto/relationship/RelationshipStatusDto";
 import Button from "@mui/material/Button";
-import {RelationshipStatus} from "~/components/dto/relationship/RelationshipStatus";
+import {RelationshipStatus} from "~/dto/relationship/RelationshipStatus";
 import {useSubmit} from "react-router";
-import {RelationshipAction} from "~/components/dto/relationship/RelationshipAction";
+import {RelationshipAction} from "~/dto/relationship/RelationshipAction";
 
 export default function SearchPartner() {
     const {search} = relationshipData();

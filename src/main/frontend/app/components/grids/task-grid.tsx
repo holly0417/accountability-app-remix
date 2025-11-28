@@ -3,8 +3,8 @@ import {clientLoader} from "~/routes/task";
 import {useLoaderData} from "react-router-dom";
 import Button from "@mui/material/Button";
 import React from "react";
-import {TaskStatus} from "~/components/dto/task/TaskStatus";
-import {TaskAction} from "~/components/dto/task/TaskAction";
+import {TaskStatus} from "~/dto/task/TaskStatus";
+import {TaskAction} from "~/dto/task/TaskAction";
 import {useSubmit} from "react-router";
 
 
