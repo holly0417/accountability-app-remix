@@ -38,7 +38,7 @@ public class WalletController {
         return convertWalletToWalletDto(userWallet);
     }
 
-    @GetMapping("/get-wallets")
+    @GetMapping("/get-wallet")
     public Page<WalletDto> getWallets(@RequestParam(required = false) List<Long> userIds,
                                      @PageableDefault(size=20) Pageable pageable){
 
@@ -46,14 +46,7 @@ public class WalletController {
                 .map(this::convertWalletToWalletDto);
     }
 
-    @GetMapping("/getPurchases")
-    public Page<PurchaseDto> getPurchases(@AuthenticationPrincipal AccountabilitySessionUser user,
-                                          @PageableDefault(size = 20) Pageable pageable){
-        return purchaseService.getPurchasesByUserIdDescTime(user.getId(), pageable)
-                .map(this::convertPurchaseToDto);
-    }
-
-    @GetMapping("/get-purchase-list-by-type")
+    @GetMapping("/purchase")
     public Page<PurchaseDto> getPurchaseListByType(@AuthenticationPrincipal AccountabilitySessionUser user,
                                                    @RequestParam(defaultValue = "") List<Long> userIds,
                                                     @RequestParam(defaultValue = "LISTED, PURCHASED"
@@ -69,7 +62,7 @@ public class WalletController {
                 .map(this::convertPurchaseToDto);
     }
 
-    @PostMapping("/makePurchase/{purchaseId}")
+    @PostMapping("/purchase/{purchaseId}")
     public PurchaseDto purchase(@PathVariable Long purchaseId){
 
         Purchase purchase = purchaseService.makePurchase(purchaseId);

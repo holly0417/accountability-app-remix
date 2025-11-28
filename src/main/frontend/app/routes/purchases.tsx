@@ -11,9 +11,10 @@ import type {PurchaseDto} from "~/components/dto/PurchaseDto";
 import {PurchaseStatus} from "~/components/dto/PurchaseStatus";
 import {PurchaseRouteStatus} from "~/components/dto/PurchaseRouteStatus";
 import type {Page} from "~/components/pagination/Page";
+import {userData} from "~/composables/UserData";
 
 export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
-    const {getCurrentUserWallet, getCurrentUserPurchaseHistory, getPurchaseListByStatus} = walletData();
+    const {getCurrentUserWallet, getCurrentUserPurchaseHistory, getCurrentUserPurchaseListByStatus} = walletData();
     const yourWallet = await getCurrentUserWallet();
     const { status } = params;
     let thisUserPurchaseHistory: Page<PurchaseDto>;
@@ -21,11 +22,11 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
 
     switch(status) {
         case PurchaseRouteStatus.LISTED:
-            thisUserPurchaseHistory = await getPurchaseListByStatus(PurchaseStatus.LISTED);
+            thisUserPurchaseHistory = await getCurrentUserPurchaseListByStatus(PurchaseStatus.LISTED);
             title = "WISHLIST"
             break;
         case PurchaseRouteStatus.PURCHASED:
-            thisUserPurchaseHistory = await getPurchaseListByStatus(PurchaseStatus.PURCHASED);
+            thisUserPurchaseHistory = await getCurrentUserPurchaseListByStatus(PurchaseStatus.PURCHASED);
             title = "PAST PURCHASES"
             break;
         default:
@@ -39,6 +40,8 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
 export async function clientAction({ request }: ActionFunctionArgs) {
     const { addToWishList, makePurchase } = walletData();
     const formData = await request.formData();
+    const {getCurrentUserInfo} = userData();
+    const thisUser = await getCurrentUserInfo();
     const intent = formData.get('intent');
 
     if (intent == WishlistAction.ADD) {
@@ -48,6 +51,8 @@ export async function clientAction({ request }: ActionFunctionArgs) {
         if(description && price){
             let newWishListItem: PurchaseDto = {
                 id: 0,
+                userId: thisUser.id,
+                userName: thisUser.username,
                 description: description.toString(),
                 price: Number(price),
                 purchaseTimeString: '',

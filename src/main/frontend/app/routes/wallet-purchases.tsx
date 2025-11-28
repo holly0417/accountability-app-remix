@@ -35,7 +35,7 @@ export async function clientAction({ request }: ActionFunctionArgs) {
             let newWishListItem: PurchaseDto = {
                 id: 0,
                 userId: thisUser.id,
-                username: thisUser.username,
+                userName: thisUser.username,
                 description: description.toString(),
                 price: Number(price),
                 purchaseTimeString: '',
