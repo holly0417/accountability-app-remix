@@ -24,8 +24,8 @@ public class Purchase {
     @Column(name="purchase_time", columnDefinition = "TIMESTAMP")
     private LocalDateTime purchaseTime = LocalDateTime.now();
 
-    @Column(name="status")
-    private PurchaseStatus status;
+    @Enumerated(EnumType.STRING)
+    private PurchaseStatus status = PurchaseStatus.LISTED;
 
     public Purchase(){
 

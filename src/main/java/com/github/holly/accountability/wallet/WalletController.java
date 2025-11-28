@@ -48,18 +48,16 @@ public class WalletController {
 
     @GetMapping("/getPurchases")
     public Page<PurchaseDto> getPurchases(@AuthenticationPrincipal AccountabilitySessionUser user,
-                                          @RequestParam(required = false) Long userId,
-                                          @RequestParam(required = false) PurchaseStatus status,
-                                          @PageableDefault() Pageable pageable){
+                                          @PageableDefault(size = 20) Pageable pageable){
+        return purchaseService.getPurchasesByUserIdDescTime(user.getId(), pageable)
+                .map(this::convertPurchaseToDto);
+    }
 
-        if(status == null){
-            if (userId == null) {
-                return purchaseService.getPurchasesByUserIdDescTime(user.getId(), pageable)
-                        .map(this::convertPurchaseToDto);
-            }
-            return purchaseService.getPurchasesByUserIdDescTime(userId, pageable)
-                    .map(this::convertPurchaseToDto);
-        }
+    @GetMapping("/get-purchase-list-by-type")
+    public Page<PurchaseDto> getPurchaseListByType(@AuthenticationPrincipal AccountabilitySessionUser user,
+                                          @RequestParam(required = false) Long userId,
+                                          @RequestParam PurchaseStatus status,
+                                          @PageableDefault(size = 20) Pageable pageable){
 
         if(userId == null){
             return purchaseService.findByUserIdAndStatus(user.getId(), status, pageable)

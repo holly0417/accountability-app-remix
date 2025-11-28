@@ -13,7 +13,7 @@ import {PurchaseRouteStatus} from "~/components/dto/PurchaseRouteStatus";
 import type {Page} from "~/components/pagination/Page";
 
 export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
-    const {getCurrentUserWallet, getCurrentUserPurchaseHistory, getCurrentUserWishList, getCurrentUserPurchases} = walletData();
+    const {getCurrentUserWallet, getCurrentUserPurchaseHistory, getPurchaseListByStatus, getPurchaseListByStatusAndUserId} = walletData();
     const wallet = await getCurrentUserWallet();
     const { status } = params;
     let thisUserPurchaseHistory: Page<PurchaseDto>;
@@ -21,11 +21,11 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
 
     switch(status) {
         case PurchaseRouteStatus.LISTED:
-            thisUserPurchaseHistory = await getCurrentUserWishList();
+            thisUserPurchaseHistory = await getPurchaseListByStatus(PurchaseStatus.LISTED);
             title = "WISHLIST"
             break;
         case PurchaseRouteStatus.PURCHASED:
-            thisUserPurchaseHistory = await getCurrentUserPurchases();
+            thisUserPurchaseHistory = await getPurchaseListByStatus(PurchaseStatus.PURCHASED);
             title = "PAST PURCHASES"
             break;
         default:
@@ -81,6 +81,7 @@ export default function Purchases(){
 
     return(
         <div>
+            <Wallet wallet={wallet}/>
             <PurchaseDataGrid data={thisUserPurchaseHistory} wallet={wallet} title={title}/>
         </div>
     );

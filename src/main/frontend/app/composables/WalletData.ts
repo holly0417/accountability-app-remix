@@ -3,6 +3,7 @@ import type {WalletDto} from '~/components/dto/WalletDto.ts';
 import type {Page} from '~/components/pagination/Page';
 import type {PurchaseDto} from '~/components/dto/PurchaseDto.ts';
 import {PurchaseStatus} from "~/components/dto/PurchaseStatus";
+import type {PurchaseRouteStatus} from "~/components/dto/PurchaseRouteStatus";
 
 export function walletData() {
 
@@ -19,8 +20,7 @@ export function walletData() {
   }
 
   const getCurrentUserPurchaseHistory
-        = async (
-                 page: number = 0,
+        = async (page: number = 0,
                  size: number = 50): Promise<Page<PurchaseDto>> => {
 
     return (await api.get<Page<PurchaseDto>>('/wallet/getPurchases', {
@@ -33,12 +33,13 @@ export function walletData() {
       }
     })).data;
   }
-    const getCurrentUserWishList
-        = async (status: PurchaseStatus.LISTED,
+
+  const getPurchaseListByStatus
+        = async (status: PurchaseStatus,
                  page: number = 0,
                  size: number = 50): Promise<Page<PurchaseDto>> => {
 
-        return (await api.get<Page<PurchaseDto>>('/wallet/getPurchases', {
+        return (await api.get<Page<PurchaseDto>>('/wallet/get-purchase-list-by-type', {
             params: {
                 status: status,
                 page: page,
@@ -48,24 +49,22 @@ export function walletData() {
                 indexes: null
             }
         })).data;
-    }
+  }
 
-    const getCurrentUserPurchases
-        = async (status: PurchaseStatus.PURCHASED,
-                 page: number = 0,
-                 size: number = 50): Promise<Page<PurchaseDto>> => {
+  const getPurchaseListByStatusAndUserId
+        = async (userId: number,
+                 status: PurchaseStatus): Promise<Page<PurchaseDto>> => {
 
-        return (await api.get<Page<PurchaseDto>>('/wallet/getPurchases', {
+        return (await api.get<Page<PurchaseDto>>('/wallet/get-purchase-list-by-type', {
             params: {
-                status: status,
-                page: page,
-                size: size
+                userId: userId,
+                status: status
             },
             paramsSerializer: {
                 indexes: null
             }
         })).data;
-    }
+  }
 
   const getWalletsByUserIds = async(userIds: number[]): Promise<Page<WalletDto>> => {
     return (await api.get<Page<WalletDto>>('/wallet/get-wallets', {
@@ -78,5 +77,5 @@ export function walletData() {
     })).data;
   }
 
-  return { getCurrentUserPurchases, getCurrentUserWishList, addToWishList, getWalletsByUserIds, getCurrentUserWallet, getCurrentUserPurchaseHistory, makePurchase };
+  return { getPurchaseListByStatus, getPurchaseListByStatusAndUserId, addToWishList, getWalletsByUserIds, getCurrentUserWallet, getCurrentUserPurchaseHistory, makePurchase };
 }
