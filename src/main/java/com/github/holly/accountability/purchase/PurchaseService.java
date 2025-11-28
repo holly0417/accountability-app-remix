@@ -28,8 +28,8 @@ public class PurchaseService {
         return purchaseRepository.findByUserIdOrderByPurchaseTimeDesc(userId, pageable);
     }
 
-    public Page<Purchase> findByUserIdAndStatus(Long userId, PurchaseStatus status, Pageable pageable){
-        return purchaseRepository.findByUserIdAndStatus(userId, status, pageable);
+    public Page<Purchase> findByUserIdAndStatus(List<Long> userIds, List<PurchaseStatus> statuses, Pageable pageable){
+        return purchaseRepository.findByUserIdAndStatus(userIds, statuses, pageable);
     }
 
     public Purchase makePurchase(Long purchaseId){

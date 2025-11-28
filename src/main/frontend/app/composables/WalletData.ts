@@ -52,12 +52,12 @@ export function walletData() {
   }
 
   const getPurchaseListByStatusAndUserId
-        = async (userId: number,
+        = async (usersById: number[],
                  status: PurchaseStatus): Promise<Page<PurchaseDto>> => {
 
         return (await api.get<Page<PurchaseDto>>('/wallet/get-purchase-list-by-type', {
             params: {
-                userId: userId,
+                userId: usersById,
                 status: status
             },
             paramsSerializer: {

@@ -13,11 +13,10 @@ import java.util.List;
 public interface PurchaseRepository extends JpaRepository<Purchase, Long> {
     Page<Purchase> findByUserIdOrderByPurchaseTimeDesc(Long userId, Pageable pageable);
 
-    @Query(value = """
-        SELECT * 
-        FROM purchasing_history
-        WHERE status = :#{#status.name()}
-        AND user_id = :userId
-        """, nativeQuery = true)
-    Page<Purchase> findByUserIdAndStatus(Long userId, PurchaseStatus status, Pageable pageable);
+    @Query("""
+        FROM Purchase p
+        WHERE p.status IN (:statuses)
+        AND p.user.id IN (:userIds)
+        """)
+    Page<Purchase> findByUserIdAndStatus(List<Long> userIds, List<PurchaseStatus> statuses, Pageable pageable);
 }

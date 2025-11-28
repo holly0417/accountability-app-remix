@@ -55,16 +55,17 @@ public class WalletController {
 
     @GetMapping("/get-purchase-list-by-type")
     public Page<PurchaseDto> getPurchaseListByType(@AuthenticationPrincipal AccountabilitySessionUser user,
-                                          @RequestParam(required = false) Long userId,
-                                          @RequestParam PurchaseStatus status,
-                                          @PageableDefault(size = 20) Pageable pageable){
+                                                   @RequestParam(required = false) List<Long> userIds,
+                                                    @RequestParam(defaultValue = "LISTED, PURCHASED"
+                                                    ) List<PurchaseStatus> status,
+                                                    @PageableDefault(size = 20) Pageable pageable){
 
-        if(userId == null){
-            return purchaseService.findByUserIdAndStatus(user.getId(), status, pageable)
+        if(userIds == null){
+            return purchaseService.findByUserIdAndStatus(List.of(user.getId()), status, pageable)
                     .map(this::convertPurchaseToDto);
         }
 
-        return purchaseService.findByUserIdAndStatus(userId, status, pageable)
+        return purchaseService.findByUserIdAndStatus(userIds, status, pageable)
                 .map(this::convertPurchaseToDto);
     }
 
