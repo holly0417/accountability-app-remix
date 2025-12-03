@@ -21,7 +21,7 @@ import type {TreeViewBaseItem} from '@mui/x-tree-view/models';
 import { useTheme } from '@mui/material/styles';
 import { useTreeViewApiRef } from '@mui/x-tree-view/hooks';
 import {useChartRootRef} from "@mui/x-charts";
-import {href} from "react-router";
+import {href, useNavigate} from "react-router";
 
 type Color = 'blue' | 'green';
 
@@ -29,52 +29,203 @@ type ExtendedTreeItemProps = {
   color?: Color;
   id: string;
   label: string;
-  href?: string;
+  path?: string;
 };
 
 const ITEMS: TreeViewBaseItem<ExtendedTreeItemProps>[] = [
   {
     id: '1',
-    label: 'Your Accountability App',
+    label: 'See features',
     children: [
-      { id: '1.1', label: 'Tasks', color: 'green',
-          children: [
-              { id: '1.1.1', label: 'All tasks', color: 'blue', href: '/task'},
-              { id: '1.1.2', label: 'Planned', color: 'blue', href: '/task/pending'},
-              { id: '1.1.3', label: 'In-progress', color: 'blue', href: '/task/in-progress'},
-              { id: '1.1.4', label: "Completed", color: 'blue', href: '/task/completed'},
-              { id: '1.1.5', label: 'Approved', color: 'blue', href: '/task/approved'},
-              { id: '1.1.6', label: 'Rejected', color: 'blue', href: '/task/rejected'},
-          ],
-      },
-      { id: '1.2', label: 'Partners', color: 'green' },
-      { id: '1.3', label: 'Wishlist', color: 'green' },
-      {
-        id: '1.4',
-        label: 'Blog',
-      },
+        { id: '1.1', label: 'Your information', color: 'green',
+            children: [
+                {
+                    id: '1.1.1',
+                    label: 'Your tasks',
+                    color: 'blue',
+                    path: '/task'
+                },
+                {
+                    id: '1.1.2',
+                    label: 'Your wishlist',
+                    color: 'blue',
+                    path: '/purchases/listed'
+                },
+                {
+                    id: '1.1.3',
+                    label: 'Your past purchases',
+                    color: 'blue',
+                    path: '/purchases/purchased'
+                },
+            ]
+        },
+        { id: '1.2', label: 'Your partners', color: 'green',
+            children: [
+                {
+                    id: '1.2.1',
+                    label: 'All partners & search',
+                    color: 'blue',
+                    path: '/partners'
+                },
+                {
+                    id: '1.2.2',
+                    label: 'All partner tasks',
+                    color: 'blue',
+                    path: '/partner-task'
+                },
+                {
+                    id: '1.2.3',
+                    label: 'Partner wishlist items',
+                    color: 'blue',
+                    path: '/partner-purchases/listed'
+                },
+                {
+                    id: '1.2.4',
+                    label: 'Partner past purchases',
+                    color: 'blue',
+                    path: '/partner-purchases/purchased'
+                },
+            ]
+        },
+        {
+            id: '1.3', label: 'Tasks', color: 'green',
+            children: [
+                {
+                    id: '1.3.1', label: 'Your Tasks', color: 'green',
+                    children: [
+                        {
+                            id: '1.3.1.1',
+                            label: 'All your tasks',
+                            color: 'blue', path: '/task'
+                        },
+                        {
+                            id: '1.3.1.2',
+                            label: 'Planned',
+                            color: 'blue',
+                            path: '/task/pending'
+                        },
+                        {
+                            id: '1.3.1.3',
+                            label: 'In-progress',
+                            color: 'blue',
+                            path: '/task/in-progress'
+                        },
+                        {
+                            id: '1.3.1.4',
+                            label: "Completed",
+                            color: 'blue',
+                            path: '/task/completed'
+                        },
+                        {
+                            id: '1.3.1.5',
+                            label: 'Approved',
+                            color: 'blue',
+                            path: '/task/approved'
+                        },
+                        {
+                            id: '1.3.1.6',
+                            label: 'Rejected',
+                            color: 'blue',
+                            path: '/task/rejected'
+                        },
+                    ],
+                },
+                {
+                    id: '1.3.2', label: 'Partner Tasks', color: 'green',
+                    children: [
+                        {
+                            id: '1.3.2.1',
+                            label: 'All partner tasks',
+                            color: 'blue',
+                            path: '/partner-task'
+                        },
+                        {
+                            id: '1.3.2.2',
+                            label: 'Planned partner tasks',
+                            color: 'blue',
+                            path: '/partner-task/pending'
+                        },
+                        {
+                            id: '1.3.2.3',
+                            label: 'In-progress partner tasks',
+                            color: 'blue',
+                            path: '/partner-task/in-progress'
+                        },
+                        {
+                            id: '1.3.2.4',
+                            label: "Completed partner tasks",
+                            color: 'blue',
+                            path: '/partner-task/completed'
+                        },
+                        {
+                            id: '1.3.2.5',
+                            label: 'Approved partner tasks',
+                            color: 'blue',
+                            path: '/partner-task/approved'
+                        },
+                        {
+                            id: '1.3.2.6',
+                            label: 'Rejected partner tasks',
+                            color: 'blue',
+                            path: '/partner-task/rejected'
+                        },
+                    ],
+                },
+            ],
+        },
+        {
+            id: '1.4', label: 'Wishlists', color: 'green',
+            children: [
+                {
+                    id: '1.4.1',
+                    label: 'Your wishlist',
+                    color: 'blue',
+                    path: '/purchases/listed'
+                },
+                {
+                    id: '1.4.2',
+                    label: 'Partner wishlist items',
+                    color: 'blue',
+                    path: '/partner-purchases/listed'
+                },
+            ]
+        },
+        {
+            id: '1.5', label: 'Past purchases', color: 'green',
+            children: [
+                {
+                    id: '1.5.1',
+                    label: 'Your past purchases',
+                    color: 'blue',
+                    path: '/purchases/purchased'
+                },
+                {
+                    id: '1.5.2',
+                    label: 'Partner past purchases',
+                    color: 'blue',
+                    path: '/partner-purchases/purchased'
+                },
+            ]
+        },
+        {
+            id: '1.6', label: 'Wallets', color: 'green',
+            children: [
+                {
+                    id: '1.6.1',
+                    label: 'Your wallet overview',
+                    color: 'blue',
+                },
+                {
+                    id: '1.6.2',
+                    label: 'Partner wallet overview',
+                    color: 'blue',
+                },
+            ]
+        }
     ],
   },
-  {
-    id: '2',
-    label: 'Partners',
-    children: [
-      { id: '2.1', label: 'All products', color: 'green' },
-      {
-        id: '2.2',
-        label: 'Categories',
-        children: [
-          { id: '2.2.1', label: 'Gadgets', color: 'blue' },
-          { id: '2.2.2', label: 'Phones', color: 'blue' },
-          { id: '2.2.3', label: 'Wearables', color: 'blue' },
-        ],
-      },
-      { id: '2.3', label: 'Bestsellers', color: 'green' },
-      { id: '2.4', label: 'Sales', color: 'green' },
-    ],
-  },
-  { id: '4', label: 'Contact', color: 'blue' },
-  { id: '5', label: 'Help', color: 'blue' },
+  { id: '2', label: 'Contact', color: 'blue' },
+  { id: '3', label: 'Help', color: 'blue' },
 ];
 
 function DotIcon({ color }: { color: string }) {
@@ -131,14 +282,14 @@ function CustomLabel({ color, expandable, children, ...other }: CustomLabelProps
 interface CustomTreeItemProps
   extends Omit<UseTreeItemParameters, 'rootRef'>,
     Omit<React.HTMLAttributes<HTMLLIElement>, 'onFocus'> {
-    href?: string;
+    path?: string;
 }
 
 const CustomTreeItem = React.forwardRef(function CustomTreeItem(
   props: CustomTreeItemProps,
   ref: React.Ref<HTMLLIElement>,
 ) {
-  const { id, itemId, label, disabled, href, children, ...other } = props;
+  const { id, itemId, label, disabled, path, children, ...other } = props;
 
   const {
     getRootProps,
@@ -171,17 +322,7 @@ const CustomTreeItem = React.forwardRef(function CustomTreeItem(
             </TreeItemIconContainer>
           )}
 
-            {href ? (
-                    /* If an href exists, render a Link */
-                <a
-                    href={href}
-                    style={{ textDecoration: 'none', color: 'inherit', flexGrow: 1 }}
-                >
-                <CustomLabel {...getLabelProps({ color })} />
-                </a>
-            ) : (
-                <CustomLabel {...getLabelProps({ color })} />
-            )}
+          <CustomLabel {...getLabelProps({ color })} />
 
         </TreeItemContent>
         {children && (
@@ -194,7 +335,33 @@ const CustomTreeItem = React.forwardRef(function CustomTreeItem(
   );
 });
 
+// @ts-ignore
+export const findItemById = (items: TreeViewBaseItem<ExtendedTreeItemProps>[], id: string) => {
+    for (const item of items) {
+        if (item.id === id) return item;
+        if (item.children) {
+            const found: ExtendedTreeItemProps | null = findItemById(item.children, id);
+            if (found) return found;
+        }
+    }
+    return null;
+};
+
 export default function CustomizedTreeView() {
+    const navigate = useNavigate();
+
+    const handleItemClick = (event: React.MouseEvent, itemId: string) => {
+        // Prevent default behavior if needed (though usually not necessary for RichTreeView)
+
+        // Find the item data based on the ID
+        const item = findItemById(ITEMS, itemId);
+
+        // Only navigate if the item has a path defined
+        if (item && item.path) {
+            navigate(item.path);
+        }
+    };
+
   return (
     <Card
       variant="outlined"
@@ -202,14 +369,14 @@ export default function CustomizedTreeView() {
     >
       <CardContent>
         <Typography component="h2" variant="subtitle2">
-          Product tree
+          Accountability App
         </Typography>
         <RichTreeView
           items={ITEMS}
           aria-label="pages"
           multiSelect
-          defaultExpandedItems={['1', '1.1']}
-          defaultSelectedItems={['1.1', '1.1.1']}
+          defaultExpandedItems={['1']}
+          defaultSelectedItems={['1']}
           sx={{
             m: '0 -8px',
             pb: '8px',
@@ -218,6 +385,7 @@ export default function CustomizedTreeView() {
             overflowY: 'auto',
           }}
           slots={{ item: CustomTreeItem }}
+          onItemClick={handleItemClick}
         />
       </CardContent>
     </Card>

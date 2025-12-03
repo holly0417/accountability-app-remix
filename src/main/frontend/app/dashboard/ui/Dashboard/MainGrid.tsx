@@ -58,14 +58,17 @@ export default function MainGrid() {
         columns={12}
         sx={{ mb: (theme) => theme.spacing(2) }}
       >
+
         {data.map((card, index) => (
           <Grid key={index} size={{ xs: 12, sm: 6, lg: 3 }}>
             <StatCard {...card} />
           </Grid>
         ))}
+
         <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
           <HighlightedCard />
         </Grid>
+
         <Grid size={{ xs: 12, md: 6 }}>
           <SessionsChart />
         </Grid>
@@ -73,9 +76,11 @@ export default function MainGrid() {
           <PageViewsBarChart />
         </Grid>
       </Grid>
+
       <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
         Details
       </Typography>
+
       <Grid container spacing={2} columns={12}>
         <Grid size={{ xs: 12, lg: 9 }}>
           <CustomizedDataGrid />

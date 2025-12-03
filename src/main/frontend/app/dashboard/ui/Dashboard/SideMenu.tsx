@@ -9,6 +9,7 @@ import SelectContent from './SelectContent';
 import MenuContent from './MenuContent';
 import CardAlert from './CardAlert';
 import OptionsMenu from './OptionsMenu';
+import CustomizedTreeView from "~/dashboard/ui/Dashboard/CustomizedTreeView";
 
 const drawerWidth = 240;
 
@@ -44,17 +45,19 @@ export default function SideMenu() {
         <SelectContent />
       </Box>
       <Divider />
+
       <Box
         sx={{
-          overflow: 'auto',
-          height: '100%',
+          overflowY: 'auto',
+          height: 'fit-content',
           display: 'flex',
           flexDirection: 'column',
         }}
       >
-        <MenuContent />
-        <CardAlert />
+        <CustomizedTreeView />
       </Box>
+
+
       <Stack
         direction="row"
         sx={{
@@ -65,20 +68,23 @@ export default function SideMenu() {
           borderColor: 'divider',
         }}
       >
+
         <Avatar
           sizes="small"
           alt="Riley Carter"
           src="/static/images/avatar/7.jpg"
           sx={{ width: 36, height: 36 }}
         />
+
         <Box sx={{ mr: 'auto' }}>
           <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: '16px' }}>
-            Riley Carter
+            Holly Yoo
           </Typography>
           <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-            riley@email.com
+            holly@email.com
           </Typography>
         </Box>
+
         <OptionsMenu />
       </Stack>
     </Drawer>
