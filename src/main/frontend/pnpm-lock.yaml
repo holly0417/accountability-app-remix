@@ -74,6 +74,9 @@ importers:
       react-router-dom:
         specifier: ^7.9.5
         version: 7.9.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      ts-extended-types:
+        specifier: ^1.1.0
+        version: 1.1.0
     devDependencies:
       '@react-router/dev':
         specifier: ^7.9.2
@@ -2150,6 +2153,9 @@ packages:
   toidentifier@1.0.1:
     resolution: {integrity: sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA==}
     engines: {node: '>=0.6'}
+
+  ts-extended-types@1.1.0:
+    resolution: {integrity: sha512-4+uTpL5eqo/xfYdclDF43IPuflNqzysBH7LJ4ohufjZZAtnEPSS0GOszPEQS1+lg5rXujhAqQ1lAnF6QPCcz5Q==}
 
   tsconfck@3.1.6:
     resolution: {integrity: sha512-ks6Vjr/jEw0P1gmOVwutM3B7fWxoWBL2KRDb1JfqGVawBmO5UsvmWOQFGHBPl5yxYz4eERr19E6L7NMv+Fej4w==}
@@ -4343,6 +4349,8 @@ snapshots:
       picomatch: 4.0.3
 
   toidentifier@1.0.1: {}
+
+  ts-extended-types@1.1.0: {}
 
   tsconfck@3.1.6(typescript@5.9.3):
     optionalDependencies:

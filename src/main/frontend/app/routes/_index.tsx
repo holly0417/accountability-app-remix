@@ -11,6 +11,8 @@ import Header from '~/dashboard/ui/Dashboard/Header';
 import MainGrid from '~/dashboard/ui/Dashboard/MainGrid';
 import SideMenu from '~/dashboard/ui/Dashboard/SideMenu';
 import AppTheme from '~/dashboard/shared-theme/AppTheme';
+import type {Route} from "./+types/_index"; //this is OK!
+import type {LocalDateTime} from "ts-extended-types";
 
 import {
   chartsCustomizations,
@@ -18,6 +20,8 @@ import {
   datePickersCustomizations,
   treeViewCustomizations,
 } from '~/dashboard/ui/Dashboard/theme/customizations';
+import type {StatCardProps} from "~/dashboard/ui/Dashboard/StatCard";
+import {walletData} from "~/composables/WalletData";
 
 const xThemeComponents = {
   ...chartsCustomizations,
@@ -25,6 +29,36 @@ const xThemeComponents = {
   ...datePickersCustomizations,
   ...treeViewCustomizations,
 };
+
+const { getCurrentUserWalletHistory } = walletData();
+
+export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
+    let balanceList:number[] = [0];
+    let dateList: string[] = [" "];
+
+    const thisHistoryPage = await getCurrentUserWalletHistory();
+
+    balanceList = thisHistoryPage.content.map(history => {
+        return history.balance;
+    });
+
+    dateList = thisHistoryPage.content.map(history => {
+        return history.dateAsString;
+    });
+
+    const walletData: StatCardProps[] = [
+        {
+            title: 'Your wallet',
+            interval: 'Your progress over time',
+            dates: dateList,
+            data: balanceList,
+        }
+    ];
+    console.log(dateList);
+    console.log(balanceList);
+
+    return {walletData};
+}
 
 export default function _index(props: { disableCustomTheme?: boolean }) {
   return (

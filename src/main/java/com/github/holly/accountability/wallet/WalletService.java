@@ -10,8 +10,12 @@ public class WalletService {
 
     private final WalletRepository walletRepository;
 
-    public WalletService(WalletRepository walletRepository) {
+    private final WalletHistoryRepository walletHistoryRepository;
+
+    public WalletService(WalletRepository walletRepository,
+                         WalletHistoryRepository walletHistoryRepository) {
         this.walletRepository = walletRepository;
+        this.walletHistoryRepository = walletHistoryRepository;
     }
 
     public void addTaskToWallet(Long userId, Double payment){
@@ -38,6 +42,10 @@ public class WalletService {
         wallet.subtractBalance(price);
         walletRepository.save(wallet);
         return true;
+    }
+
+    public Page<WalletHistory> findWalletHistoryByUserId(List<Long> userIds, Pageable pageable){
+        return this.walletHistoryRepository.findByUserId(userIds, pageable);
     }
 
 }
