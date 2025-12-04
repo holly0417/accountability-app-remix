@@ -24,7 +24,18 @@ import type {clientLoader} from "~/routes/_index";
 
 
 export default function MainGrid() {
-  const { balanceList, dateList } = useLoaderData<typeof clientLoader>();
+  const { thisHistoryPage } = useLoaderData<typeof clientLoader>();
+
+    let balanceList:number[] = [0];
+    let dateList: string[] = [" "];
+
+    balanceList = thisHistoryPage.content.map(history => {
+        return history.balance;
+    });
+
+    dateList = thisHistoryPage.content.map(history => {
+        return history.dateAsString;
+    });
 
     const walletData: StatCardProps[] = [
         {

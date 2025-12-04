@@ -18,7 +18,6 @@ export type StatCardProps = {
   trend: 'up' | 'down' | 'neutral';
 };
 
-
 export default function StatCard({
   title,
   interval,

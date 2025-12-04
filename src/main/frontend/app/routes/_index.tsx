@@ -33,20 +33,9 @@ const xThemeComponents = {
 const { getCurrentUserWalletHistoryTimeline } = walletData();
 
 export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
-    let balanceList:number[] = [0];
-    let dateList: string[] = [" "];
-
     const thisHistoryPage = await getCurrentUserWalletHistoryTimeline();
 
-    balanceList = thisHistoryPage.content.map(history => {
-        return history.balance;
-    });
-
-    dateList = thisHistoryPage.content.map(history => {
-        return history.dateAsString;
-    });
-
-    return {balanceList, dateList};
+    return {thisHistoryPage};
 }
 
 export default function _index(props: { disableCustomTheme?: boolean }) {
