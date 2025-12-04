@@ -48,6 +48,18 @@ public class WalletController {
                 .map(this::convertWalletHistoryToWalletHistoryDto);
     }
 
+    @GetMapping("/history-timeline")
+    public Page<WalletHistoryDto> getWalletHistoryTimeline(@AuthenticationPrincipal AccountabilitySessionUser user,
+                                                   @RequestParam(required = false) List<Long> userIds,
+                                                   @PageableDefault(size=20) Pageable pageable){
+        if(userIds == null || userIds.isEmpty()) {
+            return walletService.getWalletDailyTimelineByUserId(List.of(user.getId()), pageable)
+                    .map(this::convertWalletHistoryToWalletHistoryDto);
+        }
+        return walletService.getWalletDailyTimelineByUserId(userIds, pageable)
+                .map(this::convertWalletHistoryToWalletHistoryDto);
+    }
+
 
     private WalletDto convertWalletToWalletDto(Wallet wallet){
         WalletDto walletDto = new WalletDto();

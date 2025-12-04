@@ -26,6 +26,11 @@ export function walletData() {
         return (await api.get<Page<WalletHistoryDto>>('/wallet/history')).data;
     }
 
+    const getCurrentUserWalletHistoryTimeline
+        = async(): Promise<Page<WalletHistoryDto>> => {
+        return (await api.get<Page<WalletHistoryDto>>('/wallet/history-timeline')).data;
+    }
+
     const getWalletHistoryByUserIds
         = async( userIds: number[] ): Promise<Page<WalletHistoryDto>> => {
         return (await api.get<Page<WalletHistoryDto>>('/wallet/history', {
@@ -38,5 +43,5 @@ export function walletData() {
         })).data;
     }
 
-  return { getWalletsByUserIds, getCurrentUserWallet, getWalletHistoryByUserIds, getCurrentUserWalletHistory };
+  return { getCurrentUserWalletHistoryTimeline, getWalletsByUserIds, getCurrentUserWallet, getWalletHistoryByUserIds, getCurrentUserWalletHistory };
 }

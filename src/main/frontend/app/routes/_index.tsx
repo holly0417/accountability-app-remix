@@ -30,13 +30,13 @@ const xThemeComponents = {
   ...treeViewCustomizations,
 };
 
-const { getCurrentUserWalletHistory } = walletData();
+const { getCurrentUserWalletHistory, getCurrentUserWalletHistoryTimeline } = walletData();
 
 export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
     let balanceList:number[] = [0];
     let dateList: string[] = [" "];
 
-    const thisHistoryPage = await getCurrentUserWalletHistory();
+    const thisHistoryPage = await getCurrentUserWalletHistoryTimeline();
 
     balanceList = thisHistoryPage.content.map(history => {
         return history.balance;
