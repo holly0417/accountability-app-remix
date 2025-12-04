@@ -29,9 +29,11 @@ export default function MainGrid() {
     const walletData: StatCardProps[] = [
         {
             title: 'Your wallet',
-            interval: 'Your progress over time',
+            interval: 'Your daily progress',
             dates: dateList,
             data: balanceList,
+            value: 'current-user-wallet-timeline',
+            trend: 'up'
         }
     ];
 

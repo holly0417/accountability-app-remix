@@ -14,13 +14,18 @@ export type StatCardProps = {
   interval: string;
   dates: string[];
   data: number[];
+  value: string;
+  trend: 'up' | 'down' | 'neutral';
 };
+
 
 export default function StatCard({
   title,
   interval,
   dates,
   data,
+  value,
+    trend,
 }: StatCardProps) {
   const theme = useTheme();
 
@@ -38,7 +43,18 @@ export default function StatCard({
         ? theme.palette.grey[400]
         : theme.palette.grey[700],
   };
+    const chartColor = trendColors[trend];
 
+    function AreaGradient({ color, id }: { color: string; id: string }) {
+        return (
+            <defs>
+                <linearGradient id={id} x1="50%" y1="0%" x2="50%" y2="100%">
+                    <stop offset="0%" stopColor={color} stopOpacity={0.3} />
+                    <stop offset="100%" stopColor={color} stopOpacity={0} />
+                </linearGradient>
+            </defs>
+        );
+    }
   return (
     <Card variant="outlined" sx={{ height: '100%', flexGrow: 1 }}>
       <CardContent>
@@ -61,7 +77,7 @@ export default function StatCard({
           </Stack>
           <Box sx={{ width: '100%', height: 50 }}>
             <SparkLineChart
-              color={trendColors.up}
+              color={chartColor}
               data={data}
               area
               showHighlight
@@ -70,7 +86,11 @@ export default function StatCard({
                 scaleType: 'band',
                 data: dates, // Use the correct property 'data' for xAxis
               }}
+              sx={{
+                  [`& .${areaElementClasses.root}`]: {fill: `url(#area-gradient-${value})`,}
+              }}
             >
+                <AreaGradient color={chartColor} id={`area-gradient-${value}`} />
             </SparkLineChart>
           </Box>
         </Stack>
