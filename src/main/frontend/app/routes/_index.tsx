@@ -30,7 +30,7 @@ const xThemeComponents = {
   ...treeViewCustomizations,
 };
 
-const { getCurrentUserWalletHistory, getCurrentUserWalletHistoryTimeline } = walletData();
+const { getCurrentUserWalletHistoryTimeline } = walletData();
 
 export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
     let balanceList:number[] = [0];
@@ -46,18 +46,7 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
         return history.dateAsString;
     });
 
-    const walletData: StatCardProps[] = [
-        {
-            title: 'Your wallet',
-            interval: 'Your progress over time',
-            dates: dateList,
-            data: balanceList,
-        }
-    ];
-    console.log(dateList);
-    console.log(balanceList);
-
-    return {walletData};
+    return {balanceList, dateList};
 }
 
 export default function _index(props: { disableCustomTheme?: boolean }) {

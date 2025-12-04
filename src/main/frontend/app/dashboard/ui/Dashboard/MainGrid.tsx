@@ -24,7 +24,17 @@ import type {clientLoader} from "~/routes/_index";
 
 
 export default function MainGrid() {
-  const { walletData } = useLoaderData<typeof clientLoader>();
+  const { balanceList, dateList } = useLoaderData<typeof clientLoader>();
+
+    const walletData: StatCardProps[] = [
+        {
+            title: 'Your wallet',
+            interval: 'Your progress over time',
+            dates: dateList,
+            data: balanceList,
+        }
+    ];
+
 
   return (
     <Box sx={{ width: '100%', maxWidth: { sm: '100%', md: '1700px' } }}>
