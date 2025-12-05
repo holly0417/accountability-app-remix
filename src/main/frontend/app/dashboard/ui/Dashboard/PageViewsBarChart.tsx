@@ -62,7 +62,7 @@ export default function PageViewsBarChart() {
             <Typography variant="h4" component="p">
               Tasks
             </Typography>
-            <Chip size="small" color="error" label="-8%" />
+            <Chip size="small" color="error" label="Active" />
           </Stack>
           <Typography variant="caption" sx={{ color: 'text.secondary' }}>
             Count by status

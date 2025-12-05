@@ -16,39 +16,8 @@ import {
   GlobeFlag,
 } from './CustomIcons';
 
-const data = [
-  { label: 'India', value: 50000 },
-  { label: 'USA', value: 35000 },
-  { label: 'Brazil', value: 10000 },
-  { label: 'Other', value: 5000 },
-];
-
-const countries = [
-  {
-    name: 'India',
-    value: 50,
-    flag: <IndiaFlag />,
-    color: 'hsl(220, 25%, 65%)',
-  },
-  {
-    name: 'USA',
-    value: 35,
-    flag: <UsaFlag />,
-    color: 'hsl(220, 25%, 45%)',
-  },
-  {
-    name: 'Brazil',
-    value: 10,
-    flag: <BrazilFlag />,
-    color: 'hsl(220, 25%, 30%)',
-  },
-  {
-    name: 'Other',
-    value: 5,
-    flag: <GlobeFlag />,
-    color: 'hsl(220, 25%, 20%)',
-  },
-];
+import {useLoaderData} from "react-router-dom";
+import type {clientLoader} from "~/routes/_index";
 
 interface StyledTextProps {
   variant: 'primary' | 'secondary';
@@ -122,6 +91,40 @@ const colors = [
 ];
 
 export default function ChartUserByCountry() {
+
+    const { allDataCorrectDates } = useLoaderData<typeof clientLoader>();
+
+    const totalBalanceList: number[] = [];
+
+    const data = allDataCorrectDates.map((item) => {
+         const balanceList = item.data.map((point) => {
+             return point.yAxisValue;
+         });
+         const length = balanceList.length;
+         const eachBalance = balanceList.at(length - 1)!;
+         totalBalanceList.push(eachBalance);
+
+         return {
+             label: item.username,
+             value: eachBalance
+         }
+    })
+
+    let sumBalances = 0;
+
+    for(const item of totalBalanceList){
+        sumBalances += item;
+    }
+
+    const countries = data.map((item) => {
+        return {
+            name: item.label,
+            value: ((item.value)/sumBalances)*100,
+            flag: <GlobeFlag />,
+            color: 'hsl(220, 25%, 65%)',
+        }
+    })
+
   return (
     <Card
       variant="outlined"
@@ -129,7 +132,7 @@ export default function ChartUserByCountry() {
     >
       <CardContent>
         <Typography component="h2" variant="subtitle2">
-          Users by country
+          Balance by user
         </Typography>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <PieChart
@@ -153,7 +156,7 @@ export default function ChartUserByCountry() {
             width={260}
             hideLegend
           >
-            <PieCenterLabel primaryText="98.5K" secondaryText="Total" />
+            <PieCenterLabel primaryText={sumBalances.toFixed(2)} secondaryText="Total" />
           </PieChart>
         </Box>
         {countries.map((country, index) => (
@@ -176,12 +179,12 @@ export default function ChartUserByCountry() {
                   {country.name}
                 </Typography>
                 <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                  {country.value}%
+                  {country.value.toFixed(2)}%
                 </Typography>
               </Stack>
               <LinearProgress
                 variant="determinate"
-                aria-label="Number of users by country"
+                aria-label="Total wallet balance shares"
                 value={country.value}
                 sx={{
                   [`& .${linearProgressClasses.bar}`]: {

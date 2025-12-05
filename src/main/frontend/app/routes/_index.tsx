@@ -35,7 +35,7 @@ const xThemeComponents = {
 };
 
 const { getCurrentUserWalletHistoryTimeline, getWalletHistoryByUserIds } = walletData();
-const {getPartners} = relationshipData();
+const {getPartnersLimit} = relationshipData();
 const { getTasksByCurrentUserAndStatus, getTasksByUserListAndStatus } = taskData();
 
 export type DataGridAxisValues = {
@@ -95,7 +95,7 @@ function sortDateLists(dateList:string[]): string[] {
 
 export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
     try {
-        const partners = await getPartners();
+        const partners = await getPartnersLimit(10);
 
         if (!partners) {
             throw data("User not found", { status: 404 });
@@ -226,9 +226,11 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
         })
 
         console.log(allDataCorrectDates);
+        const limitedDataList = allDataCorrectDates.slice(0,2);
+        const limitedPartnerData = partnerData.slice(0,2)
 
-        return {thisUserData,
-            partnerData, allUsersWalletTaskData, uniqueDates, datesToBalance, allDataCorrectDates
+        return {thisUserData, limitedPartnerData,
+            partnerData, allUsersWalletTaskData, uniqueDates, limitedDataList, allDataCorrectDates
         };
 
     } catch (e: any) {

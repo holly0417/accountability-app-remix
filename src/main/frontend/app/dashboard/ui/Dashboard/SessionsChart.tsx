@@ -22,13 +22,13 @@ function AreaGradient({ color, id }: { color: string; id: string }) {
 }
 
 export default function SessionsChart() {
-  const { allDataCorrectDates, uniqueDates } = useLoaderData<typeof clientLoader>();
+  const { limitedDataList, uniqueDates } = useLoaderData<typeof clientLoader>();
 
   const theme = useTheme();
 
   const data = uniqueDates;
 
-  const graphSettings: LineSeries[] = allDataCorrectDates.map(user => {
+  const graphSettings: LineSeries[] = limitedDataList.map(user => {
       return {
           id: user.username,
           label: user.username,

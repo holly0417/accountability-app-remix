@@ -2,7 +2,6 @@ import {type ActionFunctionArgs, data} from "react-router";
 import type {Route} from "./+types/purchases"; //this is OK!
 import React from "react";
 import PurchaseDataGrid from "~/components/grids/purchase-grid";
-import PurchaseForm from "~/components/forms/PurchaseForm";
 import Wallet from "~/components/Wallet";
 import {walletData} from "~/composables/WalletData";
 import {useLoaderData} from "react-router-dom";

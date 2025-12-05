@@ -27,9 +27,9 @@ import {data} from "react-router";
 
 export default function MainGrid() {
   const { thisUserData,
-      partnerData } = useLoaderData<typeof clientLoader>();
+      limitedPartnerData } = useLoaderData<typeof clientLoader>();
 
-    const partnerWalletData: StatCardProps[] = partnerData.map(partner => {
+    const partnerWalletData: StatCardProps[] = limitedPartnerData.map(partner => {
         return {
             interval: 'Daily progress',
             dates: partner.data.map(item => item.xAxisValue),

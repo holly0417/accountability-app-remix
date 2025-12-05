@@ -1,12 +1,8 @@
-import {type ActionFunctionArgs} from "react-router";
+import {data} from "react-router";
 import type {Route} from "./+types/partner-purchases"; //this is OK!
 import React from "react";
-import PurchaseDataGrid from "~/components/grids/purchase-grid";
-import PurchaseForm from "~/components/forms/PurchaseForm";
-import Wallet from "~/components/Wallet";
 import {walletData} from "~/composables/WalletData";
 import {useLoaderData} from "react-router-dom";
-import {WishlistAction} from "~/dto/purchase/WishlistAction";
 import type {PurchaseDto} from "~/dto/purchase/PurchaseDto";
 import {PurchaseStatus} from "~/dto/purchase/PurchaseStatus";
 import {PurchaseRouteStatus} from "~/dto/purchase/PurchaseRouteStatus";
@@ -18,25 +14,29 @@ import {purchaseData} from "~/composables/PurchaseData";
 export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
     const {getWalletsByUserIds } = walletData();
     const { getPurchaseListByStatusAndUserId, getPurchaseListByUserIds } = purchaseData();
-    const {getPartnerIdList} = relationshipData();
-    const partnerIdList = await getPartnerIdList();
-    const partnerWallets = await getWalletsByUserIds(partnerIdList);
+    const {getPartners} = relationshipData();
+
+    const partnerList = await getPartners();
+    if(!partnerList){
+        throw data("Partner data not found", { status: 404 });
+    }
+    const partnerWallets = await getWalletsByUserIds(partnerList.map(item => item.id));
     const { status } = params;
     let partnersPurchaseHistory: Page<PurchaseDto>;
     let title: string;
 
     switch(status) {
         case PurchaseRouteStatus.LISTED:
-            partnersPurchaseHistory = await getPurchaseListByStatusAndUserId(partnerIdList, PurchaseStatus.LISTED);
+            partnersPurchaseHistory = await getPurchaseListByStatusAndUserId(partnerList.map(item => item.id), PurchaseStatus.LISTED);
             title = "PARTNERS' WISHLIST ITEMS"
             break;
         case PurchaseRouteStatus.PURCHASED:
-            partnersPurchaseHistory = await getPurchaseListByStatusAndUserId(partnerIdList, PurchaseStatus.PURCHASED);
+            partnersPurchaseHistory = await getPurchaseListByStatusAndUserId(partnerList.map(item => item.id), PurchaseStatus.PURCHASED);
             title = "PARTNERS' PAST PURCHASES"
             break;
         default:
             title = "PARTNERS' WISHLIST ITEMS AND PURCHASES"
-            partnersPurchaseHistory = await getPurchaseListByUserIds(partnerIdList);
+            partnersPurchaseHistory = await getPurchaseListByUserIds(partnerList.map(item => item.id));
     }
 
     return {partnerWallets, partnersPurchaseHistory, title};
@@ -44,7 +44,7 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
 
 
 export default function Purchases(){
-    const {partnerWallets, partnersPurchaseHistory, title} = useLoaderData<typeof clientLoader>();
+    const {partnersPurchaseHistory, title} = useLoaderData<typeof clientLoader>();
 
     return(
         <div>

@@ -16,20 +16,38 @@ import {useNavigate} from "react-router";
 
 export function relationshipData() {
 
-  const getPartners = async (): Promise<UserDto[] | null> => {
+    const getPartners = async (): Promise<UserDto[] | null> => {
+        try {
+            const response = await api.get<UserDto[]>('/relationships/get-partners');
+            return response.data;
+        } catch (e: any) {
+//Handle 401 (Unauthorized) if you want specific logic
+            if (e.response && e.response.status === 401) {
+                const navigate = useNavigate();
+                navigate('/');
+            }
+            throw e;
+        }
+    }
+
+  const getPartnersLimit = async (limit: number): Promise<UserDto[] | null> => {
       try {
+          const response = await api.get<UserDto[]>('/relationships/get-partners',{
+              params: {
+                  size: limit
+              },
+              paramsSerializer: {
+                  indexes: null
+              }
+          });
 
-          const response = await api.get<UserDto[]>('/relationships/get-partners');
           return response.data;
-
       } catch (e: any) {
 //Handle 401 (Unauthorized) if you want specific logic
           if (e.response && e.response.status === 401) {
-
               const navigate = useNavigate();
               navigate('/');
           }
-
           throw e;
       }
   }
@@ -78,5 +96,5 @@ export function relationshipData() {
   }
 
 
-  return { getPartners, getRelationshipsByStatus, getRequests, deleteRelationship, sendRequest, search, updateRelationship };
+  return { getPartnersLimit, getPartners, getRelationshipsByStatus, getRequests, deleteRelationship, sendRequest, search, updateRelationship };
 }
