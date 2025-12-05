@@ -4,7 +4,11 @@ import CardContent from '@mui/material/CardContent';
 import Chip from '@mui/material/Chip';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
-import { LineChart } from '@mui/x-charts/LineChart';
+import {LineChart, type LineChartProps, type LineSeries} from '@mui/x-charts/LineChart';
+import type {StatCardProps} from "~/dashboard/ui/Dashboard/StatCard";
+import {useLoaderData} from "react-router-dom";
+import type {clientLoader, DataGridAxisValues} from "~/routes/_index";
+import type {SxProps} from "@mui/material";
 
 function AreaGradient({ color, id }: { color: string; id: string }) {
   return (
@@ -54,35 +58,46 @@ function getEarlierDate(date1: string, date2: string): number {
     return 0;
 }
 
-function sortDateLists(dateList1:string[], dateList2:string[]): string[] {
-    return [...new Set([...dateList1, ...dateList2])].sort((a, b) => getEarlierDate(a, b));
+function sortDateLists(dateList:string[]): string[] {
+    return [...new Set([...dateList])].sort((a, b) => getEarlierDate(a, b));
 }
 
-export type SessionsChartProps = {
-    currentUserDates: string[];
-    currentUserData: number[];
-    currentUserName: string;
-    partner1Dates: string[];
-    partner1Data: number[];
-    partner1Name: string;
-    partner2Dates: string[];
-    partner2Data: number[];
-    partner2Name: string;
-};
-
-export default function SessionsChart({ currentUserDates,
-                                          currentUserData,
-                                          currentUserName,
-                                          partner1Dates,
-                                          partner1Data,
-                                          partner1Name,
-                                          partner2Dates,
-                                          partner2Data,
-                                          partner2Name}: SessionsChartProps) {
+export default function SessionsChart() {
+  const { allUsersWalletTaskData } = useLoaderData<typeof clientLoader>();
 
   const theme = useTheme();
-  let dates1 = sortDateLists(currentUserDates, partner1Dates);
-  const data = sortDateLists(dates1, partner2Dates);
+
+  const allDates: string[][] = allUsersWalletTaskData.map((item) => {
+      return item.data.map((point) => {
+          return point.xAxisValue;
+      });
+  });
+
+  let finalDates: string[] = []
+  let placeholder: string[] = []
+
+  for(const date of allDates) {
+      finalDates = [...placeholder, ...date];
+      placeholder = finalDates;
+  }
+
+  const data = sortDateLists(finalDates)
+
+  const graphSettings: LineSeries[] = allUsersWalletTaskData.map(user => {
+      return {
+          id: user.username,
+          label: user.username,
+          showMark: false,
+          curve: 'linear',
+          stack: 'total',
+          area: true,
+          stackOrder: 'ascending',
+          data: user.data.map(item => item.yAxisValue),
+          valueFormatter: (value) => (value == null ? '' : value.toFixed(2)),
+      }
+  });
+
+
 
   const colorPalette = [
     theme.palette.primary.light,
@@ -114,6 +129,7 @@ export default function SessionsChart({ currentUserDates,
             Combined visual of your and your partners' wallets over time
           </Typography>
         </Stack>
+
         <LineChart
           colors={colorPalette}
           xAxis={[
@@ -124,61 +140,26 @@ export default function SessionsChart({ currentUserDates,
             },
           ]}
           yAxis={[{ width: 50 }]}
-          series={[
-            {
-              id: currentUserName,
-              label: currentUserName,
-              showMark: false,
-              curve: 'linear',
-              stack: 'total',
-              area: true,
-              stackOrder: 'ascending',
-              data: currentUserData,
-                valueFormatter: (value) => (value == null ? '' : value.toFixed(2)),
-            },
-            {
-              id: partner1Name,
-              label: partner1Name,
-              showMark: false,
-              curve: 'linear',
-              stack: 'total',
-              area: true,
-              stackOrder: 'ascending',
-              data: partner1Data,
-                valueFormatter: (value) => (value == null ? '' : value.toFixed(2)),
-            },
-            {
-              id: partner2Name,
-              label: partner2Name,
-              showMark: false,
-              curve: 'linear',
-              stack: 'total',
-              stackOrder: 'ascending',
-              data: partner2Data,
-              area: true,
-                valueFormatter: (value) => (value == null ? '' : value.toFixed(2)),
-            },
-          ]}
-
+          series={graphSettings}
           height={250}
           margin={{ left: 0, right: 20, top: 20, bottom: 0 }}
           grid={{ horizontal: true }}
           sx={{
-            [`& .MuiAreaElement-series-${currentUserName}`]: {
-              fill: `url('#${currentUserName}')`,
+            [`& .MuiAreaElement-series-user1`]: {
+              fill: `url('#user1')`,
             },
-            [`& .MuiAreaElement-series-${partner1Name}`]: {
-              fill: `url('#${partner1Name}')`,
+            [`& .MuiAreaElement-series-user2`]: {
+              fill: `url('#user2')`,
             },
-            [`& .MuiAreaElement-series-${partner2Name}`]: {
-              fill: `url('#${partner2Name}')`,
+            [`& .MuiAreaElement-series-user3`]: {
+              fill: `url('#user3')`,
             },
           }}
           hideLegend
         >
-          <AreaGradient color={theme.palette.primary.dark} id={currentUserName} />
-          <AreaGradient color={theme.palette.primary.main} id={partner1Name} />
-          <AreaGradient color={theme.palette.primary.light} id={partner2Name} />
+          <AreaGradient color={theme.palette.primary.dark} id="user1" />
+          <AreaGradient color={theme.palette.primary.main} id="user2" />
+          <AreaGradient color={theme.palette.primary.light} id="user3" />
         </LineChart>
       </CardContent>
     </Card>

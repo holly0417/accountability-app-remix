@@ -22,86 +22,34 @@ import {useLoaderData} from "react-router-dom";
 
 import React from "react";
 import type {clientLoader} from "~/routes/_index";
+import {data} from "react-router";
 
 
 export default function MainGrid() {
-  const { thisUserBalanceDailyHistory,
-      partnerBalanceDailyHistory,
-      partnerName,
-      twoPartnerBalanceDailyHistory,
-      twoPartnerName } = useLoaderData<typeof clientLoader>();
+  const { thisUserData,
+      partnerData } = useLoaderData<typeof clientLoader>();
 
-    let balanceList:number[] = [0];
-    let dateList: string[] = [" "];
-    let partnerBalanceList:number[] = [0];
-    let partnerDateList: string[] = [" "];
-    let partner2BalanceList:number[] = [0];
-    let partner2DateList: string[] = [" "];
+    const partnerWalletData: StatCardProps[] = partnerData.map(partner => {
+        return {
+            interval: 'Daily progress',
+            dates: partner.data.map(item => item.xAxisValue),
+            data: partner.data.map(item => item.yAxisValue),
+            value: partner.username,
+            name: `${partner.username}'s`,
+            trend: "down",
+        }
+    })
 
-    balanceList = thisUserBalanceDailyHistory.content.map(history => {
-        return history.balance;
-    });
+    const userWalletData: StatCardProps = {
+        interval: 'Daily progress',
+        dates: thisUserData.data.map(item => item.xAxisValue),
+        data: thisUserData.data.map(item => item.yAxisValue),
+        value: thisUserData.username,
+        name: `${thisUserData.username}r`,
+        trend: "up",
+    };
 
-    dateList = thisUserBalanceDailyHistory.content.map(history => {
-        return history.dateAsString;
-    });
-
-    partnerBalanceList = partnerBalanceDailyHistory.content.map(history => {
-        return history.balance;
-    });
-
-    partnerDateList = partnerBalanceDailyHistory.content.map(history => {
-        return history.dateAsString;
-    });
-
-    partner2BalanceList = twoPartnerBalanceDailyHistory.content.map(history => {
-        return history.balance;
-    });
-
-    partner2DateList = twoPartnerBalanceDailyHistory.content.map(history => {
-        return history.dateAsString;
-    });
-
-    const walletData: StatCardProps[] = [
-        {
-            interval: 'Your daily progress',
-            dates: dateList,
-            data: balanceList,
-            value: 'currentUser',
-            name: 'Your',
-            trend: 'up'
-        },
-        {
-            interval: 'Partner daily progress',
-            dates: partnerDateList,
-            data: partnerBalanceList,
-            value: 'partner',
-            name: `${partnerName}'s`,
-            trend: 'down'
-        },
-        {
-            interval: 'Partner daily progress',
-            dates: partner2DateList,
-            data: partner2BalanceList,
-            value: 'partner',
-            name: `${twoPartnerName}'s`,
-            trend: 'down'
-        },
-    ];
-
-    const walletDataCombined: SessionsChartProps[] = [
-        {
-            currentUserDates: dateList,
-            currentUserData: balanceList,
-            currentUserName: 'You',
-            partner1Dates: partnerDateList,
-            partner1Data: partnerBalanceList,
-            partner1Name: partnerName,
-            partner2Dates: partner2DateList,
-            partner2Data: partner2BalanceList,
-            partner2Name: twoPartnerName
-        },
-    ];
+    const walletData: StatCardProps[] = [userWalletData, ...partnerWalletData];
 
   return (
     <Box sx={{ width: '100%', maxWidth: { sm: '100%', md: '1700px' } }}>
@@ -122,15 +70,12 @@ export default function MainGrid() {
           </Grid>
         ))}
 
-
         <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
           <HighlightedCard />
         </Grid>
 
         <Grid size={{ xs: 12, md: 6 }}>
-            {walletDataCombined.map((card) => (
-                <SessionsChart {...card}/>
-            ))}
+                <SessionsChart />
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
           <PageViewsBarChart />

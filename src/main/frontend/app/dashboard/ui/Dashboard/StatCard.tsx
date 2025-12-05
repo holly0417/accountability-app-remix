@@ -15,7 +15,7 @@ export type StatCardProps = {
   data: number[];
   value: string;
   name: string;
-  trend: 'up' | 'down' | 'neutral';
+  trend: "up" | "down" | "neutral";
 };
 
 export default function StatCard({

@@ -214,6 +214,7 @@ const ITEMS: TreeViewBaseItem<ExtendedTreeItemProps>[] = [
                     id: '1.6.1',
                     label: 'Your wallet overview',
                     color: 'blue',
+                    path: '/wallet-purchases'
                 },
                 {
                     id: '1.6.2',

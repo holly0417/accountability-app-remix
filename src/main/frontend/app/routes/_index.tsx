@@ -36,38 +36,80 @@ const xThemeComponents = {
 
 const { getCurrentUserWalletHistoryTimeline, getWalletHistoryByUserIds } = walletData();
 const {getPartners} = relationshipData();
-const { getTasksByCurrentUserAndStatus } = taskData();
+const { getTasksByCurrentUserAndStatus, getTasksByUserListAndStatus } = taskData();
+
+export type DataGridAxisValues = {
+    xAxisValue: string
+    yAxisValue: number
+}
+
+export type DataGridProps = {
+    username: string;
+    data: DataGridAxisValues[];
+    taskPendingCount: number;
+    taskInProgressCount: number;
+    taskCompletedCount: number;
+};
 
 export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
     try {
-        const thisUserBalanceDailyHistory = await getCurrentUserWalletHistoryTimeline();
-
         const partners = await getPartners();
 
         if (!partners) {
             throw data("User not found", { status: 404 });
         }
 
-        let onePartner = partners.at(0)?.id as number;
-        let twoPartner = partners.at(1)?.id as number;
+        let partnerData: DataGridProps[] = [];
 
-        let partnerName = partners.at(0)?.username as string;
-        let twoPartnerName = partners.at(1)?.username as string;
+        for (const value of partners) {
+            let name = value.username;
+            let walletHistory = await getWalletHistoryByUserIds(value.id);
+            let taskPendingCount = await getTasksByUserListAndStatus([value.id], TaskStatus.PENDING);
+            let taskInProgressCount = await getTasksByUserListAndStatus([value.id], TaskStatus.IN_PROGRESS);
+            let taskCompletedCount = await getTasksByUserListAndStatus([value.id], TaskStatus.COMPLETED);
 
-        const partnerBalanceDailyHistory = await getWalletHistoryByUserIds(onePartner);
-        const twoPartnerBalanceDailyHistory = await getWalletHistoryByUserIds(twoPartner);
+            let dataValues: DataGridAxisValues[] = walletHistory.content.map((item) => {
+                return {
+                    xAxisValue: item.dateAsString,
+                    yAxisValue: item.balance
+                };
+            });
 
+            const thisGridProp: DataGridProps = {
+                username: name,
+                data: dataValues,
+                taskPendingCount: taskPendingCount.totalElements,
+                taskInProgressCount: taskInProgressCount.totalElements,
+                taskCompletedCount: taskCompletedCount.totalElements,
+            }
+
+            partnerData.push(thisGridProp);
+        }
+
+        const thisUserBalanceDailyHistory = await getCurrentUserWalletHistoryTimeline();
         const currentUserPendingTasks = await getTasksByCurrentUserAndStatus(TaskStatus.PENDING);
         const currentUserInProgressTasks = await getTasksByCurrentUserAndStatus(TaskStatus.IN_PROGRESS);
         const currentUserCompletedTasks = await getTasksByCurrentUserAndStatus(TaskStatus.COMPLETED);
 
+        let userDataValues: DataGridAxisValues[] = thisUserBalanceDailyHistory.content.map((item) => {
+            return {
+                xAxisValue: item.dateAsString,
+                yAxisValue: item.balance
+            };
+        });
 
-        return {thisUserBalanceDailyHistory,
-            partnerBalanceDailyHistory, partnerName,
-            twoPartnerBalanceDailyHistory, twoPartnerName,
-            currentUserPendingTasks,
-            currentUserInProgressTasks,
-            currentUserCompletedTasks
+        const thisUserData: DataGridProps = {
+            username: 'You',
+            data: userDataValues,
+            taskPendingCount: currentUserPendingTasks.totalElements,
+            taskInProgressCount: currentUserInProgressTasks.totalElements,
+            taskCompletedCount: currentUserCompletedTasks.totalElements,
+        }
+
+        const allUsersWalletTaskData: DataGridProps[] = [thisUserData, ...partnerData];
+
+        return {thisUserData,
+            partnerData, allUsersWalletTaskData
         };
 
     } catch (e: any) {

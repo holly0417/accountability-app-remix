@@ -1,7 +1,10 @@
 import { DataGrid } from '@mui/x-data-grid';
 import { columns, rows } from '~/dashboard/data/gridData';
+import {useLoaderData} from "react-router-dom";
+import type {clientLoader} from "~/routes/_index";
 
 export default function CustomizedDataGrid() {
+
   return (
     <DataGrid
       checkboxSelection

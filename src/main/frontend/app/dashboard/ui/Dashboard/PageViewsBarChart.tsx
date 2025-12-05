@@ -3,21 +3,40 @@ import CardContent from '@mui/material/CardContent';
 import Chip from '@mui/material/Chip';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
-import { BarChart } from '@mui/x-charts/BarChart';
+import {BarChart, type BarSeries} from '@mui/x-charts/BarChart';
 import { useTheme } from '@mui/material/styles';
 import {useLoaderData} from "react-router-dom";
 import type {clientLoader} from "~/routes/_index";
+import {data} from "react-router";
+import type {LineSeries} from "@mui/x-charts/LineChart";
+import {TaskStatus} from "~/dto/task/TaskStatus";
+
 
 export default function PageViewsBarChart() {
-    const { currentUserPendingTasks,
-        currentUserInProgressTasks,
-        currentUserCompletedTasks } = useLoaderData<typeof clientLoader>();
+    const { allUsersWalletTaskData } = useLoaderData<typeof clientLoader>();
 
-    let pendingTaskCount= currentUserPendingTasks.totalElements;
-    let inProgressTaskCount = currentUserInProgressTasks.totalElements;
-    let completedTaskCount = currentUserCompletedTasks.totalElements;
+    if(!allUsersWalletTaskData) {
+        throw data("Data not found", { status: 404 });
+    }
 
-  const theme = useTheme();
+    const XAxisData: string[] = allUsersWalletTaskData.map(user => {
+        return user.username;
+    })
+
+    const pendingData: number[] = allUsersWalletTaskData.map(user => {
+        return user.taskPendingCount;
+    })
+
+    const inProgressData: number[] = allUsersWalletTaskData.map(user => {
+        return user.taskInProgressCount;
+    })
+
+    const completedData: number[] = allUsersWalletTaskData.map(user => {
+        return user.taskCompletedCount;
+    })
+
+
+    const theme = useTheme();
   const colorPalette = [
     (theme.vars || theme).palette.primary.dark,
     (theme.vars || theme).palette.primary.main,
@@ -56,7 +75,7 @@ export default function PageViewsBarChart() {
             {
               scaleType: 'band',
               categoryGapRatio: 0.5,
-              data: ['You'],
+              data: XAxisData,
               height: 24,
             },
           ]}
@@ -65,19 +84,19 @@ export default function PageViewsBarChart() {
             {
               id: 'pending',
               label: 'Pending',
-              data: [pendingTaskCount],
+              data: pendingData,
               stack: 'A',
             },
             {
               id: 'in-progress',
               label: 'In Progress',
-              data: [inProgressTaskCount],
+              data: inProgressData,
               stack: 'A',
             },
             {
               id: 'completed',
               label: 'Completed',
-              data: [completedTaskCount],
+              data: completedData,
               stack: 'A',
             },
           ]}
