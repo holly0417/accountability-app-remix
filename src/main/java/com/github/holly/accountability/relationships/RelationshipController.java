@@ -4,6 +4,7 @@ import com.github.holly.accountability.user.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -32,11 +33,16 @@ public class RelationshipController {
                 .toList();
     }
 
+    //5 Dec 2025: got more comfortable returning response entities to frontend (lots of try-catch)
     @GetMapping("/get-partners")
-    public List<UserDto> getPartners(@AuthenticationPrincipal AccountabilitySessionUser user,
+    public ResponseEntity<List<UserDto>> getPartners(@AuthenticationPrincipal AccountabilitySessionUser user,
                                        @PageableDefault(size = 20) Pageable pageable
     ){
-        return relationshipService.getPartners(user.getId(), pageable);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        return ResponseEntity.ok(relationshipService.getPartners(user.getId(), pageable));
     }
 
     @GetMapping("")

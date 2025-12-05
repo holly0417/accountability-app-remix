@@ -12,11 +12,26 @@ import {RelationshipStatus} from '~/dto/relationship/RelationshipStatus';
 import type {RelationshipStatusDto} from '~/dto/relationship/RelationshipStatusDto';
 import {RelationshipDirection} from '~/dto/relationship/RelationshipDirection';
 import type {UserDto} from "~/dto/user/UserDto";
+import {useNavigate} from "react-router";
 
 export function relationshipData() {
 
-  const getPartners = async (): Promise<UserDto[]> => {
-    return (await api.get<UserDto[]>('/relationships/get-partners')).data;
+  const getPartners = async (): Promise<UserDto[] | null> => {
+      try {
+
+          const response = await api.get<UserDto[]>('/relationships/get-partners');
+          return response.data;
+
+      } catch (e: any) {
+//Handle 401 (Unauthorized) if you want specific logic
+          if (e.response && e.response.status === 401) {
+
+              const navigate = useNavigate();
+              navigate('/');
+          }
+
+          throw e;
+      }
   }
 
   const getRelationshipsByStatus = async (status: RelationshipStatus): Promise<Page<RelationshipDto>> => {

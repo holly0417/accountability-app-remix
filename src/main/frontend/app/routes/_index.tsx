@@ -23,6 +23,7 @@ import {
 import type {StatCardProps} from "~/dashboard/ui/Dashboard/StatCard";
 import {walletData} from "~/composables/WalletData";
 import {relationshipData} from "~/composables/RelationshipData";
+import {data, redirect} from "react-router";
 
 const xThemeComponents = {
   ...chartsCustomizations,
@@ -35,17 +36,30 @@ const { getCurrentUserWalletHistoryTimeline, getWalletHistoryByUserIds } = walle
 const {getPartners} = relationshipData();
 
 export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
-    const thisUserBalanceDailyHistory = await getCurrentUserWalletHistoryTimeline();
-    const partnerIdList = await getPartners();
-    let onePartner: number = 0;
+    try {
 
-    if(partnerIdList.length > 0){
-        onePartner = partnerIdList.at(0)?.id as number;
+        const thisUserBalanceDailyHistory = await getCurrentUserWalletHistoryTimeline();
+
+        const partners = await getPartners();
+
+        if (!partners) {
+            throw data("User not found", { status: 404 });
+        }
+
+        let onePartner = partners.at(0)?.id as number;
+        let partnerName = partners.at(0)?.username as string;
+        const partnerBalanceDailyHistory = await getWalletHistoryByUserIds(onePartner);
+
+        return {thisUserBalanceDailyHistory, partnerBalanceDailyHistory, partnerName};
+
+    } catch (e: any) {
+
+        if (e.response?.status === 401) {
+            throw redirect("/login");
+        }
+
+        throw e;
     }
-
-    const partnerBalanceDailyHistory = await getWalletHistoryByUserIds(onePartner);
-
-    return {thisUserBalanceDailyHistory, partnerBalanceDailyHistory};
 }
 
 export default function _index(props: { disableCustomTheme?: boolean }) {

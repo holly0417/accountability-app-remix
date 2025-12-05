@@ -10,20 +10,20 @@ import { areaElementClasses } from '@mui/x-charts/LineChart';
 import type {LocalDateTime} from "ts-extended-types";
 
 export type StatCardProps = {
-  title: string;
   interval: string;
   dates: string[];
   data: number[];
   value: string;
+  name: string;
   trend: 'up' | 'down' | 'neutral';
 };
 
 export default function StatCard({
-  title,
   interval,
   dates,
   data,
   value,
+    name,
     trend,
 }: StatCardProps) {
   const theme = useTheme();
@@ -58,7 +58,7 @@ export default function StatCard({
     <Card variant="outlined" sx={{ height: '100%', flexGrow: 1 }}>
       <CardContent>
         <Typography component="h2" variant="subtitle2" gutterBottom>
-          {title}
+            {`${name} wallet`}
         </Typography>
         <Stack
           direction="column"
@@ -81,6 +81,7 @@ export default function StatCard({
               area
               showHighlight
               showTooltip
+              valueFormatter={(value) => (value === null ? '' : value.toFixed(2))}
               xAxis={{
                 scaleType: 'band',
                 data: dates, // Use the correct property 'data' for xAxis

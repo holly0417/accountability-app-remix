@@ -24,7 +24,7 @@ import type {clientLoader} from "~/routes/_index";
 
 
 export default function MainGrid() {
-  const { thisUserBalanceDailyHistory, partnerBalanceDailyHistory } = useLoaderData<typeof clientLoader>();
+  const { thisUserBalanceDailyHistory, partnerBalanceDailyHistory, partnerName } = useLoaderData<typeof clientLoader>();
 
     let balanceList:number[] = [0];
     let dateList: string[] = [" "];
@@ -49,19 +49,19 @@ export default function MainGrid() {
 
     const walletData: StatCardProps[] = [
         {
-            title: 'Your wallet',
             interval: 'Your daily progress',
             dates: dateList,
             data: balanceList,
-            value: 'current-user-wallet-timeline',
+            value: 'currentUser',
+            name: 'Your',
             trend: 'up'
         },
         {
-            title: 'Partner wallet',
             interval: 'Partner daily progress',
             dates: partnerDateList,
             data: partnerBalanceList,
-            value: 'current-user-wallet-timeline',
+            value: 'partner',
+            name: `${partnerName}'s`,
             trend: 'down'
         },
     ];
