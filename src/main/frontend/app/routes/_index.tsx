@@ -148,8 +148,10 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
             taskCompletedCount: currentUserCompletedTasks.totalElements,
         }
 
+        //data not yet ordered correctly for multi-user graph visuals
         const allUsersWalletTaskData: DataGridProps[] = [thisUserData, ...partnerData];
 
+        //get unique dates recorded for WalletBalanceHistory across multiple users
         const allDates: string[][] = allUsersWalletTaskData.map((item) => {
             return item.data.map((point) => {
                 return point.xAxisValue;
@@ -166,7 +168,7 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
 
         const uniqueDates = sortDateLists(finalDates)
 
-        //Map correct dates to wallet balance and user ID
+        //Map of existing dates to wallet balances and user ID to refer to when ordering data
         const datesToBalance = new Map<string, Map<string, number>>();
 
         for(const date of uniqueDates) {
