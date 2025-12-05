@@ -5,20 +5,26 @@ import type {clientLoader} from "~/routes/_index";
 
 export default function CustomizedDataGrid() {
 
-const { allUsersWalletTaskData } = useLoaderData<typeof clientLoader>();
+const { allDataCorrectDates } = useLoaderData<typeof clientLoader>();
 let count = 0;
 
-const rowProp: GridRowsProp = allUsersWalletTaskData.map(item => {
+const rowProp: GridRowsProp = allDataCorrectDates.map(item => {
     count = count + 1;
+
+    let balance = item.data.map(point => {
+        return point.yAxisValue;
+    })
+
+    let countBalance = balance.length-1;
 
     return {
         id: count,
         pageTitle: item.username,
-        status: 'Online',
+        balance: balance.at(countBalance)!.toFixed(2),
         pendingCount: item.taskPendingCount,
         inProgressCount: item.taskInProgressCount,
         completedCount: item.taskCompletedCount,
-        walletBalance: item.data.map(point => point.yAxisValue),
+        walletBalance: item.data.map(point => point.yAxisValue.toFixed(2)),
     }
 })
 

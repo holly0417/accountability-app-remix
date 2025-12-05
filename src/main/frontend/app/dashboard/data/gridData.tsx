@@ -7,23 +7,9 @@ import type {clientLoader} from "~/routes/_index";
 
 type SparkLineData = number[];
 
-function getDaysInMonth(month: number, year: number) {
-  const date = new Date(year, month, 0);
-  const monthName = date.toLocaleDateString('en-US', {
-    month: 'short',
-  });
-  const daysInMonth = date.getDate();
-  const days = [];
-  let i = 1;
-  while (days.length < daysInMonth) {
-    days.push(`${monthName} ${i}`);
-    i += 1;
-  }
-  return days;
-}
-
 function renderSparklineCell(params: GridCellParams<SparkLineData, any>) {
-  const data = getDaysInMonth(4, 2024);
+    const { uniqueDates } = useLoaderData<typeof clientLoader>();
+  const data = uniqueDates;
   const { value, colDef } = params;
 
   if (!value || value.length === 0) {
@@ -49,13 +35,17 @@ function renderSparklineCell(params: GridCellParams<SparkLineData, any>) {
   );
 }
 
-function renderStatus(status: 'Online' | 'Offline') {
+function renderStatus(balance: number) {
+
   const colors: { [index: string]: 'success' | 'default' } = {
     Online: 'success',
     Offline: 'default',
   };
 
-  return <Chip label={status} color={colors[status]} size="small" />;
+  if(balance > 0){
+      return <Chip label={balance} color={colors['success']} size="small" />;
+  }
+    return <Chip label={balance} color={colors['default']} size="small" />;
 }
 
 export function renderAvatar(
@@ -82,8 +72,8 @@ export function renderAvatar(
 export const columns: GridColDef[] = [
   { field: 'pageTitle', headerName: 'User', flex: 1.5, minWidth: 200 },
   {
-    field: 'status',
-    headerName: 'Status',
+    field: 'balance',
+    headerName: 'balance',
     flex: 0.5,
     minWidth: 80,
     renderCell: (params) => renderStatus(params.value as any),
