@@ -8,7 +8,7 @@ import CustomizedTreeView from './CustomizedTreeView';
 import CustomizedDataGrid from './CustomizedDataGrid';
 import HighlightedCard from './HighlightedCard';
 import PageViewsBarChart from './PageViewsBarChart';
-import SessionsChart from './SessionsChart';
+import SessionsChart, {type SessionsChartProps} from './SessionsChart';
 import StatCard, {type StatCardProps} from './StatCard';
 import {walletData} from "~/composables/WalletData";
 import type {LocalDateTime} from "ts-extended-types";
@@ -17,6 +17,7 @@ import type {Page} from "~/dto/pagination/Page";
 import type {PurchaseDto} from "~/dto/purchase/PurchaseDto";
 import {PurchaseRouteStatus} from "~/dto/purchase/PurchaseRouteStatus";
 import {PurchaseStatus} from "~/dto/purchase/PurchaseStatus";
+
 import {useLoaderData} from "react-router-dom";
 
 import React from "react";
@@ -84,6 +85,19 @@ export default function MainGrid() {
         },
     ];
 
+    const walletDataCombined: SessionsChartProps[] = [
+        {
+            currentUserDates: dateList,
+            currentUserData: balanceList,
+            currentUserName: 'You',
+            partner1Dates: partnerDateList,
+            partner1Data: partnerBalanceList,
+            partner1Name: partnerName,
+            partner2Dates: partner2DateList,
+            partner2Data: partner2BalanceList,
+            partner2Name: twoPartnerName
+        },
+    ];
 
   return (
     <Box sx={{ width: '100%', maxWidth: { sm: '100%', md: '1700px' } }}>
@@ -110,7 +124,9 @@ export default function MainGrid() {
         </Grid>
 
         <Grid size={{ xs: 12, md: 6 }}>
-          <SessionsChart />
+            {walletDataCombined.map((card) => (
+                <SessionsChart {...card}/>
+            ))}
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
           <PageViewsBarChart />

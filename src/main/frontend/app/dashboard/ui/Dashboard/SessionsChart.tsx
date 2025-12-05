@@ -17,24 +17,72 @@ function AreaGradient({ color, id }: { color: string; id: string }) {
   );
 }
 
-function getDaysInMonth(month: number, year: number) {
-  const date = new Date(year, month, 0);
-  const monthName = date.toLocaleDateString('en-US', {
-    month: 'short',
-  });
-  const daysInMonth = date.getDate();
-  const days = [];
-  let i = 1;
-  while (days.length < daysInMonth) {
-    days.push(`${monthName} ${i}`);
-    i += 1;
-  }
-  return days;
+function getEarlierDate(date1: string, date2: string): number {
+    //MM-DD-YYYY => return -1 if date1 is earlier than date2
+    //return 1 if date1 later than date2
+    //return 0 if same date
+    const firstDate = date1.split("-");
+    const secondDate = date2.split("-");
+
+    const firstYear = Number(firstDate.at(2));
+    const secondYear = Number(secondDate.at(2));
+
+    if(firstYear > secondYear){
+        return 1;
+    } else if (firstYear < secondYear) {
+        return -1;
+    }
+
+    const firstMonth = Number(firstDate.at(1));
+    const secondMonth = Number(secondDate.at(1));
+
+    if(firstMonth > secondMonth){
+        return 1;
+    } else if (firstMonth < secondMonth) {
+        return -1;
+    }
+
+    const firstDay = Number(firstDate.at(0));
+    const secondDay = Number(secondDate.at(0));
+
+    if(firstDay > secondDay){
+        return 1;
+    } else if (firstDay < secondDay) {
+        return -1;
+    }
+
+    return 0;
 }
 
-export default function SessionsChart() {
+function sortDateLists(dateList1:string[], dateList2:string[]): string[] {
+    return [...new Set([...dateList1, ...dateList2])].sort((a, b) => getEarlierDate(a, b));
+}
+
+export type SessionsChartProps = {
+    currentUserDates: string[];
+    currentUserData: number[];
+    currentUserName: string;
+    partner1Dates: string[];
+    partner1Data: number[];
+    partner1Name: string;
+    partner2Dates: string[];
+    partner2Data: number[];
+    partner2Name: string;
+};
+
+export default function SessionsChart({ currentUserDates,
+                                          currentUserData,
+                                          currentUserName,
+                                          partner1Dates,
+                                          partner1Data,
+                                          partner1Name,
+                                          partner2Dates,
+                                          partner2Data,
+                                          partner2Name}: SessionsChartProps) {
+
   const theme = useTheme();
-  const data = getDaysInMonth(4, 2024);
+  let dates1 = sortDateLists(currentUserDates, partner1Dates);
+  const data = sortDateLists(dates1, partner2Dates);
 
   const colorPalette = [
     theme.palette.primary.light,
@@ -46,7 +94,7 @@ export default function SessionsChart() {
     <Card variant="outlined" sx={{ width: '100%' }}>
       <CardContent>
         <Typography component="h2" variant="subtitle2" gutterBottom>
-          Sessions
+          All wallets
         </Typography>
         <Stack sx={{ justifyContent: 'space-between' }}>
           <Stack
@@ -58,12 +106,12 @@ export default function SessionsChart() {
             }}
           >
             <Typography variant="h4" component="p">
-              13,277
+              Wallets
             </Typography>
-            <Chip size="small" color="success" label="+35%" />
+            <Chip size="small" color="success" label="Active" />
           </Stack>
           <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-            Sessions per day for the last 30 days
+            Combined visual of your and your partners' wallets over time
           </Typography>
         </Stack>
         <LineChart
@@ -72,74 +120,65 @@ export default function SessionsChart() {
             {
               scaleType: 'point',
               data,
-              tickInterval: (index, i) => (i + 1) % 5 === 0,
               height: 24,
             },
           ]}
           yAxis={[{ width: 50 }]}
           series={[
             {
-              id: 'direct',
-              label: 'Direct',
+              id: currentUserName,
+              label: currentUserName,
               showMark: false,
               curve: 'linear',
               stack: 'total',
               area: true,
               stackOrder: 'ascending',
-              data: [
-                300, 900, 600, 1200, 1500, 1800, 2400, 2100, 2700, 3000, 1800, 3300,
-                3600, 3900, 4200, 4500, 3900, 4800, 5100, 5400, 4800, 5700, 6000,
-                6300, 6600, 6900, 7200, 7500, 7800, 8100,
-              ],
+              data: currentUserData,
+                valueFormatter: (value) => (value == null ? '' : value.toFixed(2)),
             },
             {
-              id: 'referral',
-              label: 'Referral',
+              id: partner1Name,
+              label: partner1Name,
               showMark: false,
               curve: 'linear',
               stack: 'total',
               area: true,
               stackOrder: 'ascending',
-              data: [
-                500, 900, 700, 1400, 1100, 1700, 2300, 2000, 2600, 2900, 2300, 3200,
-                3500, 3800, 4100, 4400, 2900, 4700, 5000, 5300, 5600, 5900, 6200,
-                6500, 5600, 6800, 7100, 7400, 7700, 8000,
-              ],
+              data: partner1Data,
+                valueFormatter: (value) => (value == null ? '' : value.toFixed(2)),
             },
             {
-              id: 'organic',
-              label: 'Organic',
+              id: partner2Name,
+              label: partner2Name,
               showMark: false,
               curve: 'linear',
               stack: 'total',
               stackOrder: 'ascending',
-              data: [
-                1000, 1500, 1200, 1700, 1300, 2000, 2400, 2200, 2600, 2800, 2500,
-                3000, 3400, 3700, 3200, 3900, 4100, 3500, 4300, 4500, 4000, 4700,
-                5000, 5200, 4800, 5400, 5600, 5900, 6100, 6300,
-              ],
+              data: partner2Data,
               area: true,
+                valueFormatter: (value) => (value == null ? '' : value.toFixed(2)),
             },
           ]}
+
           height={250}
           margin={{ left: 0, right: 20, top: 20, bottom: 0 }}
           grid={{ horizontal: true }}
           sx={{
-            '& .MuiAreaElement-series-organic': {
-              fill: "url('#organic')",
+            [`& .MuiAreaElement-series-${currentUserName}`]: {
+              fill: `url('#${currentUserName}')`,
             },
-            '& .MuiAreaElement-series-referral': {
-              fill: "url('#referral')",
+            [`& .MuiAreaElement-series-${partner1Name}`]: {
+              fill: `url('#${partner1Name}')`,
             },
-            '& .MuiAreaElement-series-direct': {
-              fill: "url('#direct')",
+            [`& .MuiAreaElement-series-${partner2Name}`]: {
+              fill: `url('#${partner2Name}')`,
             },
           }}
           hideLegend
         >
-          <AreaGradient color={theme.palette.primary.dark} id="organic" />
-          <AreaGradient color={theme.palette.primary.main} id="referral" />
-          <AreaGradient color={theme.palette.primary.light} id="direct" />
+          <AreaGradient color={theme.palette.primary.dark} id={currentUserName} />
+          <AreaGradient color={theme.palette.primary.main} id={partner1Name} />
+          <AreaGradient color={theme.palette.primary.light} id={partner2Name} />
         </LineChart>
       </CardContent>
     </Card>
