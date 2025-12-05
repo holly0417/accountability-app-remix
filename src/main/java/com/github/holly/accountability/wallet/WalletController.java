@@ -50,13 +50,13 @@ public class WalletController {
 
     @GetMapping("/history-timeline")
     public Page<WalletHistoryDto> getWalletHistoryTimeline(@AuthenticationPrincipal AccountabilitySessionUser user,
-                                                   @RequestParam(required = false) List<Long> userIds,
+                                                   @RequestParam(required = false) Long userId,
                                                    @PageableDefault(size=20) Pageable pageable){
-        if(userIds == null || userIds.isEmpty()) {
-            return walletService.getWalletDailyTimelineByUserId(List.of(user.getId()), pageable)
+        if(userId == null) {
+            return walletService.getWalletDailyTimelineByUserId(user.getId(), pageable)
                     .map(this::convertWalletHistoryToWalletHistoryDto);
         }
-        return walletService.getWalletDailyTimelineByUserId(userIds, pageable)
+        return walletService.getWalletDailyTimelineByUserId(userId, pageable)
                 .map(this::convertWalletHistoryToWalletHistoryDto);
     }
 

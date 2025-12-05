@@ -11,11 +11,12 @@ import type {RelationshipDto} from '~/dto/relationship/RelationshipDto';
 import {RelationshipStatus} from '~/dto/relationship/RelationshipStatus';
 import type {RelationshipStatusDto} from '~/dto/relationship/RelationshipStatusDto';
 import {RelationshipDirection} from '~/dto/relationship/RelationshipDirection';
+import type {UserDto} from "~/dto/user/UserDto";
 
 export function relationshipData() {
 
-  const getPartnerIdList = async (): Promise<number[]> => {
-    return (await api.get<number[]>('/relationships/get-partner-id-list')).data;
+  const getPartners = async (): Promise<UserDto[]> => {
+    return (await api.get<UserDto[]>('/relationships/get-partners')).data;
   }
 
   const getRelationshipsByStatus = async (status: RelationshipStatus): Promise<Page<RelationshipDto>> => {
@@ -62,5 +63,5 @@ export function relationshipData() {
   }
 
 
-  return { getPartnerIdList, getRelationshipsByStatus, getRequests, deleteRelationship, sendRequest, search, updateRelationship };
+  return { getPartners, getRelationshipsByStatus, getRequests, deleteRelationship, sendRequest, search, updateRelationship };
 }

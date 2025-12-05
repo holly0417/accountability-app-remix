@@ -32,10 +32,10 @@ export function walletData() {
     }
 
     const getWalletHistoryByUserIds
-        = async( userIds: number[] ): Promise<Page<WalletHistoryDto>> => {
-        return (await api.get<Page<WalletHistoryDto>>('/wallet/history', {
+        = async( userId: number ): Promise<Page<WalletHistoryDto>> => {
+        return (await api.get<Page<WalletHistoryDto>>('/wallet/history-timeline', {
             params: {
-                userIds: userIds
+                userId: userId
             },
             paramsSerializer: {
                 indexes: null

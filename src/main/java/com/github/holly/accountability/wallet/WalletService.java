@@ -48,7 +48,7 @@ public class WalletService {
         return this.walletHistoryRepository.findByUserId(userIds, pageable);
     }
 
-    public Page<WalletHistory> getWalletDailyTimelineByUserId(List<Long> userIds, Pageable pageable){
+    public Page<WalletHistory> getWalletDailyTimelineByUserId(Long userIds, Pageable pageable){
         return this.walletHistoryRepository.getDailyTimelineByUserId(userIds, pageable);
     }
 

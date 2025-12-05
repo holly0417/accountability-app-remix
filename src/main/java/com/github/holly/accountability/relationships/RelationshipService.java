@@ -116,7 +116,7 @@ public class RelationshipService {
         return List.of();
     }
 
-    public List<Long> getPartnerIdsOnly(Long currentUserId, Pageable pageable){
+    public List<UserDto> getPartners(Long currentUserId, Pageable pageable){
         Page<Relationship> relationships = relationshipRepository
                 .getRelationshipsByUserIdAndStatusIgnoreDirection(
                         currentUserId, List.of(RelationshipStatus.APPROVED),
@@ -125,12 +125,10 @@ public class RelationshipService {
         List<UserDto> partnerDtos = getPartnersUserInfoFromGivenListForGivenUser(
                 currentUserId, relationships.getContent());
 
-        List<Long> finalList = partnerDtos.stream().map(UserDto::getId).toList();
-
-        if(finalList.isEmpty()){
+        if(partnerDtos.isEmpty()){
             return List.of();
         }
-        return finalList;
+        return partnerDtos;
     }
 
     public Page<Relationship> getRelationshipsByStatus(Long currentUserId,

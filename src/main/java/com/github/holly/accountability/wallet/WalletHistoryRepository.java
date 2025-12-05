@@ -40,6 +40,6 @@ public interface WalletHistoryRepository extends JpaRepository<WalletHistory, Lo
             AS b
         WHERE rownum=1;
         """, nativeQuery = true)
-    Page<WalletHistory> getDailyTimelineByUserId(List<Long> userIds, Pageable pageable);
+    Page<WalletHistory> getDailyTimelineByUserId(Long userIds, Pageable pageable);
 }
 

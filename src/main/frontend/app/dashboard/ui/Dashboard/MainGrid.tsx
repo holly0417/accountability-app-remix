@@ -24,16 +24,26 @@ import type {clientLoader} from "~/routes/_index";
 
 
 export default function MainGrid() {
-  const { thisHistoryPage } = useLoaderData<typeof clientLoader>();
+  const { thisUserBalanceDailyHistory, partnerBalanceDailyHistory } = useLoaderData<typeof clientLoader>();
 
     let balanceList:number[] = [0];
     let dateList: string[] = [" "];
+    let partnerBalanceList:number[] = [0];
+    let partnerDateList: string[] = [" "];
 
-    balanceList = thisHistoryPage.content.map(history => {
+    balanceList = thisUserBalanceDailyHistory.content.map(history => {
         return history.balance;
     });
 
-    dateList = thisHistoryPage.content.map(history => {
+    dateList = thisUserBalanceDailyHistory.content.map(history => {
+        return history.dateAsString;
+    });
+
+    partnerBalanceList = partnerBalanceDailyHistory.content.map(history => {
+        return history.balance;
+    });
+
+    partnerDateList = partnerBalanceDailyHistory.content.map(history => {
         return history.dateAsString;
     });
 
@@ -45,7 +55,15 @@ export default function MainGrid() {
             data: balanceList,
             value: 'current-user-wallet-timeline',
             trend: 'up'
-        }
+        },
+        {
+            title: 'Partner wallet',
+            interval: 'Partner daily progress',
+            dates: partnerDateList,
+            data: partnerBalanceList,
+            value: 'current-user-wallet-timeline',
+            trend: 'down'
+        },
     ];
 
 
@@ -68,6 +86,7 @@ export default function MainGrid() {
           </Grid>
         ))}
 
+
         <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
           <HighlightedCard />
         </Grid>
@@ -78,7 +97,7 @@ export default function MainGrid() {
         <Grid size={{ xs: 12, md: 6 }}>
           <PageViewsBarChart />
         </Grid>
-      </Grid>
+    </Grid>
 
       <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
         Details

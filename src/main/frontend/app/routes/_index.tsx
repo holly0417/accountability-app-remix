@@ -22,6 +22,7 @@ import {
 } from '~/dashboard/ui/Dashboard/theme/customizations';
 import type {StatCardProps} from "~/dashboard/ui/Dashboard/StatCard";
 import {walletData} from "~/composables/WalletData";
+import {relationshipData} from "~/composables/RelationshipData";
 
 const xThemeComponents = {
   ...chartsCustomizations,
@@ -30,12 +31,21 @@ const xThemeComponents = {
   ...treeViewCustomizations,
 };
 
-const { getCurrentUserWalletHistoryTimeline } = walletData();
+const { getCurrentUserWalletHistoryTimeline, getWalletHistoryByUserIds } = walletData();
+const {getPartners} = relationshipData();
 
 export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
-    const thisHistoryPage = await getCurrentUserWalletHistoryTimeline();
+    const thisUserBalanceDailyHistory = await getCurrentUserWalletHistoryTimeline();
+    const partnerIdList = await getPartners();
+    let onePartner: number = 0;
 
-    return {thisHistoryPage};
+    if(partnerIdList.length > 0){
+        onePartner = partnerIdList.at(0)?.id as number;
+    }
+
+    const partnerBalanceDailyHistory = await getWalletHistoryByUserIds(onePartner);
+
+    return {thisUserBalanceDailyHistory, partnerBalanceDailyHistory};
 }
 
 export default function _index(props: { disableCustomTheme?: boolean }) {

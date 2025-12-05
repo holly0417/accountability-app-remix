@@ -32,11 +32,11 @@ public class RelationshipController {
                 .toList();
     }
 
-    @GetMapping("/get-partner-id-list")
-    public List<Long> getPartnerIdList(@AuthenticationPrincipal AccountabilitySessionUser user,
+    @GetMapping("/get-partners")
+    public List<UserDto> getPartners(@AuthenticationPrincipal AccountabilitySessionUser user,
                                        @PageableDefault(size = 20) Pageable pageable
     ){
-        return relationshipService.getPartnerIdsOnly(user.getId(), pageable);
+        return relationshipService.getPartners(user.getId(), pageable);
     }
 
     @GetMapping("")
