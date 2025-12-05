@@ -1,7 +1,7 @@
 import TaskForm from '~/components/forms/TaskForm';
 import {taskData} from "~/composables/TaskData";
 import {TaskStatus} from "~/dto/task/TaskStatus";
-import {type ActionFunctionArgs} from "react-router";
+import {type ActionFunctionArgs, data} from "react-router";
 import TaskDataGrid from "~/components/grids/task-grid";
 import type {Route} from "./+types/task"; //this is OK!
 import {userData} from "~/composables/UserData";
@@ -22,6 +22,10 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
     }
 
     const userId = await getCurrentUserInfo();
+
+    if (!userId) {
+        throw data("User not found", { status: 404 });
+    }
 
     switch(status) {
         case TaskRouteStatus.IN_PROGRESS:

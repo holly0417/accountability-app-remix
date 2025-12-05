@@ -24,6 +24,8 @@ import type {StatCardProps} from "~/dashboard/ui/Dashboard/StatCard";
 import {walletData} from "~/composables/WalletData";
 import {relationshipData} from "~/composables/RelationshipData";
 import {data, redirect} from "react-router";
+import {taskData} from "~/composables/TaskData";
+import {TaskStatus} from "~/dto/task/TaskStatus";
 
 const xThemeComponents = {
   ...chartsCustomizations,
@@ -34,10 +36,10 @@ const xThemeComponents = {
 
 const { getCurrentUserWalletHistoryTimeline, getWalletHistoryByUserIds } = walletData();
 const {getPartners} = relationshipData();
+const { getTasksByCurrentUserAndStatus } = taskData();
 
 export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
     try {
-
         const thisUserBalanceDailyHistory = await getCurrentUserWalletHistoryTimeline();
 
         const partners = await getPartners();
@@ -55,9 +57,18 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
         const partnerBalanceDailyHistory = await getWalletHistoryByUserIds(onePartner);
         const twoPartnerBalanceDailyHistory = await getWalletHistoryByUserIds(twoPartner);
 
+        const currentUserPendingTasks = await getTasksByCurrentUserAndStatus(TaskStatus.PENDING);
+        const currentUserInProgressTasks = await getTasksByCurrentUserAndStatus(TaskStatus.IN_PROGRESS);
+        const currentUserCompletedTasks = await getTasksByCurrentUserAndStatus(TaskStatus.COMPLETED);
+
+
         return {thisUserBalanceDailyHistory,
             partnerBalanceDailyHistory, partnerName,
-            twoPartnerBalanceDailyHistory, twoPartnerName};
+            twoPartnerBalanceDailyHistory, twoPartnerName,
+            currentUserPendingTasks,
+            currentUserInProgressTasks,
+            currentUserCompletedTasks
+        };
 
     } catch (e: any) {
 

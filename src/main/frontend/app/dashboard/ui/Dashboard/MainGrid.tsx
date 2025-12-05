@@ -25,7 +25,11 @@ import type {clientLoader} from "~/routes/_index";
 
 
 export default function MainGrid() {
-  const { thisUserBalanceDailyHistory, partnerBalanceDailyHistory, partnerName, twoPartnerBalanceDailyHistory, twoPartnerName } = useLoaderData<typeof clientLoader>();
+  const { thisUserBalanceDailyHistory,
+      partnerBalanceDailyHistory,
+      partnerName,
+      twoPartnerBalanceDailyHistory,
+      twoPartnerName } = useLoaderData<typeof clientLoader>();
 
     let balanceList:number[] = [0];
     let dateList: string[] = [" "];
