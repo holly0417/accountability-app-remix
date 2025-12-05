@@ -1,14 +1,32 @@
-import { DataGrid } from '@mui/x-data-grid';
-import { columns, rows } from '~/dashboard/data/gridData';
+import {DataGrid, type GridRowsProp} from '@mui/x-data-grid';
+import { columns } from '~/dashboard/data/gridData';
 import {useLoaderData} from "react-router-dom";
 import type {clientLoader} from "~/routes/_index";
 
 export default function CustomizedDataGrid() {
 
+const { allUsersWalletTaskData } = useLoaderData<typeof clientLoader>();
+let count = 0;
+
+const rowProp: GridRowsProp = allUsersWalletTaskData.map(item => {
+    count = count + 1;
+
+    return {
+        id: count,
+        pageTitle: item.username,
+        status: 'Online',
+        pendingCount: item.taskPendingCount,
+        inProgressCount: item.taskInProgressCount,
+        completedCount: item.taskCompletedCount,
+        walletBalance: item.data.map(point => point.yAxisValue),
+    }
+})
+
+
   return (
     <DataGrid
       checkboxSelection
-      rows={rows}
+      rows={rowProp}
       columns={columns}
       getRowClassName={(params) =>
         params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'

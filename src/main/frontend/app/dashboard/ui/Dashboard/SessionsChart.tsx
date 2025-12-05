@@ -21,69 +21,14 @@ function AreaGradient({ color, id }: { color: string; id: string }) {
   );
 }
 
-function getEarlierDate(date1: string, date2: string): number {
-    //MM-DD-YYYY => return -1 if date1 is earlier than date2
-    //return 1 if date1 later than date2
-    //return 0 if same date
-    const firstDate = date1.split("-");
-    const secondDate = date2.split("-");
-
-    const firstYear = Number(firstDate.at(2));
-    const secondYear = Number(secondDate.at(2));
-
-    if(firstYear > secondYear){
-        return 1;
-    } else if (firstYear < secondYear) {
-        return -1;
-    }
-
-    const firstMonth = Number(firstDate.at(1));
-    const secondMonth = Number(secondDate.at(1));
-
-    if(firstMonth > secondMonth){
-        return 1;
-    } else if (firstMonth < secondMonth) {
-        return -1;
-    }
-
-    const firstDay = Number(firstDate.at(0));
-    const secondDay = Number(secondDate.at(0));
-
-    if(firstDay > secondDay){
-        return 1;
-    } else if (firstDay < secondDay) {
-        return -1;
-    }
-
-    return 0;
-}
-
-function sortDateLists(dateList:string[]): string[] {
-    return [...new Set([...dateList])].sort((a, b) => getEarlierDate(a, b));
-}
-
 export default function SessionsChart() {
-  const { allUsersWalletTaskData } = useLoaderData<typeof clientLoader>();
+  const { allDataCorrectDates, uniqueDates } = useLoaderData<typeof clientLoader>();
 
   const theme = useTheme();
 
-  const allDates: string[][] = allUsersWalletTaskData.map((item) => {
-      return item.data.map((point) => {
-          return point.xAxisValue;
-      });
-  });
+  const data = uniqueDates;
 
-  let finalDates: string[] = []
-  let placeholder: string[] = []
-
-  for(const date of allDates) {
-      finalDates = [...placeholder, ...date];
-      placeholder = finalDates;
-  }
-
-  const data = sortDateLists(finalDates)
-
-  const graphSettings: LineSeries[] = allUsersWalletTaskData.map(user => {
+  const graphSettings: LineSeries[] = allDataCorrectDates.map(user => {
       return {
           id: user.username,
           label: user.username,

@@ -2,6 +2,8 @@ import Avatar from '@mui/material/Avatar';
 import Chip from '@mui/material/Chip';
 import type { GridCellParams, GridRowsProp, GridColDef } from '@mui/x-data-grid';
 import { SparkLineChart } from '@mui/x-charts/SparkLineChart';
+import {useLoaderData} from "react-router-dom";
+import type {clientLoader} from "~/routes/_index";
 
 type SparkLineData = number[];
 
@@ -78,7 +80,7 @@ export function renderAvatar(
 }
 
 export const columns: GridColDef[] = [
-  { field: 'pageTitle', headerName: 'Page Title', flex: 1.5, minWidth: 200 },
+  { field: 'pageTitle', headerName: 'User', flex: 1.5, minWidth: 200 },
   {
     field: 'status',
     headerName: 'Status',
@@ -87,61 +89,34 @@ export const columns: GridColDef[] = [
     renderCell: (params) => renderStatus(params.value as any),
   },
   {
-    field: 'users',
-    headerName: 'Users',
-    headerAlign: 'right',
-    align: 'right',
-    flex: 1,
-    minWidth: 80,
-  },
-  {
-    field: 'eventCount',
-    headerName: 'Event Count',
+    field: 'pendingCount',
+    headerName: 'Tasks pending',
     headerAlign: 'right',
     align: 'right',
     flex: 1,
     minWidth: 100,
   },
   {
-    field: 'viewsPerUser',
-    headerName: 'Views per User',
+    field: 'inProgressCount',
+    headerName: 'Tasks in progress',
     headerAlign: 'right',
     align: 'right',
     flex: 1,
     minWidth: 120,
   },
   {
-    field: 'averageTime',
-    headerName: 'Average Time',
+    field: 'completedCount',
+    headerName: 'Tasks completed',
     headerAlign: 'right',
     align: 'right',
     flex: 1,
     minWidth: 100,
   },
   {
-    field: 'conversions',
-    headerName: 'Daily Conversions',
+    field: 'walletBalance',
+    headerName: 'Daily wallet balance',
     flex: 1,
     minWidth: 150,
     renderCell: renderSparklineCell,
   },
-];
-
-export const rows: GridRowsProp = [
-  {
-    id: 1,
-    pageTitle: 'You',
-    status: 'Online',
-    eventCount: 8345,
-    users: 212423,
-    viewsPerUser: 18.5,
-    averageTime: '2m 15s',
-    conversions: [
-      469172, 488506, 592287, 617401, 640374, 632751, 668638, 807246, 749198, 944863,
-      911787, 844815, 992022, 1143838, 1446926, 1267886, 1362511, 1348746, 1560533,
-      1670690, 1695142, 1916613, 1823306, 1683646, 2025965, 2529989, 3263473,
-      3296541, 3041524, 2599497,
-    ],
-  },
-
 ];

@@ -51,6 +51,48 @@ export type DataGridProps = {
     taskCompletedCount: number;
 };
 
+function getEarlierDate(date1: string, date2: string): number {
+    //MM-DD-YYYY => return -1 if date1 is earlier than date2
+    //return 1 if date1 later than date2
+    //return 0 if same date
+    const firstDate = date1.split("-");
+    const secondDate = date2.split("-");
+
+    const firstYear = Number(firstDate.at(2));
+    const secondYear = Number(secondDate.at(2));
+
+    if(firstYear > secondYear){
+        return 1;
+    } else if (firstYear < secondYear) {
+        return -1;
+    }
+
+    //U.S. date format!
+    const firstMonth = Number(firstDate.at(0));
+    const secondMonth = Number(secondDate.at(0));
+
+    if(firstMonth > secondMonth){
+        return 1;
+    } else if (firstMonth < secondMonth) {
+        return -1;
+    }
+
+    const firstDay = Number(firstDate.at(1));
+    const secondDay = Number(secondDate.at(1));
+
+    if(firstDay > secondDay){
+        return 1;
+    } else if (firstDay < secondDay) {
+        return -1;
+    }
+
+    return 0;
+}
+
+function sortDateLists(dateList:string[]): string[] {
+    return [...new Set([...dateList])].sort((a, b) => getEarlierDate(a, b));
+}
+
 export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
     try {
         const partners = await getPartners();
@@ -108,8 +150,83 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
 
         const allUsersWalletTaskData: DataGridProps[] = [thisUserData, ...partnerData];
 
+        const allDates: string[][] = allUsersWalletTaskData.map((item) => {
+            return item.data.map((point) => {
+                return point.xAxisValue;
+            });
+        });
+
+        let finalDates: string[] = []
+        let placeholder: string[] = []
+
+        for(const date of allDates) {
+            finalDates = [...placeholder, ...date];
+            placeholder = finalDates;
+        }
+
+        const uniqueDates = sortDateLists(finalDates)
+
+        //Map correct dates to wallet balance and user ID
+        const datesToBalance = new Map<string, Map<string, number>>();
+
+        for(const date of uniqueDates) {
+            let userNameToBalance = new Map<string, number>();
+            for (const item of allUsersWalletTaskData){
+                let itemDateList = item.data.map(point => point.xAxisValue);
+                let itemBalanceList = item.data.map(point => point.yAxisValue);
+                let itemUserId = item.username;
+                let index = 0;
+                for (const indDate of itemDateList){
+                    if (indDate == date){
+                        userNameToBalance.set(itemUserId.toString(), itemBalanceList.at(index) as number);
+                        datesToBalance.set(date.toString(), userNameToBalance);
+                    }
+                    index++;
+                }
+            }
+        }
+
+        //make the List of the correct data type DataGridAxisValues with the right ordered data
+        const allDataCorrectDates: DataGridProps[] = allUsersWalletTaskData.map((item) => {
+            let thisDates = item.data.map(point => point.xAxisValue);
+            let previousBalance: number = 0;
+            let addNewValue = true;
+            let itemUserId = item.username;
+
+            for (const date of uniqueDates){
+                for (const eachDay of thisDates){
+                    if(eachDay == date){
+                        addNewValue = false;
+                        let userNameToBalance = datesToBalance.get(date.toString())!;
+                        previousBalance = userNameToBalance.get(itemUserId.toString())!;
+                    }
+                }
+
+                if(addNewValue) {
+                    let newDataGridAxisValue: DataGridAxisValues = {
+                        xAxisValue: date,
+                        yAxisValue: previousBalance
+                    }
+                    item.data.push(newDataGridAxisValue);
+                }
+                addNewValue = true;
+            }
+
+            const orderedSet = [...new Set([...item.data])].sort((a, b) => getEarlierDate(a.xAxisValue, b.xAxisValue));
+
+            return {
+                username: item.username,
+                data: orderedSet,
+                taskPendingCount: item.taskPendingCount,
+                taskInProgressCount: item.taskInProgressCount,
+                taskCompletedCount: item.taskCompletedCount,
+            }
+        })
+
+        console.log(allDataCorrectDates);
+
         return {thisUserData,
-            partnerData, allUsersWalletTaskData
+            partnerData, allUsersWalletTaskData, uniqueDates, datesToBalance, allDataCorrectDates
         };
 
     } catch (e: any) {
