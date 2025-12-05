@@ -24,12 +24,14 @@ import type {clientLoader} from "~/routes/_index";
 
 
 export default function MainGrid() {
-  const { thisUserBalanceDailyHistory, partnerBalanceDailyHistory, partnerName } = useLoaderData<typeof clientLoader>();
+  const { thisUserBalanceDailyHistory, partnerBalanceDailyHistory, partnerName, twoPartnerBalanceDailyHistory, twoPartnerName } = useLoaderData<typeof clientLoader>();
 
     let balanceList:number[] = [0];
     let dateList: string[] = [" "];
     let partnerBalanceList:number[] = [0];
     let partnerDateList: string[] = [" "];
+    let partner2BalanceList:number[] = [0];
+    let partner2DateList: string[] = [" "];
 
     balanceList = thisUserBalanceDailyHistory.content.map(history => {
         return history.balance;
@@ -44,6 +46,14 @@ export default function MainGrid() {
     });
 
     partnerDateList = partnerBalanceDailyHistory.content.map(history => {
+        return history.dateAsString;
+    });
+
+    partner2BalanceList = twoPartnerBalanceDailyHistory.content.map(history => {
+        return history.balance;
+    });
+
+    partner2DateList = twoPartnerBalanceDailyHistory.content.map(history => {
         return history.dateAsString;
     });
 
@@ -62,6 +72,14 @@ export default function MainGrid() {
             data: partnerBalanceList,
             value: 'partner',
             name: `${partnerName}'s`,
+            trend: 'down'
+        },
+        {
+            interval: 'Partner daily progress',
+            dates: partner2DateList,
+            data: partner2BalanceList,
+            value: 'partner',
+            name: `${twoPartnerName}'s`,
             trend: 'down'
         },
     ];

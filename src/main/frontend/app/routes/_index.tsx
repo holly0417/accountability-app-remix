@@ -47,10 +47,17 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
         }
 
         let onePartner = partners.at(0)?.id as number;
-        let partnerName = partners.at(0)?.username as string;
-        const partnerBalanceDailyHistory = await getWalletHistoryByUserIds(onePartner);
+        let twoPartner = partners.at(1)?.id as number;
 
-        return {thisUserBalanceDailyHistory, partnerBalanceDailyHistory, partnerName};
+        let partnerName = partners.at(0)?.username as string;
+        let twoPartnerName = partners.at(1)?.username as string;
+
+        const partnerBalanceDailyHistory = await getWalletHistoryByUserIds(onePartner);
+        const twoPartnerBalanceDailyHistory = await getWalletHistoryByUserIds(twoPartner);
+
+        return {thisUserBalanceDailyHistory,
+            partnerBalanceDailyHistory, partnerName,
+            twoPartnerBalanceDailyHistory, twoPartnerName};
 
     } catch (e: any) {
 
