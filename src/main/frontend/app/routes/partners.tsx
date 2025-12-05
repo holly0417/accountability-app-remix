@@ -1,5 +1,5 @@
 import SearchPartner from "~/components/forms/SearchPartner"
-import type {ActionFunctionArgs} from "react-router";
+import {type ActionFunctionArgs, data, redirect} from "react-router";
 import {RelationshipStatus} from "~/dto/relationship/RelationshipStatus";
 import {relationshipData} from "~/composables/RelationshipData";
 import {userData} from "~/composables/UserData";
@@ -11,16 +11,31 @@ import {RelationshipAction} from "~/dto/relationship/RelationshipAction";
 import type {RelationshipStatusDto} from "~/dto/relationship/RelationshipStatusDto";
 
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
-    const { getRequests, getRelationshipsByStatus } = relationshipData();
-    const { getCurrentUserInfo } = userData();
+    try {
 
-    const currentUser = await getCurrentUserInfo();
-    const waitList = await getRequests(RelationshipStatus.PENDING, RelationshipDirection.RECEIVER);
-    const answerList = await getRequests(RelationshipStatus.PENDING, RelationshipDirection.SENDER);
-    const rejectedList = await getRequests(RelationshipStatus.REJECTED, RelationshipDirection.SENDER);
-    const approvedList = await getRelationshipsByStatus(RelationshipStatus.APPROVED);
+        const { getRequests, getRelationshipsByStatus } = relationshipData();
+        const { getCurrentUserInfo } = userData();
+        const currentUser = await getCurrentUserInfo();
+// HANDLE 404: Logic -> If null, stop everything and throw a 404
+        if (!currentUser) {
+            throw data("User not found", { status: 404 });
+        }
 
-   return {answerList, waitList, rejectedList, approvedList, currentUser};
+        const waitList = await getRequests(RelationshipStatus.PENDING, RelationshipDirection.RECEIVER);
+        const answerList = await getRequests(RelationshipStatus.PENDING, RelationshipDirection.SENDER);
+        const rejectedList = await getRequests(RelationshipStatus.REJECTED, RelationshipDirection.SENDER);
+        const approvedList = await getRelationshipsByStatus(RelationshipStatus.APPROVED);
+
+        return {answerList, waitList, rejectedList, approvedList, currentUser};
+
+    } catch (e:any) {
+// HANDLE 401: Logic -> If unauthorized, send them to login
+        if (e.response?.status === 401) {
+            throw redirect("/login");
+        }
+
+        throw e; // Throw generic errors to the ErrorBoundary
+    }
 }
 
 export async function clientAction({ request }: ActionFunctionArgs) {
@@ -56,6 +71,7 @@ export async function clientAction({ request }: ActionFunctionArgs) {
 
 
 export default function Partners(){
+
     const {answerList, waitList, rejectedList, approvedList, currentUser} = useLoaderData<typeof clientLoader>();
 
     return(
