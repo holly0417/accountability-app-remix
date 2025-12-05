@@ -1,4 +1,4 @@
-import {type ActionFunctionArgs} from "react-router";
+import {type ActionFunctionArgs, data} from "react-router";
 import type {Route} from "./+types/wallet-purchases"; //this is OK!
 import React from "react";
 import PurchaseDataGrid from "~/components/grids/purchase-grid";
@@ -23,50 +23,59 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
 }
 
 export async function clientAction({ request }: ActionFunctionArgs) {
+
     const { addToWishList, makePurchase } = purchaseData();
     const {getCurrentUserInfo} = userData();
-    const thisUser = await getCurrentUserInfo();
-    const formData = await request.formData();
-    const intent = formData.get('intent');
 
-    if (intent == WishlistAction.ADD) {
-        const description = formData.get('newPurchaseDescription');
-        const price = formData.get('newPurchasePrice');
+    try {
+        const thisUser = await getCurrentUserInfo();
 
-        if(description && price){
-            let newWishListItem: PurchaseDto = {
-                id: 0,
-                userId: thisUser.id,
-                userName: thisUser.username,
-                description: description.toString(),
-                price: Number(price),
-                purchaseTimeString: '',
-                status: PurchaseStatus.LISTED,
+        if (!thisUser) {
+            throw data("User not found", { status: 404 });
+        }
+
+        const formData = await request.formData();
+        const intent = formData.get('intent');
+
+        if (intent == WishlistAction.ADD) {
+            const description = formData.get('newPurchaseDescription');
+            const price = formData.get('newPurchasePrice');
+
+            if(description && price){
+                let newWishListItem: PurchaseDto = {
+                    id: 0,
+                    userId: thisUser.id,
+                    userName: thisUser.username,
+                    description: description.toString(),
+                    price: Number(price),
+                    purchaseTimeString: '',
+                    status: PurchaseStatus.LISTED,
+                }
+
+                try {
+                    await addToWishList(newWishListItem);
+                    return { ok: true };
+                } catch(e) {
+                    return { ok: false };
+                }
+
             }
+        }
+
+        if (intent == WishlistAction.PURCHASE) {
+            const item = formData.get('itemId');
 
             try {
-                await addToWishList(newWishListItem);
+                await makePurchase(Number(item));
                 return { ok: true };
             } catch(e) {
                 return { ok: false };
             }
 
         }
+    } catch (e) {
+        throw e;
     }
-
-    if (intent == WishlistAction.PURCHASE) {
-        const item = formData.get('itemId');
-
-        try {
-            await makePurchase(Number(item));
-            return { ok: true };
-        } catch(e) {
-            return { ok: false };
-        }
-
-    }
-
-
 }
 
 export default function WalletPurchases(){

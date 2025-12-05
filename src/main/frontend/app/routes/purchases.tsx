@@ -1,4 +1,4 @@
-import {type ActionFunctionArgs} from "react-router";
+import {type ActionFunctionArgs, data} from "react-router";
 import type {Route} from "./+types/purchases"; //this is OK!
 import React from "react";
 import PurchaseDataGrid from "~/components/grids/purchase-grid";
@@ -44,6 +44,11 @@ export async function clientAction({ request }: ActionFunctionArgs) {
     const formData = await request.formData();
     const {getCurrentUserInfo} = userData();
     const thisUser = await getCurrentUserInfo();
+
+    if (!thisUser) {
+        throw data("User not found", { status: 404 });
+    }
+
     const intent = formData.get('intent');
 
     if (intent == WishlistAction.ADD) {

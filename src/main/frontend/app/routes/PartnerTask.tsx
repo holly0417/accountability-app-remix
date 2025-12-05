@@ -14,17 +14,22 @@ import type {TaskStatusDto} from "~/dto/task/TaskStatusDto";
 export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
     const { status } = params;
     const { getAllTasksByUserList, getTasksByUserListAndStatus } = taskData();
-    const { getPartnerIdList } = relationshipData();
+    const { getPartners } = relationshipData();
 
     // REMEMBER: const CANNOT be reassigned but let can!
-    const partnerIdList = await getPartnerIdList();
-    let totalPage = await getAllTasksByUserList(partnerIdList);
+    const partners = await getPartners();
     let finalList: TaskDataDto[] = [];
     let actionAllowed: boolean = false;
 
-    if (partnerIdList.length == 0) {
+    if (!partners) {
         console.log("partner ID List empty");
     } else {
+        const partnerIdList:number[] = partners.map(person => {
+            return person.id;
+        });
+
+        let totalPage = await getAllTasksByUserList(partnerIdList);
+
         switch(status) {
             case TaskRouteStatus.IN_PROGRESS:
                 totalPage = await getTasksByUserListAndStatus(partnerIdList, TaskStatus.IN_PROGRESS, 0, 50);
