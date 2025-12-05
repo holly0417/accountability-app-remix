@@ -26,6 +26,7 @@ import {relationshipData} from "~/composables/RelationshipData";
 import {data, redirect} from "react-router";
 import {taskData} from "~/composables/TaskData";
 import {TaskStatus} from "~/dto/task/TaskStatus";
+import {userData} from "~/composables/UserData";
 
 const xThemeComponents = {
   ...chartsCustomizations,
@@ -37,6 +38,7 @@ const xThemeComponents = {
 const { getCurrentUserWalletHistoryTimeline, getWalletHistoryByUserIds } = walletData();
 const {getPartnersLimit} = relationshipData();
 const { getTasksByCurrentUserAndStatus, getTasksByUserListAndStatus } = taskData();
+const {getCurrentUserInfo} = userData();
 
 export type DataGridAxisValues = {
     xAxisValue: string
@@ -228,8 +230,9 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
         console.log(allDataCorrectDates);
         const limitedDataList = allDataCorrectDates.slice(0,2);
         const limitedPartnerData = partnerData.slice(0,2)
+        const currentUserInfo = await getCurrentUserInfo();
 
-        return {thisUserData, limitedPartnerData,
+        return {currentUserInfo, thisUserData, limitedPartnerData,
             partnerData, allUsersWalletTaskData, uniqueDates, limitedDataList, allDataCorrectDates
         };
 

@@ -10,6 +10,8 @@ import MenuContent from './MenuContent';
 import CardAlert from './CardAlert';
 import OptionsMenu from './OptionsMenu';
 import CustomizedTreeView from "~/dashboard/ui/Dashboard/CustomizedTreeView";
+import {useLoaderData} from "react-router-dom";
+import type {clientLoader} from "~/routes/_index";
 
 const drawerWidth = 240;
 
@@ -25,6 +27,8 @@ const Drawer = styled(MuiDrawer)({
 });
 
 export default function SideMenu() {
+    const { currentUserInfo } = useLoaderData<typeof clientLoader>();
+
   return (
     <Drawer
       variant="permanent"
@@ -78,10 +82,10 @@ export default function SideMenu() {
 
         <Box sx={{ mr: 'auto' }}>
           <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: '16px' }}>
-            Holly Yoo
+              {currentUserInfo!.username}
           </Typography>
           <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-            holly@email.com
+              {currentUserInfo!.email}
           </Typography>
         </Box>
 
