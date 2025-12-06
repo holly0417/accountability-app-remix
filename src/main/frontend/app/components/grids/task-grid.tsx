@@ -5,40 +5,26 @@ import Button from "@mui/material/Button";
 import React from "react";
 import {TaskStatus} from "~/dto/task/TaskStatus";
 import {TaskAction} from "~/dto/task/TaskAction";
-import {useSubmit} from "react-router";
+import {Form, useSubmit} from "react-router";
+import type {TaskDataDto} from "~/dto/task/TaskDataDto";
+import type {Page} from "~/dto/pagination/Page.ts";
 
-
-export default function TaskDataGrid() {
-    const row = useLoaderData<typeof clientLoader>();
-
-    const buttonLabel = (value: TaskStatus) => {
-        switch(value) {
-            case TaskStatus.PENDING:
-                return TaskAction.START;
-            case TaskStatus.IN_PROGRESS:
-                return TaskAction.END;
-            default:
-                return TaskAction.DELETE;
-        }
+function buttonLabel (value: TaskStatus) {
+    switch(value) {
+        case TaskStatus.PENDING:
+            return TaskAction.START;
+        case TaskStatus.IN_PROGRESS:
+            return TaskAction.END;
+        default:
+            return TaskAction.DELETE;
     }
-    const submit = useSubmit(); // 2. Get the submit function
+}
 
-    const handleTask = (id: string, status: TaskStatus) => {
+interface TaskDataGridProps {
+    row: TaskDataDto[]
+}
 
-        const formData = new FormData();
-        formData.append('taskId', id);
-
-        if (status === TaskStatus.PENDING) {
-            formData.append('intent', TaskAction.START);
-        } else if (status === TaskStatus.IN_PROGRESS) {
-            formData.append('intent', TaskAction.END);
-        } else {
-            formData.append('intent', TaskAction.DELETE);
-        }
-
-        // 4. Programmatically submit the data to the action
-        submit(formData, { method: 'post' });
-    };
+export function TaskDataGrid({row}:TaskDataGridProps) {
 
     const columns: GridColDef[] = [
         {
@@ -88,13 +74,16 @@ export default function TaskDataGrid() {
                 const action = buttonLabel(status);
 
                 return (
+                    <Form method="post">
+                        <input type="hidden" id="taskId" name="taskId" value={id} />
                         <Button
                             value={action}
-                            onClick={() => handleTask(id, status)}
                             name="intent"
+                            type="submit"
                         >
                             {action}
                         </Button>
+                    </Form>
                 );
             }
         },
@@ -103,8 +92,7 @@ export default function TaskDataGrid() {
 
     return (
         <DataGrid
-            checkboxSelection
-            rows={row.content}
+            rows={row}
             columns={columns}
             getRowClassName={(params) =>
                 params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'

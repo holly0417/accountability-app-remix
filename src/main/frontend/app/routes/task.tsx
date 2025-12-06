@@ -2,12 +2,14 @@ import TaskForm from '~/components/forms/TaskForm';
 import {taskData} from "~/composables/TaskData";
 import {TaskStatus} from "~/dto/task/TaskStatus";
 import {type ActionFunctionArgs, data} from "react-router";
-import TaskDataGrid from "~/components/grids/task-grid";
+import {TaskDataGrid} from "~/components/grids/task-grid";
 import type {Route} from "./+types/task"; //this is OK!
 import {userData} from "~/composables/UserData";
 import {TaskRouteStatus} from "~/dto/task/TaskRouteStatus";
 import {TaskAction} from "~/dto/task/TaskAction";
 import React from "react";
+import type {TaskDataDto} from "~/dto/task/TaskDataDto";
+import type {Page} from "~/dto/pagination/Page.ts";
 
 export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
     const { getTasksByCurrentUserAndStatus, getAllTasksByUserList } = taskData();
@@ -27,20 +29,29 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
         throw data("User not found", { status: 404 });
     }
 
+    let dataPage: Page<TaskDataDto> = await getAllTasksByUserList([userId.id]);
+
     switch(status) {
         case TaskRouteStatus.IN_PROGRESS:
-            return await getTasksByCurrentUserAndStatus(TaskStatus.IN_PROGRESS);
+            dataPage = await getTasksByCurrentUserAndStatus(TaskStatus.IN_PROGRESS);
+            break;
         case TaskRouteStatus.APPROVED:
-            return await getTasksByCurrentUserAndStatus(TaskStatus.APPROVED);
+            dataPage = await getTasksByCurrentUserAndStatus(TaskStatus.APPROVED);
+            break;
         case TaskRouteStatus.REJECTED:
-            return await getTasksByCurrentUserAndStatus(TaskStatus.REJECTED);
+            dataPage = await getTasksByCurrentUserAndStatus(TaskStatus.REJECTED);
+            break;
         case TaskRouteStatus.COMPLETED:
-            return await getTasksByCurrentUserAndStatus(TaskStatus.COMPLETED);
+            dataPage = await getTasksByCurrentUserAndStatus(TaskStatus.COMPLETED);
+            break;
         case TaskRouteStatus.PENDING:
-            return await getTasksByCurrentUserAndStatus(TaskStatus.PENDING);
+            dataPage = await getTasksByCurrentUserAndStatus(TaskStatus.PENDING);
+            break;
     }
 
-    return await getAllTasksByUserList([userId.id]);
+    return {
+        rowData: dataPage.content
+    };
 }
 
 export async function clientAction({ request }: ActionFunctionArgs) {
@@ -77,11 +88,12 @@ export async function clientAction({ request }: ActionFunctionArgs) {
 
 }
 
-export default function Task(){
+export default function Task({loaderData}: Route.ComponentProps){
+
     return(
         <div>
             <TaskForm />
-            <TaskDataGrid />
+            <TaskDataGrid row={loaderData.rowData}/>
         </div>
     );
 }
