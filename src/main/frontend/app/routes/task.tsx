@@ -24,6 +24,7 @@ import {
     dataGridCustomizations,
     datePickersCustomizations, treeViewCustomizations
 } from "~/dashboard/ui/Dashboard/theme/customizations";
+import Typography from "@mui/material/Typography";
 
 export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
     const { getTasksByCurrentUserAndStatus, getAllTasksByUserList } = taskData();
@@ -118,7 +119,6 @@ export default function Task({loaderData}: Route.ComponentProps){
             <Box sx={{ display: 'flex' }}>
                 <SideMenu user={user}/>
                 <AppNavbar />
-                {/* Main content */}
                 <Box
                     component="main"
                     sx={(theme) => ({
@@ -129,6 +129,7 @@ export default function Task({loaderData}: Route.ComponentProps){
                         overflow: 'auto',
                     })}
                 >
+
                     <Stack
                         spacing={2}
                         sx={{
@@ -139,7 +140,43 @@ export default function Task({loaderData}: Route.ComponentProps){
                         }}
                     >
                         <Header />
+                    </Stack>
+
+                    <Stack
+                        spacing={2}
+                        sx={{
+                            alignItems: 'flex-start',
+                            justifyContent: "flex-start",
+                            mx: 3,
+                            pb: 5,
+                            mt: { xs: 8, md: 0 },
+                        }}
+                    >
+                        <Typography variant="h1" sx={{ fontWeight: 500, lineHeight: '16px' }}>
+                            Tasks
+                        </Typography>
+                    </Stack>
+
+                    <Stack
+                        spacing={2}
+                        sx={{
+                            alignItems: 'center',
+                            mx: 3,
+                            pb: 5,
+                            mt: { xs: 8, md: 0 },
+                        }}
+                    >
                         <TaskForm />
+                    </Stack>
+                    <Stack
+                        direction="column"
+                        sx={{
+                            alignItems: "stretch",
+                            mx: 3,
+                            pb: 5,
+                            mt: { xs: 8, md: 0 },
+                        }}
+                    >
                         <TaskDataGrid row={loaderData.rowData}/>
                     </Stack>
                 </Box>

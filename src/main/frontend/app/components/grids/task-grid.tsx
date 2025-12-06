@@ -8,6 +8,8 @@ import {TaskAction} from "~/dto/task/TaskAction";
 import {Form, useSubmit} from "react-router";
 import type {TaskDataDto} from "~/dto/task/TaskDataDto";
 import type {Page} from "~/dto/pagination/Page.ts";
+import Stack from "@mui/material/Stack";
+import Box from "@mui/material/Box";
 
 function buttonLabel (value: TaskStatus) {
     switch(value) {
@@ -74,16 +76,18 @@ export function TaskDataGrid({row}:TaskDataGridProps) {
                 const action = buttonLabel(status);
 
                 return (
-                    <Form method="post">
-                        <input type="hidden" id="taskId" name="taskId" value={id} />
-                        <Button
-                            value={action}
-                            name="intent"
-                            type="submit"
-                        >
-                            {action}
-                        </Button>
-                    </Form>
+                        <Form method="post">
+                            <Button
+                                value={action}
+                                name="intent"
+                                type="submit"
+                                variant="outlined"
+                                size="small"
+                            >
+                                {action}
+                            </Button>
+                            <input type="hidden" id="taskId" name="taskId" value={id} />
+                        </Form>
                 );
             }
         },
@@ -103,6 +107,7 @@ export function TaskDataGrid({row}:TaskDataGridProps) {
             pageSizeOptions={[10, 20, 50]}
             disableColumnResize
             density="compact"
+            getRowHeight={() => 'auto'}
             slotProps={{
                 filterPanel: {
                     filterFormProps: {

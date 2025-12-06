@@ -2,6 +2,11 @@ import {type ActionFunctionArgs, Form, useFetcher} from "react-router";
 import {TaskAction} from "~/dto/task/TaskAction";
 import {taskData} from "~/composables/TaskData";
 import {useEffect, useRef} from "react";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 
 
 export default function TaskForm() {
@@ -18,25 +23,33 @@ export default function TaskForm() {
 
     return (
         <div>
-            <fetcher.Form method="post" ref={formRef}>
-                <input
-                    id="newTaskDescription"
-                    type="text"
-                    name="newTaskDescription"
-                    required
-                    disabled={isSubmitting}
-                />
+            <Box sx={{ mr: 'auto' }}>
+                <fetcher.Form method="post" ref={formRef}>
+                    <Stack spacing={2} direction="row" sx={{ alignItems: 'center', borderColor: 'divider'}}>
+                        <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: '16px' }}>
+                            Add new task here
+                        </Typography>
+                        <TextField
+                            required
+                            id="filled-required"
+                            label="My new task"
+                            name="newTaskDescription"
+                            disabled={isSubmitting}
+                            variant="filled"
+                        />
+                        <Button
+                            type="submit"
+                            name="intent"
+                            variant="contained"
+                            value={TaskAction.ADD}
+                            disabled={isSubmitting}
+                        >
+                            {isSubmitting ? "Sending..." : "Submit"}
+                        </Button>
+                    </Stack>
+                </fetcher.Form>
+            </Box>
 
-                <button
-                    type="submit"
-                    name="intent"
-                    value={TaskAction.ADD}
-                    disabled={isSubmitting}
-                >
-                    {isSubmitting ? "Sending..." : "Submit"}
-                </button>
-
-            </fetcher.Form>
         </div>
     );
 }
