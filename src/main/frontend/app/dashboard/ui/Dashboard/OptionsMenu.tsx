@@ -10,6 +10,10 @@ import ListItemIcon, { listItemIconClasses } from '@mui/material/ListItemIcon';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import MoreVertRoundedIcon from '@mui/icons-material/MoreVertRounded';
 import MenuButton from './MenuButton';
+import {api} from "~/axios";
+import type {LoginDto} from "~/dto/user/LoginDto";
+import type {AxiosError} from "axios";
+import {useNavigate} from "react-router";
 
 const MenuItem = styled(MuiMenuItem)({
   margin: '2px 0',
@@ -18,12 +22,28 @@ const MenuItem = styled(MuiMenuItem)({
 export default function OptionsMenu() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+  const navigate = useNavigate();
+
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+    const handleLogout = () => {
+        api.post('/logout')
+            .then(() => navigate('/login'))
+            .catch((err: AxiosError)  => {
+                if(err.response?.status === 401) {
+                    alert(
+                        "Logout failed"
+                    )
+                }
+            })
+    };
+
   return (
     <React.Fragment>
       <MenuButton
@@ -68,7 +88,7 @@ export default function OptionsMenu() {
             },
           }}
         >
-          <ListItemText>Logout</ListItemText>
+          <ListItemText onClick={handleLogout}>Logout</ListItemText>
           <ListItemIcon>
             <LogoutRoundedIcon fontSize="small" />
           </ListItemIcon>
