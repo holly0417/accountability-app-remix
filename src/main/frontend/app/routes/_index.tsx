@@ -218,6 +218,7 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
             }
 
             const orderedSet = [...new Set([...item.data])].sort((a, b) => getEarlierDate(a.xAxisValue, b.xAxisValue));
+            console.log(orderedSet);
 
             return {
                 username: item.username,

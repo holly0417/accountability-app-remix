@@ -8,7 +8,7 @@ import CustomizedTreeView from './CustomizedTreeView';
 import CustomizedDataGrid from './CustomizedDataGrid';
 import HighlightedCard from './HighlightedCard';
 import PageViewsBarChart from './PageViewsBarChart';
-import SessionsChart, {type SessionsChartProps} from './SessionsChart';
+import SessionsChart from './SessionsChart';
 import StatCard, {type StatCardProps} from './StatCard';
 
 import {useLoaderData} from "react-router-dom";
@@ -18,10 +18,19 @@ import type {clientLoader} from "~/routes/_index";
 
 
 export default function MainGrid() {
-  const { thisUserData,
-      limitedPartnerData } = useLoaderData<typeof clientLoader>();
+  const { allDataCorrectDates } = useLoaderData<typeof clientLoader>();
 
-    const partnerWalletData: StatCardProps[] = limitedPartnerData.map(partner => {
+    const partnerWalletData: StatCardProps[] = allDataCorrectDates.map(partner => {
+        if(partner.username == "You"){
+            return {
+                interval: 'Daily progress',
+                dates: partner.data.map(item => item.xAxisValue),
+                data: partner.data.map(item => item.yAxisValue),
+                value: partner.username,
+                name: 'Your',
+                trend: "down",
+            }
+        }
         return {
             interval: 'Daily progress',
             dates: partner.data.map(item => item.xAxisValue),
@@ -31,17 +40,6 @@ export default function MainGrid() {
             trend: "down",
         }
     })
-
-    const userWalletData: StatCardProps = {
-        interval: 'Daily progress',
-        dates: thisUserData.data.map(item => item.xAxisValue),
-        data: thisUserData.data.map(item => item.yAxisValue),
-        value: thisUserData.username,
-        name: `${thisUserData.username}r`,
-        trend: "up",
-    };
-
-    const walletData: StatCardProps[] = [userWalletData, ...partnerWalletData];
 
   return (
     <Box sx={{ width: '100%', maxWidth: { sm: '100%', md: '1700px' } }}>
@@ -56,7 +54,7 @@ export default function MainGrid() {
         sx={{ mb: (theme) => theme.spacing(2) }}
       >
 
-        {walletData.map((card, index) => (
+        {partnerWalletData.map((card, index) => (
           <Grid key={index} size={{ xs: 12, sm: 6, lg: 3 }}>
             <StatCard {...card} />
           </Grid>
@@ -67,7 +65,7 @@ export default function MainGrid() {
         </Grid>
 
         <Grid size={{ xs: 12, md: 6 }}>
-                <SessionsChart />
+           <SessionsChart />
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
           <PageViewsBarChart />
