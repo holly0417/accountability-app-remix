@@ -1,4 +1,4 @@
-import {data} from "react-router";
+import {data, Link} from "react-router";
 import type {Route} from "./+types/partner-purchases"; //this is OK!
 import React from "react";
 import {walletData} from "~/composables/WalletData";
@@ -10,6 +10,12 @@ import type {Page} from "~/dto/pagination/Page";
 import {relationshipData} from "~/composables/RelationshipData";
 import PartnerWishlistGrid from "~/components/grids/partner-wishlist-grid";
 import {purchaseData} from "~/composables/PurchaseData";
+
+export const handle = {
+    breadcrumb: () => (
+        <Link to="/partner-purchases">Partner purchases</Link>
+    ),
+};
 
 export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
     const {getWalletsByUserIds } = walletData();

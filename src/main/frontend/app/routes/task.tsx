@@ -1,7 +1,7 @@
 import TaskForm from '~/components/forms/TaskForm';
 import {taskData} from "~/composables/TaskData";
 import {TaskStatus} from "~/dto/task/TaskStatus";
-import {type ActionFunctionArgs, data} from "react-router";
+import {type ActionFunctionArgs, data, Link} from "react-router";
 import {TaskDataGrid} from "~/components/grids/task-grid";
 import type {Route} from "./+types/task"; //this is OK!
 import {userData} from "~/composables/UserData";
@@ -25,6 +25,12 @@ import {
     datePickersCustomizations, treeViewCustomizations
 } from "~/dashboard/ui/Dashboard/theme/customizations";
 import Typography from "@mui/material/Typography";
+
+export const handle = {
+    breadcrumb: () => (
+        <Link to="/task">Task</Link>
+    ),
+};
 
 export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
     const { getTasksByCurrentUserAndStatus, getAllTasksByUserList } = taskData();

@@ -1,5 +1,5 @@
 import SearchPartner from "~/components/forms/SearchPartner"
-import {type ActionFunctionArgs, data, redirect} from "react-router";
+import {type ActionFunctionArgs, data, Link, redirect} from "react-router";
 import {RelationshipStatus} from "~/dto/relationship/RelationshipStatus";
 import {relationshipData} from "~/composables/RelationshipData";
 import {userData} from "~/composables/UserData";
@@ -26,6 +26,13 @@ import {
     dataGridCustomizations,
     datePickersCustomizations, treeViewCustomizations
 } from "~/dashboard/ui/Dashboard/theme/customizations";
+
+export const handle = {
+    breadcrumb: () => (
+        <Link to="/partners">Partners</Link>
+    ),
+};
+
 
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
     try {

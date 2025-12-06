@@ -1,4 +1,4 @@
-import {type ActionFunctionArgs, data} from "react-router";
+import {type ActionFunctionArgs, data, Link} from "react-router";
 import type {Route} from "./+types/purchases"; //this is OK!
 import React from "react";
 import PurchaseDataGrid from "~/components/grids/purchase-grid";
@@ -26,6 +26,12 @@ import Header from "~/dashboard/ui/Dashboard/Header";
 import Typography from "@mui/material/Typography";
 import AppTheme from "~/dashboard/shared-theme/AppTheme";
 import PurchaseForm from "~/components/forms/PurchaseForm";
+
+export const handle = {
+    breadcrumb: () => (
+        <Link to="/purchases">Purchases</Link>
+    ),
+};
 
 export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
     const {getCurrentUserWallet} = walletData();

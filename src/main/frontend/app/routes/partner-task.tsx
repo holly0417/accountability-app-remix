@@ -1,6 +1,6 @@
 import {taskData} from "~/composables/TaskData";
 import {TaskStatus} from "~/dto/task/TaskStatus";
-import {type ActionFunctionArgs, data} from "react-router";
+import {type ActionFunctionArgs, data, Link} from "react-router";
 import type {Route} from "./+types/partner-task"; //this is OK!
 import {TaskRouteStatus} from "~/dto/task/TaskRouteStatus";
 import React from "react";
@@ -27,6 +27,12 @@ import {
     datePickersCustomizations, treeViewCustomizations
 } from "~/dashboard/ui/Dashboard/theme/customizations";
 import {userData} from "~/composables/UserData";
+
+export const handle = {
+    breadcrumb: () => (
+        <Link to="/partner-task">Partner tasks</Link>
+    ),
+};
 
 export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
     const { status } = params;
