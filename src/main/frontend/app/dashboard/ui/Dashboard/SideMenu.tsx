@@ -5,14 +5,14 @@ import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import SelectContent from './SelectContent';
-import MenuContent from './MenuContent';
-import CardAlert from './CardAlert';
 import OptionsMenu from './OptionsMenu';
 import CustomizedTreeView from "~/dashboard/ui/Dashboard/CustomizedTreeView";
 import {useLoaderData} from "react-router-dom";
 import type {clientLoader} from "~/routes/_index";
 import AppIcon from "./../../../../../resources/static/app_icon.jpg";
+import {useNavigate} from "react-router";
+import MenuButton from "~/dashboard/ui/Dashboard/MenuButton";
+import IconButton from "@mui/material/IconButton";
 
 const drawerWidth = 240;
 
@@ -29,6 +29,11 @@ const Drawer = styled(MuiDrawer)({
 
 export default function SideMenu() {
     const { currentUserInfo } = useLoaderData<typeof clientLoader>();
+    const navigate = useNavigate();
+
+    const goToHome = () => {
+        navigate('/');
+    };
 
   return (
     <Drawer
@@ -40,19 +45,21 @@ export default function SideMenu() {
         },
       }}
     >
-        <Stack spacing={2} sx={{ alignItems: 'center' }}>
 
+        <Box>
+        <Stack spacing={5} sx={{ alignItems: 'center' }}>
         <Box></Box>
-
+        <IconButton onClick={goToHome}>
             <Avatar
                 sizes="medium"
                 alt="Holly's Accountability App"
                 src={AppIcon}
                 sx={{ width: 100, height: 100 }}
             />
-
+        </IconButton>
         <Divider />
         </Stack>
+        </Box>
 
         <Stack
             direction="row"
@@ -72,7 +79,6 @@ export default function SideMenu() {
                     {currentUserInfo!.email}
                 </Typography>
             </Box>
-
             <OptionsMenu />
         </Stack>
 

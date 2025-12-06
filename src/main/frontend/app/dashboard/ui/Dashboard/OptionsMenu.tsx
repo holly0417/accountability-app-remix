@@ -11,7 +11,6 @@ import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import MoreVertRoundedIcon from '@mui/icons-material/MoreVertRounded';
 import MenuButton from './MenuButton';
 import {api} from "~/axios";
-import type {LoginDto} from "~/dto/user/LoginDto";
 import type {AxiosError} from "axios";
 import {useNavigate} from "react-router";
 
@@ -44,6 +43,10 @@ export default function OptionsMenu() {
             })
     };
 
+    const goToRegistration = () => {
+        navigate('/registration');
+    };
+
   return (
     <React.Fragment>
       <MenuButton
@@ -73,11 +76,9 @@ export default function OptionsMenu() {
           },
         }}
       >
-        <MenuItem onClick={handleClose}>Profile</MenuItem>
-        <MenuItem onClick={handleClose}>My account</MenuItem>
+        <MenuItem onClick={handleClose}>My account info</MenuItem>
         <Divider />
-        <MenuItem onClick={handleClose}>Add another account</MenuItem>
-        <MenuItem onClick={handleClose}>Settings</MenuItem>
+        <MenuItem onClick={goToRegistration}>Add another account</MenuItem>
         <Divider />
         <MenuItem
           onClick={handleClose}
