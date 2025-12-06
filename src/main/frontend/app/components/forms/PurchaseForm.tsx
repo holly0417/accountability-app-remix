@@ -1,6 +1,10 @@
 import {useFetcher} from "react-router";
 import {useEffect, useRef} from "react";
 import {WishlistAction} from "~/dto/purchase/WishlistAction";
+import Typography from "@mui/material/Typography";
+import Card from "@mui/material/Card";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
 
 
 export default function PurchaseForm() {
@@ -17,32 +21,42 @@ export default function PurchaseForm() {
 
     return (
         <div>
+            <Card variant="outlined" sx={{ maxWidth: 360 }}>
+                <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: '16px' }}>
+                    Add to your wishlist here
+                </Typography>
             <fetcher.Form method="post" ref={formRef}>
-                <input
+                <TextField
                     id="newPurchaseDescription"
                     type="text"
                     name="newPurchaseDescription"
                     required
+                    label="What do you want to buy?"
                     disabled={isSubmitting}
+                    variant="filled"
                 />
-                <input
+                <TextField
                     id="newPurchasePrice"
                     type="number"
                     name="newPurchasePrice"
+                    label="How much?"
                     required
                     disabled={isSubmitting}
+                    variant="filled"
                 />
 
-                <button
+                <Button
                     type="submit"
                     name="intent"
+                    variant="contained"
                     value = {WishlistAction.ADD}
                     disabled={isSubmitting}
                 >
                     {isSubmitting ? "Sending..." : "Submit"}
-                </button>
+                </Button>
 
             </fetcher.Form>
+            </Card>
         </div>
     );
 }

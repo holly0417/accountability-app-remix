@@ -28,7 +28,7 @@ export default function MainGrid() {
                 data: partner.data.map(item => item.yAxisValue),
                 value: partner.username,
                 name: 'Your',
-                trend: "down",
+                trend: "up",
             }
         }
         return {

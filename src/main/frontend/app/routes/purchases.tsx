@@ -4,7 +4,6 @@ import React from "react";
 import PurchaseDataGrid from "~/components/grids/purchase-grid";
 import Wallet from "~/components/Wallet";
 import {walletData} from "~/composables/WalletData";
-import {useLoaderData} from "react-router-dom";
 import {WishlistAction} from "~/dto/purchase/WishlistAction";
 import type {PurchaseDto} from "~/dto/purchase/PurchaseDto";
 import {PurchaseStatus} from "~/dto/purchase/PurchaseStatus";
@@ -12,14 +11,36 @@ import {PurchaseRouteStatus} from "~/dto/purchase/PurchaseRouteStatus";
 import type {Page} from "~/dto/pagination/Page";
 import {userData} from "~/composables/UserData";
 import {purchaseData} from "~/composables/PurchaseData";
+import {
+    chartsCustomizations,
+    dataGridCustomizations,
+    datePickersCustomizations, treeViewCustomizations
+} from "~/dashboard/ui/Dashboard/theme/customizations";
+import CssBaseline from "@mui/material/CssBaseline";
+import Box from "@mui/material/Box";
+import SideMenu from "~/dashboard/ui/Dashboard/SideMenu";
+import AppNavbar from "~/dashboard/ui/Dashboard/AppNavbar";
+import {alpha} from "@mui/material/styles";
+import Stack from "@mui/material/Stack";
+import Header from "~/dashboard/ui/Dashboard/Header";
+import Typography from "@mui/material/Typography";
+import AppTheme from "~/dashboard/shared-theme/AppTheme";
+import PurchaseForm from "~/components/forms/PurchaseForm";
 
 export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
     const {getCurrentUserWallet} = walletData();
     const { getCurrentUserPurchaseHistory, getCurrentUserPurchaseListByStatus } = purchaseData();
+    const {getCurrentUserInfo} = userData();
     const yourWallet = await getCurrentUserWallet();
     const { status } = params;
     let thisUserPurchaseHistory: Page<PurchaseDto>;
     let title: string;
+
+    const user = await getCurrentUserInfo();
+
+    if (!user) {
+        throw data("User not found", { status: 404 });
+    }
 
     switch(status) {
         case PurchaseRouteStatus.LISTED:
@@ -35,7 +56,12 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
             title = "ALL ITEMS"
     }
 
-    return {yourWallet, thisUserPurchaseHistory, title};
+    return {
+        wallet: yourWallet,
+        purchases: thisUserPurchaseHistory,
+        title: title,
+        user:user
+    };
 }
 
 export async function clientAction({ request }: ActionFunctionArgs) {
@@ -87,13 +113,86 @@ export async function clientAction({ request }: ActionFunctionArgs) {
     }
 }
 
-export default function Purchases(){
-    const {yourWallet, thisUserPurchaseHistory, title} = useLoaderData<typeof clientLoader>();
+export default function Purchases({loaderData}: Route.ComponentProps){
+
+    const xThemeComponents = {
+        ...chartsCustomizations,
+        ...dataGridCustomizations,
+        ...datePickersCustomizations,
+        ...treeViewCustomizations,
+    };
 
     return(
-        <div>
-            <Wallet wallet={yourWallet}/>
-            <PurchaseDataGrid data={thisUserPurchaseHistory} wallet={yourWallet} title={title}/>
-        </div>
+
+    <AppTheme themeComponents={xThemeComponents}>
+        <CssBaseline enableColorScheme />
+        <Box sx={{ display: 'flex' }}>
+            <SideMenu user={loaderData.user}/>
+            <AppNavbar />
+            <Box
+                component="main"
+                sx={(theme) => ({
+                    flexGrow: 1,
+                    backgroundColor: theme.vars
+                        ? `rgba(${theme.vars.palette.background.defaultChannel} / 1)`
+                        : alpha(theme.palette.background.default, 1),
+                    overflow: 'auto',
+                })}
+            >
+
+                <Stack
+                    spacing={2}
+                    sx={{
+                        alignItems: 'center',
+                        mx: 3,
+                        pb: 5,
+                        mt: { xs: 8, md: 0 },
+                    }}
+                >
+                    <Header />
+                </Stack>
+
+                <Stack
+                    spacing={2}
+                    sx={{
+                        alignItems: 'flex-start',
+                        justifyContent: "flex-start",
+                        mx: 3,
+                        pb: 5,
+                        mt: { xs: 8, md: 0 },
+                    }}
+                >
+                    <Typography variant="h1" sx={{ fontWeight: 500, lineHeight: '16px' }}>
+                        Wallet
+                    </Typography>
+                </Stack>
+
+                <Stack
+                    spacing={2}
+                    direction="row"
+                    sx={{
+                        alignItems: 'center',
+                        mx: 3,
+                        pb: 5,
+                        mt: { xs: 8, md: 0 },
+                    }}
+                >
+                    <Wallet wallet={loaderData.wallet}/>
+                    <PurchaseForm />
+                </Stack>
+                <Stack
+                    direction="column"
+                    sx={{
+                        alignItems: "stretch",
+                        mx: 3,
+                        pb: 5,
+                        mt: { xs: 8, md: 0 },
+                    }}
+                >
+                    <PurchaseDataGrid data={loaderData.purchases} wallet={loaderData.wallet} title={loaderData.title}/>
+                </Stack>
+            </Box>
+        </Box>
+    </AppTheme>
     );
 }

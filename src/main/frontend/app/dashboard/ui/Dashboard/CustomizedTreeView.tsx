@@ -202,22 +202,6 @@ const ITEMS: TreeViewBaseItem<ExtendedTreeItemProps>[] = [
                 path: '/partner-purchases/purchased'
             },
         ]
-    },
-    {
-        id: '6', label: 'Wallets', color: 'green',
-        children: [
-            {
-                id: '6.1',
-                label: 'Your wallet overview',
-                color: 'blue',
-                path: '/wallet-purchases'
-            },
-            {
-                id: '6.2',
-                label: 'Partner wallet overview',
-                color: 'blue',
-            },
-        ]
     }
 ]
 
