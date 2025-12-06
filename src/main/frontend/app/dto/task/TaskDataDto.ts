@@ -1,3 +1,4 @@
+import type {TaskStatus} from "~/dto/task/TaskStatus";
 
 export interface TaskDataDto {
   id: number,
@@ -6,5 +7,5 @@ export interface TaskDataDto {
   description: string,
   durationNumber: number,
   durationString: string,
-  status: string,
+  status: TaskStatus,
 }

@@ -218,7 +218,6 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
             }
 
             const orderedSet = [...new Set([...item.data])].sort((a, b) => getEarlierDate(a.xAxisValue, b.xAxisValue));
-            console.log(orderedSet);
 
             return {
                 username: item.username,
@@ -229,7 +228,6 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
             }
         })
 
-        console.log(allDataCorrectDates);
         const limitedDataList = allDataCorrectDates.slice(0,2);
         const limitedPartnerData = partnerData.slice(0,2)
         const currentUserInfo = await getCurrentUserInfo();

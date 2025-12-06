@@ -3,9 +3,10 @@ import {clientLoader} from "~/routes/task";
 import {useLoaderData} from "react-router-dom";
 import Button from "@mui/material/Button";
 import React from "react";
-import {useSubmit} from "react-router";
+import {Form, useSubmit} from "react-router";
 import type {TaskDataDto} from "~/dto/task/TaskDataDto";
 import {PartnerTaskAction} from "~/dto/task/PartnerTaskAction";
+import {TaskStatus} from "~/dto/task/TaskStatus";
 
 interface PartnerTaskDataGridProps{
     actionAllowed: boolean;
@@ -88,14 +89,17 @@ export default function PartnerTaskDataGrid({data, actionAllowed}:PartnerTaskDat
             flex: 0.5,
             minWidth: 150,
             renderCell: (params) => {
-                const {id} = params.row
-                const option = checkButtonOptions();
-                if(option=="APPROVE"){
-                    return (<Button value={option}
-                                    onClick={() => partnerTaskHandler(id, option)} //gets confused about intent from having 2 buttons at once
-                                    name="intent">{option}</Button>);
+                const {id, status} = params.row
+
+                if(status == TaskStatus.COMPLETED){
+                    return (
+                        <Form method="post">
+                        <Button value="APPROVE" name="intent" type="submit">APPROVE</Button>
+                            <input type="hidden" id="taskId" name="taskId" value={id} />
+                        </Form>
+                    );
                 }
-                return (<Button disabled={true}>{option}</Button>);
+                return "";
             }
         },
         {
@@ -104,14 +108,17 @@ export default function PartnerTaskDataGrid({data, actionAllowed}:PartnerTaskDat
             flex: 0.5,
             minWidth: 150,
             renderCell: (params) => {
-                const {id} = params.row
-                const option = checkSecondButtonOptions();
-                if(option=="REJECT"){
-                    return (<Button value={option}
-                                    onClick={() => partnerTaskHandler(id, option)} //gets confused about intent from having 2 buttons at once
-                                    name="intent">{option}</Button>);
+                const {id, status} = params.row
+
+                if(status == TaskStatus.COMPLETED){
+                    return (
+                        <Form method="post">
+                            <Button value="REJECT" name="intent" type="submit">REJECT</Button>
+                            <input type="hidden" id="taskId" name="taskId" value={id} />
+                        </Form>
+                    );
                 }
-                return (<Button disabled={true}>{option}</Button>);
+                return "";
             }
         },
     ];
@@ -119,7 +126,6 @@ export default function PartnerTaskDataGrid({data, actionAllowed}:PartnerTaskDat
 
     return (
         <DataGrid
-            checkboxSelection
             rows={row}
             columns={columns}
             getRowClassName={(params) =>

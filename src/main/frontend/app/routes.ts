@@ -25,7 +25,7 @@ export default [
 
     route("partners", "./routes/partners.tsx"),
 
-    route("partner-task/:status?", "./routes/PartnerTask.tsx"),
+    route("partner-task/:status?", "./routes/partner-task.tsx"),
 
     route("purchases/:status?", "./routes/purchases.tsx"),
 

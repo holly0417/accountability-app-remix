@@ -104,7 +104,6 @@ export async function clientAction({ request }: ActionFunctionArgs) {
 }
 
 export default function Task({loaderData}: Route.ComponentProps){
-    const user = loaderData.user;
 
     const xThemeComponents = {
         ...chartsCustomizations,
@@ -117,7 +116,7 @@ export default function Task({loaderData}: Route.ComponentProps){
         <AppTheme themeComponents={xThemeComponents}>
             <CssBaseline enableColorScheme />
             <Box sx={{ display: 'flex' }}>
-                <SideMenu user={user}/>
+                <SideMenu user={loaderData.user}/>
                 <AppNavbar />
                 <Box
                     component="main"
