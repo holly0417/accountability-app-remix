@@ -33,201 +33,193 @@ type ExtendedTreeItemProps = {
 };
 
 const ITEMS: TreeViewBaseItem<ExtendedTreeItemProps>[] = [
-  {
-    id: '1',
-    label: 'See features',
-    children: [
-        { id: '1.1', label: 'Your information', color: 'green',
-            children: [
-                {
-                    id: '1.1.1',
-                    label: 'Your tasks',
-                    color: 'blue',
-                    path: '/task'
-                },
-                {
-                    id: '1.1.2',
-                    label: 'Your wishlist',
-                    color: 'blue',
-                    path: '/purchases/listed'
-                },
-                {
-                    id: '1.1.3',
-                    label: 'Your past purchases',
-                    color: 'blue',
-                    path: '/purchases/purchased'
-                },
-            ]
-        },
-        { id: '1.2', label: 'Your partners', color: 'green',
-            children: [
-                {
-                    id: '1.2.1',
-                    label: 'All partners & search',
-                    color: 'blue',
-                    path: '/partners'
-                },
-                {
-                    id: '1.2.2',
-                    label: 'All partner tasks',
-                    color: 'blue',
-                    path: '/partner-task'
-                },
-                {
-                    id: '1.2.3',
-                    label: 'Partner wishlist items',
-                    color: 'blue',
-                    path: '/partner-purchases/listed'
-                },
-                {
-                    id: '1.2.4',
-                    label: 'Partner past purchases',
-                    color: 'blue',
-                    path: '/partner-purchases/purchased'
-                },
-            ]
-        },
-        {
-            id: '1.3', label: 'Tasks', color: 'green',
-            children: [
-                {
-                    id: '1.3.1', label: 'Your Tasks', color: 'green',
-                    children: [
-                        {
-                            id: '1.3.1.1',
-                            label: 'All your tasks',
-                            color: 'blue', path: '/task'
-                        },
-                        {
-                            id: '1.3.1.2',
-                            label: 'Planned',
-                            color: 'blue',
-                            path: '/task/pending'
-                        },
-                        {
-                            id: '1.3.1.3',
-                            label: 'In-progress',
-                            color: 'blue',
-                            path: '/task/in-progress'
-                        },
-                        {
-                            id: '1.3.1.4',
-                            label: "Completed",
-                            color: 'blue',
-                            path: '/task/completed'
-                        },
-                        {
-                            id: '1.3.1.5',
-                            label: 'Approved',
-                            color: 'blue',
-                            path: '/task/approved'
-                        },
-                        {
-                            id: '1.3.1.6',
-                            label: 'Rejected',
-                            color: 'blue',
-                            path: '/task/rejected'
-                        },
-                    ],
-                },
-                {
-                    id: '1.3.2', label: 'Partner Tasks', color: 'green',
-                    children: [
-                        {
-                            id: '1.3.2.1',
-                            label: 'All partner tasks',
-                            color: 'blue',
-                            path: '/partner-task'
-                        },
-                        {
-                            id: '1.3.2.2',
-                            label: 'Planned partner tasks',
-                            color: 'blue',
-                            path: '/partner-task/pending'
-                        },
-                        {
-                            id: '1.3.2.3',
-                            label: 'In-progress partner tasks',
-                            color: 'blue',
-                            path: '/partner-task/in-progress'
-                        },
-                        {
-                            id: '1.3.2.4',
-                            label: "Completed partner tasks",
-                            color: 'blue',
-                            path: '/partner-task/completed'
-                        },
-                        {
-                            id: '1.3.2.5',
-                            label: 'Approved partner tasks',
-                            color: 'blue',
-                            path: '/partner-task/approved'
-                        },
-                        {
-                            id: '1.3.2.6',
-                            label: 'Rejected partner tasks',
-                            color: 'blue',
-                            path: '/partner-task/rejected'
-                        },
-                    ],
-                },
-            ],
-        },
-        {
-            id: '1.4', label: 'Wishlists', color: 'green',
-            children: [
-                {
-                    id: '1.4.1',
-                    label: 'Your wishlist',
-                    color: 'blue',
-                    path: '/purchases/listed'
-                },
-                {
-                    id: '1.4.2',
-                    label: 'Partner wishlist items',
-                    color: 'blue',
-                    path: '/partner-purchases/listed'
-                },
-            ]
-        },
-        {
-            id: '1.5', label: 'Past purchases', color: 'green',
-            children: [
-                {
-                    id: '1.5.1',
-                    label: 'Your past purchases',
-                    color: 'blue',
-                    path: '/purchases/purchased'
-                },
-                {
-                    id: '1.5.2',
-                    label: 'Partner past purchases',
-                    color: 'blue',
-                    path: '/partner-purchases/purchased'
-                },
-            ]
-        },
-        {
-            id: '1.6', label: 'Wallets', color: 'green',
-            children: [
-                {
-                    id: '1.6.1',
-                    label: 'Your wallet overview',
-                    color: 'blue',
-                    path: '/wallet-purchases'
-                },
-                {
-                    id: '1.6.2',
-                    label: 'Partner wallet overview',
-                    color: 'blue',
-                },
-            ]
-        }
-    ],
-  },
-  { id: '2', label: 'Contact', color: 'blue' },
-  { id: '3', label: 'Help', color: 'blue' },
-];
+    { id: '1', label: 'Your information', color: 'green',
+        children: [
+            {
+                id: '1.1',
+                label: 'Your tasks',
+                color: 'blue',
+                path: '/task'
+            },
+            {
+                id: '1.2',
+                label: 'Your wishlist',
+                color: 'blue',
+                path: '/purchases/listed'
+            },
+            {
+                id: '1.3',
+                label: 'Your past purchases',
+                color: 'blue',
+                path: '/purchases/purchased'
+            },
+        ]
+    },
+    { id: '2', label: 'Your partners', color: 'green',
+        children: [
+            {
+                id: '2.1',
+                label: 'All partners & search',
+                color: 'blue',
+                path: '/partners'
+            },
+            {
+                id: '2.2',
+                label: 'All partner tasks',
+                color: 'blue',
+                path: '/partner-task'
+            },
+            {
+                id: '2.3',
+                label: 'Partner wishlist items',
+                color: 'blue',
+                path: '/partner-purchases/listed'
+            },
+            {
+                id: '2.4',
+                label: 'Partner past purchases',
+                color: 'blue',
+                path: '/partner-purchases/purchased'
+            },
+        ]
+    },
+    {
+        id: '3', label: 'Tasks', color: 'green',
+        children: [
+            {
+                id: '3.1', label: 'Your Tasks', color: 'green',
+                children: [
+                    {
+                        id: '3.1.1',
+                        label: 'All your tasks',
+                        color: 'blue', path: '/task'
+                    },
+                    {
+                        id: '3.1.2',
+                        label: 'Planned',
+                        color: 'blue',
+                        path: '/task/pending'
+                    },
+                    {
+                        id: '3.1.3',
+                        label: 'In-progress',
+                        color: 'blue',
+                        path: '/task/in-progress'
+                    },
+                    {
+                        id: '3.1.4',
+                        label: "Completed",
+                        color: 'blue',
+                        path: '/task/completed'
+                    },
+                    {
+                        id: '3.1.5',
+                        label: 'Approved',
+                        color: 'blue',
+                        path: '/task/approved'
+                    },
+                    {
+                        id: '3.1.6',
+                        label: 'Rejected',
+                        color: 'blue',
+                        path: '/task/rejected'
+                    },
+                ],
+            },
+            {
+                id: '3.2', label: 'Partner Tasks', color: 'green',
+                children: [
+                    {
+                        id: '3.2.1',
+                        label: 'All partner tasks',
+                        color: 'blue',
+                        path: '/partner-task'
+                    },
+                    {
+                        id: '3.2.2',
+                        label: 'Planned partner tasks',
+                        color: 'blue',
+                        path: '/partner-task/pending'
+                    },
+                    {
+                        id: '3.2.3',
+                        label: 'In-progress partner tasks',
+                        color: 'blue',
+                        path: '/partner-task/in-progress'
+                    },
+                    {
+                        id: '3.2.4',
+                        label: "Completed partner tasks",
+                        color: 'blue',
+                        path: '/partner-task/completed'
+                    },
+                    {
+                        id: '3.2.5',
+                        label: 'Approved partner tasks',
+                        color: 'blue',
+                        path: '/partner-task/approved'
+                    },
+                    {
+                        id: '3.2.6',
+                        label: 'Rejected partner tasks',
+                        color: 'blue',
+                        path: '/partner-task/rejected'
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        id: '4', label: 'Wishlists', color: 'green',
+        children: [
+            {
+                id: '4.1',
+                label: 'Your wishlist',
+                color: 'blue',
+                path: '/purchases/listed'
+            },
+            {
+                id: '4.2',
+                label: 'Partner wishlist items',
+                color: 'blue',
+                path: '/partner-purchases/listed'
+            },
+        ]
+    },
+    {
+        id: '5', label: 'Past purchases', color: 'green',
+        children: [
+            {
+                id: '5.1',
+                label: 'Your past purchases',
+                color: 'blue',
+                path: '/purchases/purchased'
+            },
+            {
+                id: '5.2',
+                label: 'Partner past purchases',
+                color: 'blue',
+                path: '/partner-purchases/purchased'
+            },
+        ]
+    },
+    {
+        id: '6', label: 'Wallets', color: 'green',
+        children: [
+            {
+                id: '6.1',
+                label: 'Your wallet overview',
+                color: 'blue',
+                path: '/wallet-purchases'
+            },
+            {
+                id: '6.2',
+                label: 'Partner wallet overview',
+                color: 'blue',
+            },
+        ]
+    }
+]
 
 function DotIcon({ color }: { color: string }) {
   return (
@@ -376,8 +368,6 @@ export default function CustomizedTreeView() {
           items={ITEMS}
           aria-label="pages"
           multiSelect
-          defaultExpandedItems={['1']}
-          defaultSelectedItems={['1']}
           sx={{
             m: '0 -8px',
             pb: '8px',

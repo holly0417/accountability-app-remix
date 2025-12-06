@@ -12,6 +12,7 @@ import OptionsMenu from './OptionsMenu';
 import CustomizedTreeView from "~/dashboard/ui/Dashboard/CustomizedTreeView";
 import {useLoaderData} from "react-router-dom";
 import type {clientLoader} from "~/routes/_index";
+import AppIcon from "./../../../../../resources/static/app_icon.jpg";
 
 const drawerWidth = 240;
 
@@ -39,15 +40,42 @@ export default function SideMenu() {
         },
       }}
     >
-      <Box
-        sx={{
-          display: 'flex',
-          mt: 'calc(var(--template-frame-height, 0px) + 4px)',
-          p: 1.5,
-        }}
-      >
-        <SelectContent />
-      </Box>
+        <Stack spacing={2} sx={{ alignItems: 'center' }}>
+
+        <Box></Box>
+
+            <Avatar
+                sizes="medium"
+                alt="Holly's Accountability App"
+                src={AppIcon}
+                sx={{ width: 100, height: 100 }}
+            />
+
+        <Divider />
+        </Stack>
+
+        <Stack
+            direction="row"
+            sx={{
+                p: 2,
+                gap: 1,
+                alignItems: 'center',
+                borderTop: '1px solid',
+                borderColor: 'divider',
+            }}
+        >
+            <Box sx={{ mr: 'auto' }}>
+                <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: '16px' }}>
+                    {currentUserInfo!.username}
+                </Typography>
+                <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                    {currentUserInfo!.email}
+                </Typography>
+            </Box>
+
+            <OptionsMenu />
+        </Stack>
+
       <Divider />
 
       <Box
@@ -62,35 +90,7 @@ export default function SideMenu() {
       </Box>
 
 
-      <Stack
-        direction="row"
-        sx={{
-          p: 2,
-          gap: 1,
-          alignItems: 'center',
-          borderTop: '1px solid',
-          borderColor: 'divider',
-        }}
-      >
 
-        <Avatar
-          sizes="small"
-          alt="Riley Carter"
-          src="/static/images/avatar/7.jpg"
-          sx={{ width: 36, height: 36 }}
-        />
-
-        <Box sx={{ mr: 'auto' }}>
-          <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: '16px' }}>
-              {currentUserInfo!.username}
-          </Typography>
-          <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-              {currentUserInfo!.email}
-          </Typography>
-        </Box>
-
-        <OptionsMenu />
-      </Stack>
     </Drawer>
   );
 }
