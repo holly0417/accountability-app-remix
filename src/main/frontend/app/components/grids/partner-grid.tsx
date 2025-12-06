@@ -7,6 +7,9 @@ import type {UserDto} from "~/dto/user/UserDto";
 import type {Page} from "~/dto/pagination/Page";
 import type {RelationshipDto} from "~/dto/relationship/RelationshipDto";
 import Typography from "@mui/material/Typography";
+import Collapse from "@mui/material/Collapse";
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
 
 type PartnerDataGridProps = {
     listType: string;
@@ -123,51 +126,63 @@ export default function PartnerDataGrid({listType, friends, currentUser}: Partne
 
 
     return (
-        <>
-        <Typography fontWeight="medium" sx={{ flex: 1, mx: 0.5 }}>
-            {listType}
-        </Typography>
 
-        <DataGrid
-            rows={row.content}
-            columns={columns}
-            getRowClassName={(params) =>
-                params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
-            }
-            initialState={{
-                pagination: { paginationModel: { pageSize: 20 } },
-            }}
-            pageSizeOptions={[10, 20, 50]}
-            disableColumnResize
-            density="compact"
-            slotProps={{
-                filterPanel: {
-                    filterFormProps: {
-                        logicOperatorInputProps: {
-                            variant: 'outlined',
-                            size: 'small',
-                        },
-                        columnInputProps: {
-                            variant: 'outlined',
-                            size: 'small',
-                            sx: { mt: 'auto' },
-                        },
-                        operatorInputProps: {
-                            variant: 'outlined',
-                            size: 'small',
-                            sx: { mt: 'auto' },
-                        },
-                        valueInputProps: {
-                            InputComponentProps: {
-                                variant: 'outlined',
-                                size: 'small',
+        <Collapse in={row.content.length > 0}>
+                <Stack
+                    spacing={2}
+                    direction="column"
+                    sx={{
+                        alignItems: 'stretch',
+                        justifyContent: "flex-start",
+                        mx: 3,
+                        pb: 5,
+                        mt: { xs: 8, md: 0 },
+                    }}>
+
+                    <Typography variant="h2" sx={{ fontWeight: 500, lineHeight: '16px' }}>
+                        {listType} partners
+                    </Typography>
+
+                <DataGrid
+                    rows={row.content}
+                    columns={columns}
+                    getRowClassName={(params) =>
+                        params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
+                    }
+                    initialState={{
+                        pagination: { paginationModel: { pageSize: 20 } },
+                    }}
+                    pageSizeOptions={[10, 20, 50]}
+                    disableColumnResize
+                    density="compact"
+                    slotProps={{
+                        filterPanel: {
+                            filterFormProps: {
+                                logicOperatorInputProps: {
+                                    variant: 'outlined',
+                                    size: 'small',
+                                },
+                                columnInputProps: {
+                                    variant: 'outlined',
+                                    size: 'small',
+                                    sx: { mt: 'auto' },
+                                },
+                                operatorInputProps: {
+                                    variant: 'outlined',
+                                    size: 'small',
+                                    sx: { mt: 'auto' },
+                                },
+                                valueInputProps: {
+                                    InputComponentProps: {
+                                        variant: 'outlined',
+                                        size: 'small',
+                                    },
+                                },
                             },
                         },
-                    },
-                },
-            }}
-        />
-
-        </>
+                    }}
+                />
+                </Stack>
+        </Collapse>
     );
 }

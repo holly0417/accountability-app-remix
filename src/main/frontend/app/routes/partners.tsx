@@ -9,6 +9,23 @@ import type { Route } from "./+types/partners";
 import {useLoaderData} from "react-router-dom";
 import {RelationshipAction} from "~/dto/relationship/RelationshipAction";
 import type {RelationshipStatusDto} from "~/dto/relationship/RelationshipStatusDto";
+import AppTheme from "~/dashboard/shared-theme/AppTheme";
+import CssBaseline from "@mui/material/CssBaseline";
+import Box from "@mui/material/Box";
+import SideMenu from "~/dashboard/ui/Dashboard/SideMenu";
+import AppNavbar from "~/dashboard/ui/Dashboard/AppNavbar";
+import {alpha} from "@mui/material/styles";
+import Stack from "@mui/material/Stack";
+import Header from "~/dashboard/ui/Dashboard/Header";
+import Typography from "@mui/material/Typography";
+import TaskForm from "~/components/forms/TaskForm";
+import {TaskDataGrid} from "~/components/grids/task-grid";
+import React from "react";
+import {
+    chartsCustomizations,
+    dataGridCustomizations,
+    datePickersCustomizations, treeViewCustomizations
+} from "~/dashboard/ui/Dashboard/theme/customizations";
 
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
     try {
@@ -26,7 +43,13 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
         const rejectedList = await getRequests(RelationshipStatus.REJECTED, RelationshipDirection.SENDER);
         const approvedList = await getRelationshipsByStatus(RelationshipStatus.APPROVED);
 
-        return {answerList, waitList, rejectedList, approvedList, currentUser};
+        return {
+            answer: answerList,
+            wait: waitList,
+            rejected: rejectedList,
+            approved: approvedList,
+            user: currentUser
+        };
 
     } catch (e:any) {
 // HANDLE 401: Logic -> If unauthorized, send them to login
@@ -70,17 +93,77 @@ export async function clientAction({ request }: ActionFunctionArgs) {
 }
 
 
-export default function Partners(){
-
-    const {answerList, waitList, rejectedList, approvedList, currentUser} = useLoaderData<typeof clientLoader>();
+export default function Partners({loaderData}: Route.ComponentProps){
+    const xThemeComponents = {
+        ...chartsCustomizations,
+        ...dataGridCustomizations,
+        ...datePickersCustomizations,
+        ...treeViewCustomizations,
+    };
 
     return(
-        <div>
-            <SearchPartner />
-            <PartnerDataGrid listType = "wait" friends={waitList} currentUser={currentUser}/>
-            <PartnerDataGrid listType = "answer" friends={answerList} currentUser={currentUser}/>
-            <PartnerDataGrid listType = "rejected" friends={rejectedList} currentUser={currentUser}/>
-            <PartnerDataGrid listType = "approved" friends={approvedList} currentUser={currentUser}/>
-        </div>
+    <AppTheme themeComponents={xThemeComponents}>
+        <CssBaseline enableColorScheme />
+        <Box sx={{ display: 'flex' }}>
+            <SideMenu user={loaderData.user}/>
+            <AppNavbar />
+            <Box
+                component="main"
+                sx={(theme) => ({
+                    flexGrow: 1,
+                    backgroundColor: theme.vars
+                        ? `rgba(${theme.vars.palette.background.defaultChannel} / 1)`
+                        : alpha(theme.palette.background.default, 1),
+                    overflow: 'auto',
+                })}
+            >
+
+                <Stack
+                    spacing={2}
+                    sx={{
+                        alignItems: 'center',
+                        mx: 3,
+                        pb: 5,
+                        mt: { xs: 8, md: 0 },
+                    }}
+                >
+                    <Header />
+                </Stack>
+
+                <Stack
+                    spacing={2}
+                    sx={{
+                        alignItems: 'flex-start',
+                        justifyContent: "flex-start",
+                        mx: 3,
+                        pb: 5,
+                        mt: { xs: 8, md: 0 },
+                    }}
+                >
+                    <Typography variant="h1" sx={{ fontWeight: 500, lineHeight: '16px' }}>
+                        Partners
+                    </Typography>
+                </Stack>
+
+                <Stack
+                    spacing={2}
+                    direction ="column"
+                    sx={{
+                        alignItems: 'stretch',
+                        justifyContent: "flex-start",
+                        mx: 3,
+                        pb: 5,
+                        mt: { xs: 8, md: 0 },
+                    }}
+                >
+                    <SearchPartner />
+                    <PartnerDataGrid listType = "wait" friends={loaderData.wait} currentUser={loaderData.user}/>
+                    <PartnerDataGrid listType = "answer" friends={loaderData.answer} currentUser={loaderData.user}/>
+                    <PartnerDataGrid listType = "rejected" friends={loaderData.rejected} currentUser={loaderData.user}/>
+                    <PartnerDataGrid listType = "approved" friends={loaderData.approved} currentUser={loaderData.user}/>
+                </Stack>
+            </Box>
+        </Box>
+    </AppTheme>
     );
 }
