@@ -13,6 +13,7 @@ import AppIcon from "./../../../../../resources/static/app_icon.jpg";
 import {useNavigate} from "react-router";
 import MenuButton from "~/dashboard/ui/Dashboard/MenuButton";
 import IconButton from "@mui/material/IconButton";
+import type {UserDto} from "~/dto/user/UserDto";
 
 const drawerWidth = 240;
 
@@ -27,8 +28,11 @@ const Drawer = styled(MuiDrawer)({
   },
 });
 
-export default function SideMenu() {
-    const { currentUserInfo } = useLoaderData<typeof clientLoader>();
+interface SideMenuProps {
+    user: UserDto
+}
+
+export default function SideMenu({user}: SideMenuProps) {
     const navigate = useNavigate();
 
     const goToHome = () => {
@@ -73,10 +77,10 @@ export default function SideMenu() {
         >
             <Box sx={{ mr: 'auto' }}>
                 <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: '16px' }}>
-                    {currentUserInfo!.username}
+                    {user.username}
                 </Typography>
                 <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-                    {currentUserInfo!.email}
+                    {user.email}
                 </Typography>
             </Box>
             <OptionsMenu />

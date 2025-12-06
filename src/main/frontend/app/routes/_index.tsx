@@ -27,6 +27,7 @@ import {data, redirect} from "react-router";
 import {taskData} from "~/composables/TaskData";
 import {TaskStatus} from "~/dto/task/TaskStatus";
 import {userData} from "~/composables/UserData";
+import {useLoaderData} from "react-router-dom";
 
 const xThemeComponents = {
   ...chartsCustomizations,
@@ -247,11 +248,15 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
 }
 
 export default function _index(props: { disableCustomTheme?: boolean }) {
+
+    const { currentUserInfo } = useLoaderData<typeof clientLoader>();
+    const user = currentUserInfo!;
+
   return (
     <AppTheme {...props} themeComponents={xThemeComponents}>
       <CssBaseline enableColorScheme />
       <Box sx={{ display: 'flex' }}>
-        <SideMenu />
+        <SideMenu user={user} />
         <AppNavbar />
         {/* Main content */}
         <Box

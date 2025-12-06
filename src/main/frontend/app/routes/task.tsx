@@ -10,6 +10,20 @@ import {TaskAction} from "~/dto/task/TaskAction";
 import React from "react";
 import type {TaskDataDto} from "~/dto/task/TaskDataDto";
 import type {Page} from "~/dto/pagination/Page.ts";
+import AppTheme from "~/dashboard/shared-theme/AppTheme";
+import CssBaseline from "@mui/material/CssBaseline";
+import Box from "@mui/material/Box";
+import SideMenu from "~/dashboard/ui/Dashboard/SideMenu";
+import AppNavbar from "~/dashboard/ui/Dashboard/AppNavbar";
+import {alpha} from "@mui/material/styles";
+import Stack from "@mui/material/Stack";
+import Header from "~/dashboard/ui/Dashboard/Header";
+import MainGrid from "~/dashboard/ui/Dashboard/MainGrid";
+import {
+    chartsCustomizations,
+    dataGridCustomizations,
+    datePickersCustomizations, treeViewCustomizations
+} from "~/dashboard/ui/Dashboard/theme/customizations";
 
 export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
     const { getTasksByCurrentUserAndStatus, getAllTasksByUserList } = taskData();
@@ -23,13 +37,13 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
         console.log("The status is not defined in the URL.");
     }
 
-    const userId = await getCurrentUserInfo();
+    const user = await getCurrentUserInfo();
 
-    if (!userId) {
+    if (!user) {
         throw data("User not found", { status: 404 });
     }
 
-    let dataPage: Page<TaskDataDto> = await getAllTasksByUserList([userId.id]);
+    let dataPage: Page<TaskDataDto> = await getAllTasksByUserList([user.id]);
 
     switch(status) {
         case TaskRouteStatus.IN_PROGRESS:
@@ -50,7 +64,8 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
     }
 
     return {
-        rowData: dataPage.content
+        rowData: dataPage.content,
+        user: user
     };
 }
 
@@ -85,15 +100,52 @@ export async function clientAction({ request }: ActionFunctionArgs) {
             await deleteTask(taskIdNumber);
             return { ok: true };
     }
-
 }
 
 export default function Task({loaderData}: Route.ComponentProps){
+    const user = loaderData.user;
+
+    const xThemeComponents = {
+        ...chartsCustomizations,
+        ...dataGridCustomizations,
+        ...datePickersCustomizations,
+        ...treeViewCustomizations,
+    };
 
     return(
-        <div>
-            <TaskForm />
-            <TaskDataGrid row={loaderData.rowData}/>
-        </div>
+        <AppTheme themeComponents={xThemeComponents}>
+            <CssBaseline enableColorScheme />
+            <Box sx={{ display: 'flex' }}>
+                <SideMenu user={user}/>
+                <AppNavbar />
+                {/* Main content */}
+                <Box
+                    component="main"
+                    sx={(theme) => ({
+                        flexGrow: 1,
+                        backgroundColor: theme.vars
+                            ? `rgba(${theme.vars.palette.background.defaultChannel} / 1)`
+                            : alpha(theme.palette.background.default, 1),
+                        overflow: 'auto',
+                    })}
+                >
+                    <Stack
+                        spacing={2}
+                        sx={{
+                            alignItems: 'center',
+                            mx: 3,
+                            pb: 5,
+                            mt: { xs: 8, md: 0 },
+                        }}
+                    >
+                        <Header />
+                        <TaskForm />
+                        <TaskDataGrid row={loaderData.rowData}/>
+                    </Stack>
+                </Box>
+            </Box>
+        </AppTheme>
+
+
     );
 }

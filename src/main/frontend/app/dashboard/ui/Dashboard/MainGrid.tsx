@@ -10,19 +10,11 @@ import HighlightedCard from './HighlightedCard';
 import PageViewsBarChart from './PageViewsBarChart';
 import SessionsChart, {type SessionsChartProps} from './SessionsChart';
 import StatCard, {type StatCardProps} from './StatCard';
-import {walletData} from "~/composables/WalletData";
-import type {LocalDateTime} from "ts-extended-types";
-import {purchaseData} from "~/composables/PurchaseData";
-import type {Page} from "~/dto/pagination/Page";
-import type {PurchaseDto} from "~/dto/purchase/PurchaseDto";
-import {PurchaseRouteStatus} from "~/dto/purchase/PurchaseRouteStatus";
-import {PurchaseStatus} from "~/dto/purchase/PurchaseStatus";
 
 import {useLoaderData} from "react-router-dom";
 
 import React from "react";
 import type {clientLoader} from "~/routes/_index";
-import {data} from "react-router";
 
 
 export default function MainGrid() {
