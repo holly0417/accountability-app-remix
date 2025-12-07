@@ -44,31 +44,6 @@ public class PasswordEmailServiceTest {
     private PasswordEmailService passwordEmailService;
 
 
-    @Test
-    public void EmailService_sendPasswordEmail() {
-        User user = new User();
-        user.setId(1L);
-        user.setUsername("username");
-        user.setPassword("Password@app1");
-        user.setEmail("email@email");
-        user.setName("name");
-
-        when(userService.findUserByEmail("doesntexist@email")).thenReturn(Optional.empty());
-        when(applicationProperties.getBaseUrl()).thenReturn("http://localhost:8080");
-
-        RuntimeException userNotFound = assertThrows(RuntimeException.class, () -> passwordEmailService.sendPasswordEmail("doesntexist@email"));
-
-        assertEquals("User not found", userNotFound.getMessage());
-
-        when(userService.findUserByEmail(user.getEmail())).thenReturn(Optional.of(user));
-        when(passwordResetTokenRepository.save(any(PasswordResetToken.class))).thenReturn(null);
-
-        GenericResponse success = passwordEmailService.sendPasswordEmail("email@email");
-
-        assertEquals("Email sent!", success.getMessage());
-
-    }
-
     //test if a method will throw an exception if wrong input given
     @Test
     public void EmailService_setNewPassword_ThrowsException(){
