@@ -27,9 +27,9 @@ spring:
             enable: true
 
   datasource:
-    url: "jdbc:postgresql://localhost:5432/database"
-    username: accountability
-    password: accountability-pw
+    url: "${DB_JDBC_URL:postgresql://localhost:5432/database}"
+    username: "${DB_USER:accountability}"
+    password: "${DB_PASSWORD:accountability-pw}"
     hikari:
       driver-class-name: org.postgresql.Driver
 
