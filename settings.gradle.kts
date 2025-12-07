@@ -1,4 +1,4 @@
-rootProject.name = "accountability"
+rootProject.name = "accountability-app-remix"
 
 pluginManagement {
     repositories {
