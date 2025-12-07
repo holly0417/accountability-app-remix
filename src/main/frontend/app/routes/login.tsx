@@ -26,6 +26,8 @@ import {Alert, Snackbar} from "@mui/material";
 import { useForm } from 'react-hook-form';
 import type {RegisterUser} from "~/dto/user/RegisterUser";
 import type {LoginDto} from "~/dto/user/LoginDto";
+import AppIcon from "~/img/app_icon.jpg";
+import Avatar from "@mui/material/Avatar";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -77,12 +79,6 @@ export default function Login(props: { disableCustomTheme?: boolean }) {
         } as LoginDto
     });
 
-  const [usernameError, setUsernameError] = React.useState(false);
-  const [usernameErrorMessage, setUsernameErrorMessage] = React.useState('');
-  const [passwordError, setPasswordError] = React.useState(false);
-  const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
-  const [loginError, setLoginError] = React.useState(false);
-  const [loginErrorMessage, setLoginErrorMessage] = React.useState('');
   const [open, setOpen] = React.useState(false);
 
   const navigate = useNavigate();
@@ -96,19 +92,25 @@ export default function Login(props: { disableCustomTheme?: boolean }) {
   };
 
   const onSubmit = (data: LoginDto) => {
-      const formData = new URLSearchParams()
+      const formData = new URLSearchParams() //javascript object that encodes
+      // way of sending form to backend, only needed for the login
+      // this is data similar to JSON, but the format of the request is of content-type application/x-www-form-urlencoded
+      //handler in the backend does not accept JSON because we're using Spring Form Authentication
       formData.append('username', data.username)
       formData.append('password', data.password)
 
       api.post('/login', formData)
           .then(() => navigate('/'))
           .catch((err: AxiosError)  => {
+              console.log(err);
+
               if(err.response?.status === 401) {
                   alert(
                       "Login failed. Please double check you're using the correct credentials for your account."
                   )
               }
           })
+
   };
 
 
@@ -118,7 +120,12 @@ export default function Login(props: { disableCustomTheme?: boolean }) {
       <SignInContainer direction="column" justifyContent="space-between">
         <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} />
         <Card variant="outlined">
-          <SitemarkIcon />
+            <Avatar
+                sizes="medium"
+                alt="Holly's Accountability App"
+                src={AppIcon}
+                sx={{ width: 100, height: 100 }}
+            />
           <Typography
             component="h1"
             variant="h4"
@@ -140,8 +147,6 @@ export default function Login(props: { disableCustomTheme?: boolean }) {
             <FormControl>
               <FormLabel htmlFor="username">Username</FormLabel>
               <TextField
-                error={usernameError}
-                helperText={usernameErrorMessage}
                 id="username"
                 type="username"
                 {...register("username")}
@@ -151,14 +156,12 @@ export default function Login(props: { disableCustomTheme?: boolean }) {
                 required
                 fullWidth
                 variant="outlined"
-                color={usernameError ? 'error' : 'primary'}
+                color='primary'
               />
             </FormControl>
             <FormControl>
               <FormLabel htmlFor="password">Password</FormLabel>
               <TextField
-                error={passwordError}
-                helperText={passwordErrorMessage}
                 {...register("password")}
                 placeholder="••••••"
                 type="password"
@@ -168,14 +171,15 @@ export default function Login(props: { disableCustomTheme?: boolean }) {
                 required
                 fullWidth
                 variant="outlined"
-                color={passwordError ? 'error' : 'primary'}
+                color='primary'
               />
             </FormControl>
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
             />
-            <ForgotPassword open={open} handleClose={handleClose} />
+            <ForgotPassword open={open} setOpen ={setOpen} handleClose={handleClose} />
+
             <Button
               type="submit"
               fullWidth
@@ -183,16 +187,6 @@ export default function Login(props: { disableCustomTheme?: boolean }) {
             >
               Sign in
             </Button>
-
-          <Snackbar
-              open={loginError}
-              autoHideDuration={6000}
-              onClose={handleClose}
-          >
-              <Alert onClose={handleClose} sx={{ width: '100%' }}>
-                  {loginErrorMessage}
-              </Alert>
-          </Snackbar>
 
             <Link
               component="button"
@@ -204,24 +198,8 @@ export default function Login(props: { disableCustomTheme?: boolean }) {
               Forgot your password?
             </Link>
           </Box>
-          <Divider>or</Divider>
+
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <Button
-              fullWidth
-              variant="outlined"
-              onClick={() => alert('Sign in with Google')}
-              startIcon={<GoogleIcon />}
-            >
-              Sign in with Google
-            </Button>
-            <Button
-              fullWidth
-              variant="outlined"
-              onClick={() => alert('Sign in with Facebook')}
-              startIcon={<FacebookIcon />}
-            >
-              Sign in with Facebook
-            </Button>
             <Typography sx={{ textAlign: 'center' }}>
               Don&apos;t have an account?{' '}
                 <NavLink to="/registration">Click me</NavLink>

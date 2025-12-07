@@ -3,6 +3,7 @@ package com.github.holly.accountability.password_reset_email;
 import com.github.holly.accountability.config.ErrorResponse;
 import com.github.holly.accountability.config.GenericResponse;
 import com.github.holly.accountability.config.properties.ApplicationProperties;
+import com.github.holly.accountability.user.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.nio.charset.StandardCharsets;
@@ -26,22 +28,25 @@ public class PasswordEmailController {
     public static final String CHANGE_PASSWORD_FROM_TOKEN = "/change-password-from-token";
 
     private final PasswordEmailService passwordEmailService;
+    private final UserService userService;
 
     @Autowired
     public PasswordEmailController(PasswordEmailService passwordEmailService,
-                                   ApplicationProperties applicationProperties) {
+                                   ApplicationProperties applicationProperties,
+                                   UserService userService) {
         this.passwordEmailService = passwordEmailService;
         this.applicationProperties = applicationProperties;
+        this.userService = userService;
     }
 
     @ResponseBody
     @GetMapping("/send-token")
     public GenericResponse sendPasswordEmail(@RequestParam String email) {
-        try {
-            return passwordEmailService.sendPasswordEmail(email);
-        } catch (Exception e) {
-            return new GenericResponse(e.getMessage());
-        }
+
+        userService.findUserByEmail(email)
+                .ifPresent(passwordEmailService::sendPasswordEmail);
+
+        return new GenericResponse("If this email exists in our system, you should find an email in your mailbox.");
     }
 
     @GetMapping(CHANGE_PASSWORD_FROM_TOKEN + "/{token}")

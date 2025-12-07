@@ -51,16 +51,9 @@ public class PasswordEmailService {
         }
     }
 
-    public GenericResponse sendPasswordEmail(String email)
-            throws ResponseStatusException, MailSendException {
-
-        User user = userService.findUserByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
+    public void sendPasswordEmail(User user) throws MailSendException {
         String token = createPasswordResetTokenForUser(user);
         mailSender.send(constructResetTokenEmail(token, user));
-
-        return new GenericResponse("Email sent!");
     }
 
     public ResetPasswordDto setNewPassword(String token, ResetPasswordDto passwordDto) throws RuntimeException {

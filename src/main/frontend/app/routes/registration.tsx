@@ -69,11 +69,11 @@ export default function Registration(props: { disableCustomTheme?: boolean }) {
     //RegisterUser info
     const { register, handleSubmit } = useForm({
         defaultValues: {
-        username: '',
-        name: '',
-        email: '',
-        password: '',
-        passwordRepeated: '',
+            username: '',
+            name: '',
+            email: '',
+            password: '',
+            passwordRepeated: '',
         } as RegisterUser
     });
 
@@ -92,6 +92,7 @@ export default function Registration(props: { disableCustomTheme?: boolean }) {
     };
     const handleClose = () => {
         setAnchorEl(null);
+        setSubmitError(false);
     };
 
     const navigate = useNavigate();
@@ -105,10 +106,8 @@ export default function Registration(props: { disableCustomTheme?: boolean }) {
     const onSubmit =  async (data: RegisterUser) => {
             await api.post<RegisterUser>('/registration', data)
                 .then(response => {
-                    if (response.headers['Content-Type'] !== 'application/json') {
-                        navigate('/');
-                    }
                     console.log(response);
+                    navigate('/');
                 })
                 .catch ((error)=> {
                     if(error.response) {
@@ -154,7 +153,7 @@ export default function Registration(props: { disableCustomTheme?: boolean }) {
                         sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
                     >
                         <FormControl>
-                            <FormLabel htmlFor="name">Username</FormLabel>
+                            <FormLabel htmlFor="username">Username</FormLabel>
                             <TextField
                                 autoComplete="username"
                                 {...register("username")}

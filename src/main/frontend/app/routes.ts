@@ -30,6 +30,10 @@ export default [
     route("purchases/:status?", "./routes/purchases.tsx"),
 
     route("partner-purchases/:status?", "./routes/partner-purchases.tsx"),
+
+    route("account-information", "./routes/account-information.tsx"),
+
+    route("change-password-from-token", "./routes/change-password-from-token.tsx"),
     //Nested routes
 
 

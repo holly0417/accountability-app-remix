@@ -9,7 +9,7 @@ import OptionsMenu from './OptionsMenu';
 import CustomizedTreeView from "~/dashboard/ui/Dashboard/CustomizedTreeView";
 import {useLoaderData} from "react-router-dom";
 import type {clientLoader} from "~/routes/_index";
-import AppIcon from "./../../../../../resources/static/app_icon.jpg";
+import AppIcon from "~/img/app_icon.jpg";
 import {useNavigate} from "react-router";
 import MenuButton from "~/dashboard/ui/Dashboard/MenuButton";
 import IconButton from "@mui/material/IconButton";

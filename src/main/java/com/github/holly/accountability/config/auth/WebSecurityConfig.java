@@ -101,7 +101,6 @@ public class WebSecurityConfig {
     @Controller
     public class LoginController {
 
-        // used to serve the correct route inside our VueJS application
         @GetMapping("/login")
         public ModelAndView login(@AuthenticationPrincipal Object principal) {
             if (principal instanceof AccountabilitySessionUser) {

@@ -47,6 +47,10 @@ export default function OptionsMenu() {
         navigate('/registration');
     };
 
+    const goToAccountInfo = () => {
+        navigate('/account-information');
+    };
+
   return (
     <React.Fragment>
       <MenuButton
@@ -76,7 +80,7 @@ export default function OptionsMenu() {
           },
         }}
       >
-        <MenuItem onClick={handleClose}>My account info</MenuItem>
+        <MenuItem onClick={goToAccountInfo}>My account info</MenuItem>
         <Divider />
         <MenuItem onClick={goToRegistration}>Add another account</MenuItem>
         <Divider />

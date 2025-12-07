@@ -51,15 +51,6 @@ export function HydrateFallback() {
 export default function App() {
   return (
       <>
-          <NavLink to={"/"} className={({isActive}) => isActive ? "text-indigo-600" : "text-gray-600"}>
-              Home{" "}
-          </NavLink>
-          <NavLink to={"/registration"} className={({isActive}) => isActive ? "text-indigo-600" : "text-gray-600"}>
-              Register New User{" "}
-          </NavLink>
-          <NavLink to={"/testhome"} className={({isActive}) => isActive ? "text-indigo-600" : "text-gray-600"}>
-              testpage{" "}
-          </NavLink>
           <Outlet />
       </>
   );
