@@ -83,6 +83,39 @@ spring:
 ```
 
 # How to use (for users)
+
+Run a docker-compose.yml like follows:
+```yaml
+services:
+  postgres:
+    image: postgres:18
+    environment:
+      POSTGRES_DB: accountability-db
+      POSTGRES_USER: accountability-user
+      POSTGRES_PASSWORD: accountability-pw
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+
+  accountability-app:
+    image: ghcr.io/holly0417/accountability-app-remix:development
+    ports:
+      - "8080:8080"
+    environment:
+      DB_JDBC_URL: jdbc:postgresql://postgres:5432/accountability-db
+      DB_USER: accountability-user
+      DB_PASSWORD: accountability-pw
+      ACCOUNTABILITY_EMAIL_HOST: smtp.gmail.com
+      ACCOUNTABILITY_EMAIL_PORT: 587
+      ACCOUNTABILITY_EMAIL_ADDRESS: "something@gmail.com"
+      ACCOUNTABILITY_EMAIL_PASSWORD: "password"
+      
+
+volumes:
+  postgres_data:
+```
+
 When first registering, each user starts out with a value of 0 in their wallet. <br>
 You can start earning money and increase the value in your wallet by completing tasks and having your partners approve them.<br>
 <br>

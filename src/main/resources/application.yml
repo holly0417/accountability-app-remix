@@ -15,7 +15,7 @@ spring:
     virtual:
       enabled: true
   mail:
-    host: "smtp.gmail.com"
+    host: "${ACCOUNTABILITY_EMAIL_HOST:smtp.gmail.com}"
     port: ${ACCOUNTABILITY_EMAIL_PORT:587}
     username: "${ACCOUNTABILITY_EMAIL_ADDRESS:example@gmail.com}"
     password: "${ACCOUNTABILITY_EMAIL_PASSWORD:accountability-pw}"
@@ -27,7 +27,7 @@ spring:
             enable: true
 
   datasource:
-    url: "${DB_JDBC_URL:postgresql://localhost:5432/database}"
+    url: "${DB_JDBC_URL:jdbc:postgresql://localhost:5432/database}"
     username: "${DB_USER:accountability}"
     password: "${DB_PASSWORD:accountability-pw}"
     hikari:
