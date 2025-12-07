@@ -149,8 +149,6 @@ tasks.withType<BootBuildImage> {
     createdDate = "now"
 
     environment = mapOf(
-        "BPL_JVM_CDS_ENABLED" to "true",
-        "BP_JVM_CDS_ENABLED" to "true",
         "BP_JVM_VERSION" to "25",
         "BPE_LANG" to "en_US.UTF-8",
         "BPE_LANGUAGE" to "LANGUAGE=en_US:en",
