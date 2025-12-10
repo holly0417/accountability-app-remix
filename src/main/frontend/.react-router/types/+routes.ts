@@ -14,15 +14,100 @@ type Pages = {
   "/": {
     params: {};
   };
+  "/login": {
+    params: {};
+  };
+  "/registration": {
+    params: {};
+  };
+  "/task/:status?": {
+    params: {
+      "status"?: string;
+    };
+  };
+  "/partners": {
+    params: {};
+  };
+  "/partner-task/:status?": {
+    params: {
+      "status"?: string;
+    };
+  };
+  "/purchases/:status?": {
+    params: {
+      "status"?: string;
+    };
+  };
+  "/partner-purchases/:status?": {
+    params: {
+      "status"?: string;
+    };
+  };
+  "/account-information": {
+    params: {};
+  };
+  "/change-password-from-token": {
+    params: {};
+  };
 };
 
 type RouteFiles = {
   "root.tsx": {
     id: "root";
+    page: "/" | "/login" | "/registration" | "/task/:status?" | "/partners" | "/partner-task/:status?" | "/purchases/:status?" | "/partner-purchases/:status?" | "/account-information" | "/change-password-from-token";
+  };
+  "./routes/_index.tsx": {
+    id: "routes/_index";
     page: "/";
+  };
+  "./routes/login.tsx": {
+    id: "routes/login";
+    page: "/login";
+  };
+  "./routes/registration.tsx": {
+    id: "routes/registration";
+    page: "/registration";
+  };
+  "./routes/task.tsx": {
+    id: "routes/task";
+    page: "/task/:status?";
+  };
+  "./routes/partners.tsx": {
+    id: "routes/partners";
+    page: "/partners";
+  };
+  "./routes/partner-task.tsx": {
+    id: "routes/partner-task";
+    page: "/partner-task/:status?";
+  };
+  "./routes/purchases.tsx": {
+    id: "routes/purchases";
+    page: "/purchases/:status?";
+  };
+  "./routes/partner-purchases.tsx": {
+    id: "routes/partner-purchases";
+    page: "/partner-purchases/:status?";
+  };
+  "./routes/account-information.tsx": {
+    id: "routes/account-information";
+    page: "/account-information";
+  };
+  "./routes/change-password-from-token.tsx": {
+    id: "routes/change-password-from-token";
+    page: "/change-password-from-token";
   };
 };
 
 type RouteModules = {
   "root": typeof import("./app/root.tsx");
+  "routes/_index": typeof import("./app/./routes/_index.tsx");
+  "routes/login": typeof import("./app/./routes/login.tsx");
+  "routes/registration": typeof import("./app/./routes/registration.tsx");
+  "routes/task": typeof import("./app/./routes/task.tsx");
+  "routes/partners": typeof import("./app/./routes/partners.tsx");
+  "routes/partner-task": typeof import("./app/./routes/partner-task.tsx");
+  "routes/purchases": typeof import("./app/./routes/purchases.tsx");
+  "routes/partner-purchases": typeof import("./app/./routes/partner-purchases.tsx");
+  "routes/account-information": typeof import("./app/./routes/account-information.tsx");
+  "routes/change-password-from-token": typeof import("./app/./routes/change-password-from-token.tsx");
 };

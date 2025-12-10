@@ -8,10 +8,9 @@ import {
 } from "react-router";
 
 import type { Route } from "./+types/root";
-import "./app.css";
+import "~/app.css";
 import {Loading} from "~/routes/loading-screen";
 import React from "react";
-import NavbarBreadcrumbs from "~/dashboard/ui/Dashboard/NavbarBreadcrumbs";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
