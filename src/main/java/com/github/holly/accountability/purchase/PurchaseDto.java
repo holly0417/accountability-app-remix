@@ -28,6 +28,7 @@ public class PurchaseDto {
     public String getPurchaseTimeString() {
         return purchaseTimeString;
     }
+
     public void setPurchaseTimeString(String purchaseTimeString) {
         this.purchaseTimeString = purchaseTimeString;
     }

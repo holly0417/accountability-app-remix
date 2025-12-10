@@ -24,15 +24,11 @@ public class PurchaseService {
         this.walletService = walletService;
     }
 
-    public Page<Purchase> getPurchasesByUserIdDescTime(Long userId, Pageable pageable){
-        return purchaseRepository.findByUserIdOrderByPurchaseTimeDesc(userId, pageable);
+    public Page<PurchaseDto> findByUserIdAndStatus(List<Long> userIds, List<PurchaseStatus> statuses, Pageable pageable){
+        return purchaseRepository.findByUserIdAndStatus(userIds, statuses, pageable).map(this::convertPurchaseToDto);
     }
 
-    public Page<Purchase> findByUserIdAndStatus(List<Long> userIds, List<PurchaseStatus> statuses, Pageable pageable){
-        return purchaseRepository.findByUserIdAndStatus(userIds, statuses, pageable);
-    }
-
-    public Purchase makePurchase(Long purchaseId){
+    public PurchaseDto makePurchase(Long purchaseId){
 
         Purchase purchase = purchaseRepository.getReferenceById(purchaseId);
 
@@ -43,10 +39,10 @@ public class PurchaseService {
         purchase.setStatus(PurchaseStatus.PURCHASED);
         purchase.setPurchaseTime(LocalDateTime.now());
         purchaseRepository.save(purchase);
-        return purchase;
+        return convertPurchaseToDto(purchase);
     }
 
-    public Purchase addToWishList(Long userId, Double price, String description){
+    public PurchaseDto addToWishList(Long userId, Double price, String description){
         Purchase purchase = new Purchase();
 
         purchase.setPrice(price);
@@ -54,7 +50,30 @@ public class PurchaseService {
         purchase.setUser(userService.findUserById(userId));
         purchase.setStatus(PurchaseStatus.LISTED);
         purchaseRepository.save(purchase);
-        return purchase;
+        return convertPurchaseToDto(purchase);
+    }
+
+    private PurchaseDto convertPurchaseToDto(Purchase purchase){
+        PurchaseDto purchaseDto = new PurchaseDto();
+        purchaseDto.setId(purchase.getId());
+        purchaseDto.setDescription(purchase.getDescription());
+        purchaseDto.setPrice(purchase.getPrice());
+        purchaseDto.setUserId(purchase.getUser().getId());
+        purchaseDto.setStatus(purchase.getStatus());
+        purchaseDto.setUserName(purchase.getUser().getUsername());
+
+        if (purchase.getPurchaseTime() != null) {
+            LocalDateTime purchaseTime = purchase.getPurchaseTime();
+
+            String[] date = purchaseTime.toString().split("T");
+
+            String[] time = date[1].split(":");
+
+            String timestamp = date[0] + " " + time[0] + ":" + time[1];
+
+            purchaseDto.setPurchaseTimeString(timestamp);
+        }
+        return purchaseDto;
     }
 
 }
