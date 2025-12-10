@@ -33,6 +33,7 @@ import {toast, Toaster} from "react-hot-toast";
 import {useEmail} from "~/composables/EmailComposable";
 import Button from "@mui/material/Button";
 import type {AxiosError} from "axios";
+import type {GenericResponseDto} from "~/dto/GenericResponseDto";
 
 const xThemeComponents = {
     ...chartsCustomizations,
@@ -50,9 +51,6 @@ export default function ChangePasswordFromToken({loaderData}: Route.ComponentPro
     let [searchParams] = useSearchParams();
     const {setNewPassword} = useEmail();
     const token = searchParams.get("token");
-    const [confirmation, setConfirmation] = React.useState('');
-    const [passwordMessage, setPasswordMessage] = React.useState('');
-    const [passwordRepeatedMessage, setPasswordRepeatedMessage] = React.useState('');
     const navigate = useNavigate();
 
     const { register, handleSubmit } = useForm({
@@ -63,43 +61,19 @@ export default function ChangePasswordFromToken({loaderData}: Route.ComponentPro
         } as ResetPasswordDto
     });
 
-    const [errorMessages, setErrorMessages] = React.useState(
-        {
-            password: '',
-            passwordRepeated: ''
-        } as Record<string, string>
-    );
-
     async function setPassword(data: ResetPasswordDto){
-        try {
+        const response: GenericResponseDto = await setNewPassword(data);
+        const message = response.message;
 
-            const response = await setNewPassword(data);
-            setConfirmation(response);
+        toast(message, {
+            duration: 2000,
+        });
 
-            toast(response, {
-                duration: 2000,
-            });
+        if (!response.error) {
 
             setTimeout(() => navigate('/login'), 2000);
-
-        } catch (error: AxiosError) {
-
-            if (error.response.data.errors) {
-
-                const errorSet: Record<string, string> = {
-                    password: '',
-                    passwordRepeated: ''
-                }
-
-                Object.entries(error.response.data.errors).forEach(([field, message]) => {
-                    if (field in errorMessages) {
-                        errorSet[field] = message as string;
-                    }
-                });
-
-                setErrorMessages(errorSet)
-            }
-            console.log(error);
+        } else {
+            console.log(response);
         }
     }
 
@@ -150,8 +124,6 @@ export default function ChangePasswordFromToken({loaderData}: Route.ComponentPro
                                             fullWidth
                                         />
                                     </FormControl>
-                                    <FormHelperText>{errorMessages.password}</FormHelperText>
-
                                     <FormControl variant="outlined">
                                         <InputLabel htmlFor="email">New Password Repeated</InputLabel>
                                         <OutlinedInput
@@ -165,7 +137,6 @@ export default function ChangePasswordFromToken({loaderData}: Route.ComponentPro
                                             type="password"
                                             fullWidth
                                         />
-                                        <FormHelperText>{errorMessages.passwordRepeated}</FormHelperText>
                                     </FormControl>
                                     <Button variant="contained" onClick={handleSubmit(setPassword)}>
                                         Continue

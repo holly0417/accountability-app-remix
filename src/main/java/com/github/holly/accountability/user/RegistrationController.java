@@ -43,7 +43,7 @@ public class RegistrationController {
             return new ResponseEntity<>(new BindingResultWrapper(bindingResult), HttpStatus.BAD_REQUEST);
         }
 
-        if (!patternMatches(registerUser.getPassword(), "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=]).{8,20}$")) {
+        if (!patternMatches(registerUser.getPassword(), "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=-!]).{8,20}$")) {
             bindingResult.rejectValue("password", "Password not in correct format.");
             return new ResponseEntity<>(new BindingResultWrapper(bindingResult), HttpStatus.BAD_REQUEST);
         }

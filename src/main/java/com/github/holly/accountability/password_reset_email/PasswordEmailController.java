@@ -1,6 +1,5 @@
 package com.github.holly.accountability.password_reset_email;
 
-import com.github.holly.accountability.config.ErrorResponse;
 import com.github.holly.accountability.config.GenericResponse;
 import com.github.holly.accountability.config.properties.ApplicationProperties;
 import com.github.holly.accountability.user.UserService;
@@ -12,12 +11,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 
 @Controller
@@ -54,7 +51,6 @@ public class PasswordEmailController {
         boolean isValid = passwordEmailService.validatePasswordResetToken(token);
 
         if (!isValid) {
-
             String loginUrl = UriComponentsBuilder
                     .fromUriString(applicationProperties.getBaseUrl())
                     .path("/login")
@@ -82,35 +78,35 @@ public class PasswordEmailController {
 
     @ResponseBody
     @PostMapping("/set-new-password")
-    public ResponseEntity<?> changePasswordFromToken(@RequestBody @Valid ResetPasswordDto passwordDto,
+    public GenericResponse changePasswordFromToken(@RequestBody @Valid ResetPasswordDto passwordDto,
                                                      BindingResult bindingResult) {
 
-        if (bindingResult.hasErrors()) {
-            Map<String, String> errorMap = new HashMap<>();
+        if(!Objects.equals(passwordDto.getPassword(), passwordDto.getPasswordRepeated())) {
+            return new GenericResponse("Password inputs must match", true);
+        }
 
-            for (FieldError error : bindingResult.getFieldErrors()) {
-                errorMap.put(error.getField(), error.getDefaultMessage());
+        if (!bindingResult.hasErrors()) {
+            try {
+                passwordEmailService.setNewPassword(passwordDto.getToken(), passwordDto);
+
+                return new GenericResponse(
+                        "Password changed successfully!", false);
+
+
+            } catch (Exception e) {
+                return new GenericResponse(e.getMessage(), true);
             }
-
-            return ResponseEntity.badRequest()
-                    .body(new ErrorResponse("Validation failed", errorMap));
         }
 
-        try {
-            passwordEmailService.setNewPassword(passwordDto.getToken(), passwordDto);
-            return ResponseEntity
-                    .ok(new ErrorResponse(
-                            "Password changed successfully!"));
+        StringBuilder sb = new StringBuilder();
 
-        } catch (PasswordEmailService.PasswordsNotMatchingException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new ErrorResponse("Passwords do not match"));
-
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError()
-                    .body(new ErrorResponse("An unexpected error occurred"));
+        for (FieldError error : bindingResult.getFieldErrors()) {
+            sb.append(error.getDefaultMessage()).append("\n \n");
         }
+
+        String allErrors = sb.toString();
+        return new GenericResponse(allErrors, true);
+
     }
-
 
 }

@@ -28,8 +28,8 @@ export function useEmail() {
     }
 
     const setNewPassword = async (resetPasswordDto: ResetPasswordDto) => {
-        const response = await api.post<SuccessfulPasswordChangeResponse>('/email/set-new-password', resetPasswordDto);
-        return response.data.message; // Return the success message
+            const response = await api.post<GenericResponseDto>('/email/set-new-password', resetPasswordDto);
+            return response.data;
     }
 
   return { sendEmailResetPassword, setNewPassword};
