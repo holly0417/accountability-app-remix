@@ -2,14 +2,11 @@ import * as React from 'react';
 import TextField from '@mui/material/TextField';
 import CircularProgress from '@mui/material/CircularProgress';
 import {relationshipData} from "~/composables/RelationshipData";
-import {
-    DataGrid,
-    type GridColDef,
-} from "@mui/x-data-grid";
+import {DataGrid, type GridColDef,} from "@mui/x-data-grid";
 import type {RelationshipStatusDto} from "~/dto/relationship/RelationshipStatusDto";
 import Button from "@mui/material/Button";
 import {RelationshipStatus} from "~/dto/relationship/RelationshipStatus";
-import {Form, useSubmit} from "react-router";
+import {Form} from "react-router";
 import {RelationshipAction} from "~/dto/relationship/RelationshipAction";
 import Collapse from "@mui/material/Collapse";
 
@@ -42,14 +39,13 @@ export default function SearchPartner() {
         const fetchAndSetOptions = async () => {
             const newOptions = await search(inputValue);
             const partnershipList: partnership[] = newOptions.map((relationship) => {
-                    const newItem: partnership = {
-                        partner: relationship.partner.username,
-                        status: relationship.status,
-                        partnerId: relationship.partner.id,
-                    }
-                    return newItem;
+                const newItem: partnership = {
+                    partner: relationship.partner.username,
+                    status: relationship.status,
+                    partnerId: relationship.partner.id,
                 }
-            );
+                return newItem;
+            });
             setRows(partnershipList);
             setLoading(false);
         };
@@ -60,59 +56,46 @@ export default function SearchPartner() {
     }, [inputValue]); // This effect runs whenever the inputValue changes
 
 
-
-    function getRowId(row:partnership) {
+    function getRowId(row: partnership) {
         return row.partnerId;
     }
 
-    const columns: GridColDef[] = [
-        {
-            field: 'partner',
-            headerName: 'partner username',
-            flex: 0.5,
-            minWidth: 80,
-        },
-        {
-            field: 'actions',
-            headerName: 'Action',
-            flex: 0.5,
-            minWidth: 150,
-            renderCell: (params) => {
-                const {partnerId, status} = params.row
+    const columns: GridColDef[] = [{
+        field: 'partner', headerName: 'partner username', flex: 0.5, minWidth: 80,
+    }, {
+        field: 'actions', headerName: 'Action', flex: 0.5, minWidth: 150, renderCell: (params) => {
+            const {partnerId, status} = params.row
 
-                const buttonLabel = (value: RelationshipStatus) => {
-                    switch(value) {
-                        case RelationshipStatus.PENDING:
-                        case RelationshipStatus.APPROVED:
-                        case RelationshipStatus.REJECTED:
-                            return true;
-                        default:
-                            return false;
-                    }
+            const buttonLabel = (value: RelationshipStatus) => {
+                switch (value) {
+                    case RelationshipStatus.PENDING:
+                    case RelationshipStatus.APPROVED:
+                    case RelationshipStatus.REJECTED:
+                        return true;
+                    default:
+                        return false;
                 }
-
-                const action = buttonLabel(status);
-
-                return (
-                    <Form method="post">
-                        <Button
-                            name="intent"
-                            disabled={action}
-                            value={RelationshipAction.REQUEST}
-                            type="submit"
-                        >
-                            SEND REQUEST
-                        </Button>
-                        <input type="hidden" id="id" name="id" value={partnerId} />
-                    </Form>
-
-                );
             }
-        },
-    ];
 
-    return (
-        <div>
+            const action = buttonLabel(status);
+
+            return (<Form method="post">
+                    <Button
+                        name="intent"
+                        disabled={action}
+                        value={RelationshipAction.REQUEST}
+                        type="submit"
+                    >
+                        SEND REQUEST
+                    </Button>
+                    <input type="hidden" id="id" name="id" value={partnerId}/>
+                </Form>
+
+            );
+        }
+    },];
+
+    return (<div>
             <TextField
                 value={inputValue}
                 label="Type to search for a partner"
@@ -120,11 +103,9 @@ export default function SearchPartner() {
                 variant="standard"
                 slotProps={{
                     input: {
-                        endAdornment: (
-                            <React.Fragment>
-                                {loading ? <CircularProgress color="inherit" size={20} /> : null}
-                            </React.Fragment>
-                        ),
+                        endAdornment: (<React.Fragment>
+                                {loading ? <CircularProgress color="inherit" size={20}/> : null}
+                            </React.Fragment>),
                     },
                 }}
             />
@@ -133,11 +114,9 @@ export default function SearchPartner() {
                     rows={rows}
                     getRowId={getRowId}
                     columns={columns}
-                    getRowClassName={(params) =>
-                        params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
-                    }
+                    getRowClassName={(params) => params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'}
                     initialState={{
-                        pagination: { paginationModel: { pageSize: 20 } },
+                        pagination: {paginationModel: {pageSize: 20}},
                     }}
                     pageSizeOptions={[10, 20, 50]}
                     disableColumnResize
@@ -146,23 +125,14 @@ export default function SearchPartner() {
                         filterPanel: {
                             filterFormProps: {
                                 logicOperatorInputProps: {
-                                    variant: 'outlined',
-                                    size: 'small',
-                                },
-                                columnInputProps: {
-                                    variant: 'outlined',
-                                    size: 'small',
-                                    sx: { mt: 'auto' },
-                                },
-                                operatorInputProps: {
-                                    variant: 'outlined',
-                                    size: 'small',
-                                    sx: { mt: 'auto' },
-                                },
-                                valueInputProps: {
+                                    variant: 'outlined', size: 'small',
+                                }, columnInputProps: {
+                                    variant: 'outlined', size: 'small', sx: {mt: 'auto'},
+                                }, operatorInputProps: {
+                                    variant: 'outlined', size: 'small', sx: {mt: 'auto'},
+                                }, valueInputProps: {
                                     InputComponentProps: {
-                                        variant: 'outlined',
-                                        size: 'small',
+                                        variant: 'outlined', size: 'small',
                                     },
                                 },
                             },
@@ -171,6 +141,5 @@ export default function SearchPartner() {
                 />
             </Collapse>
 
-        </div>
-    );
+        </div>);
 }

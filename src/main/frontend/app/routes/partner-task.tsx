@@ -79,7 +79,7 @@ export async function clientLoader({params,}: Route.ClientLoaderArgs) {
     }
 
     return {
-        list: finalList, action: actionAllowed, user: user
+        list: finalList
     };
 }
 
@@ -152,7 +152,7 @@ export default function PartnerTask({loaderData}: Route.ComponentProps) {
                             alignItems: "stretch", mx: 3, pb: 5, mt: {xs: 8, md: 0},
                         }}
                     >
-                        <PartnerTaskDataGrid data={loaderData.list} actionAllowed={loaderData.action}/>
+                        <PartnerTaskDataGrid data={loaderData.list}/>
                     </Stack>
                 </Box>
             </Box>

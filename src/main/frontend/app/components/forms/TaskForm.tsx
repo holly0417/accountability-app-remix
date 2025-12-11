@@ -1,6 +1,5 @@
-import {type ActionFunctionArgs, Form, useFetcher} from "react-router";
+import {useFetcher} from "react-router";
 import {TaskAction} from "~/dto/task/TaskAction";
-import {taskData} from "~/composables/TaskData";
 import {useEffect, useRef} from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -21,12 +20,11 @@ export default function TaskForm() {
         }
     }, [fetcher.state, fetcher.data]);
 
-    return (
-        <div>
-            <Box sx={{ mr: 'auto' }}>
+    return (<div>
+            <Box sx={{mr: 'auto'}}>
                 <fetcher.Form method="post" ref={formRef}>
-                    <Stack spacing={2} direction="row" sx={{ alignItems: 'center', borderColor: 'divider'}}>
-                        <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: '16px' }}>
+                    <Stack spacing={2} direction="row" sx={{alignItems: 'center', borderColor: 'divider'}}>
+                        <Typography variant="body2" sx={{fontWeight: 500, lineHeight: '16px'}}>
                             Add new task here
                         </Typography>
                         <TextField
@@ -50,6 +48,5 @@ export default function TaskForm() {
                 </fetcher.Form>
             </Box>
 
-        </div>
-    );
+        </div>);
 }

@@ -29,14 +29,12 @@ export const handle = {
     breadcrumb: () => (<Link to="/partners">Partners</Link>),
 };
 
-
-export async function clientLoader({params}: Route.ClientLoaderArgs) {
+export async function clientLoader() {
     try {
-
         const {getRequests, getRelationshipsByStatus} = relationshipData();
         const {getCurrentUserInfo} = userData();
         const currentUser = await getCurrentUserInfo();
-// HANDLE 404: Logic -> If null, stop everything and throw a 404
+
         if (!currentUser) {
             throw data("User not found", {status: 404});
         }
@@ -133,12 +131,10 @@ export default function Partners({loaderData}: Route.ComponentProps) {
                         }}
                     >
                         <SearchPartner/>
-                        <PartnerDataGrid listType="wait" friends={loaderData.wait} currentUser={loaderData.user}/>
-                        <PartnerDataGrid listType="answer" friends={loaderData.answer} currentUser={loaderData.user}/>
-                        <PartnerDataGrid listType="rejected" friends={loaderData.rejected}
-                                         currentUser={loaderData.user}/>
-                        <PartnerDataGrid listType="approved" friends={loaderData.approved}
-                                         currentUser={loaderData.user}/>
+                        <PartnerDataGrid listType="wait" friends={loaderData.wait}/>
+                        <PartnerDataGrid listType="answer" friends={loaderData.answer}/>
+                        <PartnerDataGrid listType="rejected" friends={loaderData.rejected}/>
+                        <PartnerDataGrid listType="approved" friends={loaderData.approved}/>
                     </Stack>
                 </Box>
             </Box>

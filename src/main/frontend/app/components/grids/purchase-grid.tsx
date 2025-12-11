@@ -20,11 +20,11 @@ export default function PurchaseDataGrid({data, wallet, title}: PurchaseDataGrid
     const thisUserWalletBalance = wallet.balance;
 
     const buttonLabel = (status: PurchaseStatus, price: number) => {
-        switch(status) {
+        switch (status) {
             case PurchaseStatus.PURCHASED:
                 return WishlistAction.DELETE;
             case PurchaseStatus.LISTED:
-                if(price <= thisUserWalletBalance){
+                if (price <= thisUserWalletBalance) {
                     return WishlistAction.PURCHASE;
                 } else {
                     return WishlistAction.OUT_OF_BUDGET;
@@ -43,88 +43,55 @@ export default function PurchaseDataGrid({data, wallet, title}: PurchaseDataGrid
             formData.append('intent', WishlistAction.DELETE);
         }
 
-        submit(formData, { method: 'post' });
+        submit(formData, {method: 'post'});
     };
 
-    const columns: GridColDef[] = [
-        {
-            field: 'id',
-            headerName: 'purchase id',
-            flex: 0.5,
-            minWidth: 80,
-        },
-        {
-            field: 'description',
-            headerName: 'description',
-            flex: 0.5,
-            minWidth: 80,
-        },
-        {
-            field: 'price',
-            headerName: 'price',
-            flex: 0.5,
-            minWidth: 80,
-        },
-        {
-            field: 'status',
-            headerName: 'status',
-            flex: 0.5,
-            minWidth: 80,
-        },
-        {
-            field: 'purchaseTimeString',
-            headerName: 'purchaseTimeString',
-            flex: 0.5,
-            minWidth: 80,
-        },
-        {
-            field: 'actions',
-            headerName: 'Action',
-            flex: 0.5,
-            minWidth: 150,
-            renderCell: (params) => {
-                const {id, price, status} = params.row
+    const columns: GridColDef[] = [{
+        field: 'id', headerName: 'purchase id', flex: 0.5, minWidth: 80,
+    }, {
+        field: 'description', headerName: 'description', flex: 0.5, minWidth: 80,
+    }, {
+        field: 'price', headerName: 'price', flex: 0.5, minWidth: 80,
+    }, {
+        field: 'status', headerName: 'status', flex: 0.5, minWidth: 80,
+    }, {
+        field: 'purchaseTimeString', headerName: 'purchaseTimeString', flex: 0.5, minWidth: 80,
+    }, {
+        field: 'actions', headerName: 'Action', flex: 0.5, minWidth: 150, renderCell: (params) => {
+            const {id, price, status} = params.row
 
-                const action = buttonLabel(status, price);
+            const action = buttonLabel(status, price);
 
-                if(action == WishlistAction.OUT_OF_BUDGET || action == WishlistAction.DELETE) {
-                    return (
-                        <Button
-                            name="intent"
-                            disabled={true}
-                        >
-                            {action}
-                        </Button>
-                    );
-                }
-
-                return (
-                        <Button
-                            value={action}
-                            onClick={() => handleAction(id, action)}
-                            name="intent"
-                        >
-                            {action}
-                        </Button>
-                );
+            if (action == WishlistAction.OUT_OF_BUDGET || action == WishlistAction.DELETE) {
+                return (<Button
+                        name="intent"
+                        disabled={true}
+                    >
+                        {action}
+                    </Button>);
             }
-        },
-    ];
+
+            return (<Button
+                    value={action}
+                    onClick={() => handleAction(id, action)}
+                    name="intent"
+                >
+                    {action}
+                </Button>);
+        }
+    },];
 
 
-    return (
-        <>
-        <Typography fontWeight="medium" sx={{ flex: 1, mx: 0.5 }}>
-            {title}
-        </Typography>
+    return (<>
+            <Typography fontWeight="medium" sx={{flex: 1, mx: 0.5}}>
+                {title}
+            </Typography>
             <DataGrid
                 rows={row}
                 columns={columns}
-                getRowClassName={(params) =>
-                    params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
-                }
+                getRowClassName={(params) => params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'}
                 initialState={{
-                    pagination: { paginationModel: { pageSize: 20 } },
+                    pagination: {paginationModel: {pageSize: 20}},
                 }}
                 pageSizeOptions={[10, 20, 50]}
                 disableColumnResize
@@ -133,23 +100,14 @@ export default function PurchaseDataGrid({data, wallet, title}: PurchaseDataGrid
                     filterPanel: {
                         filterFormProps: {
                             logicOperatorInputProps: {
-                                variant: 'outlined',
-                                size: 'small',
-                            },
-                            columnInputProps: {
-                                variant: 'outlined',
-                                size: 'small',
-                                sx: { mt: 'auto' },
-                            },
-                            operatorInputProps: {
-                                variant: 'outlined',
-                                size: 'small',
-                                sx: { mt: 'auto' },
-                            },
-                            valueInputProps: {
+                                variant: 'outlined', size: 'small',
+                            }, columnInputProps: {
+                                variant: 'outlined', size: 'small', sx: {mt: 'auto'},
+                            }, operatorInputProps: {
+                                variant: 'outlined', size: 'small', sx: {mt: 'auto'},
+                            }, valueInputProps: {
                                 InputComponentProps: {
-                                    variant: 'outlined',
-                                    size: 'small',
+                                    variant: 'outlined', size: 'small',
                                 },
                             },
                         },

@@ -19,44 +19,42 @@ export default function PurchaseForm() {
         }
     }, [fetcher.state, fetcher.data]);
 
-    return (
-        <div>
-            <Card variant="outlined" sx={{ maxWidth: 360 }}>
-                <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: '16px' }}>
+    return (<div>
+            <Card variant="outlined" sx={{maxWidth: 360}}>
+                <Typography variant="body2" sx={{fontWeight: 500, lineHeight: '16px'}}>
                     Add to your wishlist here
                 </Typography>
-            <fetcher.Form method="post" ref={formRef}>
-                <TextField
-                    id="newPurchaseDescription"
-                    type="text"
-                    name="newPurchaseDescription"
-                    required
-                    label="What do you want to buy?"
-                    disabled={isSubmitting}
-                    variant="filled"
-                />
-                <TextField
-                    id="newPurchasePrice"
-                    type="number"
-                    name="newPurchasePrice"
-                    label="How much?"
-                    required
-                    disabled={isSubmitting}
-                    variant="filled"
-                />
+                <fetcher.Form method="post" ref={formRef}>
+                    <TextField
+                        id="newPurchaseDescription"
+                        type="text"
+                        name="newPurchaseDescription"
+                        required
+                        label="What do you want to buy?"
+                        disabled={isSubmitting}
+                        variant="filled"
+                    />
+                    <TextField
+                        id="newPurchasePrice"
+                        type="number"
+                        name="newPurchasePrice"
+                        label="How much?"
+                        required
+                        disabled={isSubmitting}
+                        variant="filled"
+                    />
 
-                <Button
-                    type="submit"
-                    name="intent"
-                    variant="contained"
-                    value = {WishlistAction.ADD}
-                    disabled={isSubmitting}
-                >
-                    {isSubmitting ? "Sending..." : "Submit"}
-                </Button>
+                    <Button
+                        type="submit"
+                        name="intent"
+                        variant="contained"
+                        value={WishlistAction.ADD}
+                        disabled={isSubmitting}
+                    >
+                        {isSubmitting ? "Sending..." : "Submit"}
+                    </Button>
 
-            </fetcher.Form>
+                </fetcher.Form>
             </Card>
-        </div>
-    );
+        </div>);
 }
