@@ -92,8 +92,9 @@ export function relationshipData() {
       await api.delete(`/relationships/${relationshipId}`)
   }
 
-  const updateRelationship = async (relationshipId: number, newStatus: RelationshipStatusDto): Promise<RelationshipDto> => {
-    return (await api.post<RelationshipDto>(`/relationships/${relationshipId}`, newStatus)).data;
+  const updateRelationship = async (relationshipId: number, newStatus: RelationshipStatus): Promise<RelationshipDto> => {
+        const statusObject = {status: newStatus}
+        return (await api.post<RelationshipDto>(`/relationships/${relationshipId}`, statusObject)).data;
   }
 
 

@@ -45,7 +45,7 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
 
         const waitList = await getRequests(RelationshipStatus.PENDING, RelationshipDirection.REQUESTER);
         const answerList = await getRequests(RelationshipStatus.PENDING, RelationshipDirection.RECIPIENT);
-        const rejectedList = await getRequests(RelationshipStatus.REJECTED, RelationshipDirection.REQUESTER);
+        const rejectedList = await getRequests(RelationshipStatus.REJECTED, RelationshipDirection.RECIPIENT);
         const approvedList = await getRelationshipsByStatus(RelationshipStatus.APPROVED);
 
         return {
@@ -82,19 +82,13 @@ export async function clientAction({ request }: ActionFunctionArgs) {
         return await deleteRelationship(idNumber);
     }
 
-    const newStatus: RelationshipStatusDto = {
-        status: RelationshipStatus.PENDING
-    }
-
     if(intent === RelationshipAction.APPROVE){
-        newStatus.status = RelationshipStatus.APPROVED;
+        return await updateRelationship(idNumber, RelationshipStatus.APPROVED);
     }
 
     if(intent === RelationshipAction.REJECT){
-        newStatus.status = RelationshipStatus.REJECTED;
+        return await updateRelationship(idNumber, RelationshipStatus.REJECTED);
     }
-
-    return await updateRelationship(idNumber, newStatus);
 }
 
 
