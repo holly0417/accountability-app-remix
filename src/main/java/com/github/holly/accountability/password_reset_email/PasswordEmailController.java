@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Objects;
 
 
 @Controller
@@ -28,9 +28,7 @@ public class PasswordEmailController {
     private final UserService userService;
 
     @Autowired
-    public PasswordEmailController(PasswordEmailService passwordEmailService,
-                                   ApplicationProperties applicationProperties,
-                                   UserService userService) {
+    public PasswordEmailController(PasswordEmailService passwordEmailService, ApplicationProperties applicationProperties, UserService userService) {
         this.passwordEmailService = passwordEmailService;
         this.applicationProperties = applicationProperties;
         this.userService = userService;
@@ -40,48 +38,31 @@ public class PasswordEmailController {
     @GetMapping("/send-token")
     public GenericResponse sendPasswordEmail(@RequestParam String email) {
 
-        userService.findUserByEmail(email)
-                .ifPresent(passwordEmailService::sendPasswordEmail);
+        userService.findUserByEmail(email).ifPresent(passwordEmailService::sendPasswordEmail);
 
         return new GenericResponse("If this email exists in our system, you should find an email in your mailbox.");
     }
 
     @GetMapping(CHANGE_PASSWORD_FROM_TOKEN + "/{token}")
-    public ResponseEntity<?>  showChangePasswordFromTokenPage(@PathVariable("token") String token) {
+    public ResponseEntity<?> showChangePasswordFromTokenPage(@PathVariable("token") String token) {
         boolean isValid = passwordEmailService.validatePasswordResetToken(token);
 
         if (!isValid) {
-            String loginUrl = UriComponentsBuilder
-                    .fromUriString(applicationProperties.getBaseUrl())
-                    .path("/login")
-                    .build()
-                    .encode(StandardCharsets.UTF_8)
-                    .toUriString();
+            String loginUrl = UriComponentsBuilder.fromUriString(applicationProperties.getBaseUrl()).path("/login").build().encode(StandardCharsets.UTF_8).toUriString();
 
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .header("Location", loginUrl)
-                    .build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).header("Location", loginUrl).build();
         }
 
-        String tokenPasswordChangeUrl = UriComponentsBuilder
-                .fromUriString(applicationProperties.getBaseUrl())
-                .path(CHANGE_PASSWORD_FROM_TOKEN)
-                .queryParam("token", token)
-                .build()
-                .encode(StandardCharsets.UTF_8)
-                .toUriString();
+        String tokenPasswordChangeUrl = UriComponentsBuilder.fromUriString(applicationProperties.getBaseUrl()).path(CHANGE_PASSWORD_FROM_TOKEN).queryParam("token", token).build().encode(StandardCharsets.UTF_8).toUriString();
 
-        return ResponseEntity.status(HttpStatus.FOUND)
-                .header("Location", tokenPasswordChangeUrl)
-                .build();
+        return ResponseEntity.status(HttpStatus.FOUND).header("Location", tokenPasswordChangeUrl).build();
     }
 
     @ResponseBody
     @PostMapping("/set-new-password")
-    public GenericResponse changePasswordFromToken(@RequestBody @Valid ResetPasswordDto passwordDto,
-                                                     BindingResult bindingResult) {
+    public GenericResponse changePasswordFromToken(@RequestBody @Valid ResetPasswordDto passwordDto, BindingResult bindingResult) {
 
-        if(!Objects.equals(passwordDto.getPassword(), passwordDto.getPasswordRepeated())) {
+        if (!Objects.equals(passwordDto.getPassword(), passwordDto.getPasswordRepeated())) {
             return new GenericResponse("Password inputs must match", true);
         }
 
@@ -89,8 +70,7 @@ public class PasswordEmailController {
             try {
                 passwordEmailService.setNewPassword(passwordDto.getToken(), passwordDto);
 
-                return new GenericResponse(
-                        "Password changed successfully!", false);
+                return new GenericResponse("Password changed successfully!", false);
 
 
             } catch (Exception e) {

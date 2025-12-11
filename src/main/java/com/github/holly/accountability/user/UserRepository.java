@@ -4,7 +4,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.util.ClassUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,12 +16,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     List<User> findUsersByUsernameContainsIgnoreCase(String username);
 
-    @Query(
-        """
-        SELECT u FROM User u
-        WHERE (u.id != :userId)
-        """
-    )
+    @Query("""
+            SELECT u FROM User u
+            WHERE (u.id != :userId)
+            """)
     Page<User> getAllExceptCurrentUser(Long userId, Pageable pageable);
 
     Optional<User> findUserByEmail(String email);

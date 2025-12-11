@@ -46,7 +46,6 @@ export async function clientLoader({params,}: Route.ClientLoaderArgs) {
     // REMEMBER: const CANNOT be reassigned but let can!
     const partners = await getPartners();
     let finalList: TaskDataDto[] = [];
-    let actionAllowed: boolean = false;
 
     if (!partners) {
         console.log("partner ID List empty");
@@ -69,7 +68,6 @@ export async function clientLoader({params,}: Route.ClientLoaderArgs) {
                 break;
             case TaskRouteStatus.COMPLETED:
                 totalPage = await getTasksByUserListAndStatus(partnerIdList, TaskStatus.COMPLETED, 0, 50);
-                actionAllowed = true;
                 break;
             case TaskRouteStatus.PENDING:
                 totalPage = await getTasksByUserListAndStatus(partnerIdList, TaskStatus.PENDING, 0, 50);
@@ -79,7 +77,7 @@ export async function clientLoader({params,}: Route.ClientLoaderArgs) {
     }
 
     return {
-        list: finalList
+        list: finalList, user: user,
     };
 }
 

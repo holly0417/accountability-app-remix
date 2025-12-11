@@ -213,8 +213,8 @@ export async function clientLoader({params,}: Route.ClientLoaderArgs) {
             }
         })
 
-        const limitedDataList = allDataCorrectDates.slice(0, 2);
-        const limitedPartnerData = partnerData.slice(0, 2)
+        const limitedDataList = allDataCorrectDates.slice(0, 3);
+        const limitedPartnerData = partnerData.slice(0, 3)
         const currentUserInfo = await getCurrentUserInfo();
 
         return {

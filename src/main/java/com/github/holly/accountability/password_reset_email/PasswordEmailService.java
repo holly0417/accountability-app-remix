@@ -1,6 +1,5 @@
 package com.github.holly.accountability.password_reset_email;
 
-import com.github.holly.accountability.config.GenericResponse;
 import com.github.holly.accountability.config.properties.ApplicationProperties;
 import com.github.holly.accountability.user.PasswordResetToken;
 import com.github.holly.accountability.user.PasswordResetTokenRepository;
@@ -32,11 +31,7 @@ public class PasswordEmailService {
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public PasswordEmailService(UserService userService,
-                                ApplicationProperties applicationProperties,
-                                PasswordResetTokenRepository passwordResetTokenRepository,
-                                JavaMailSender mailSender,
-                                PasswordEncoder passwordEncoder) {
+    public PasswordEmailService(UserService userService, ApplicationProperties applicationProperties, PasswordResetTokenRepository passwordResetTokenRepository, JavaMailSender mailSender, PasswordEncoder passwordEncoder) {
 
         this.userService = userService;
         this.applicationProperties = applicationProperties;
@@ -56,7 +51,7 @@ public class PasswordEmailService {
         mailSender.send(constructResetTokenEmail(token, user));
     }
 
-    public ResetPasswordDto setNewPassword(String token, ResetPasswordDto passwordDto) throws RuntimeException {
+    public void setNewPassword(String token, ResetPasswordDto passwordDto) throws RuntimeException {
 
         Optional<PasswordResetToken> thisToken = passwordResetTokenRepository.findByToken(token);
 
@@ -67,7 +62,7 @@ public class PasswordEmailService {
             if (Objects.equals(passwordDto.getPassword(), passwordDto.getPasswordRepeated())) {
                 user.setPassword(passwordEncoder.encode(passwordDto.getPassword()));
                 userService.saveChangesToUser(user);
-                return passwordDto;
+                return;
             }
 
             throw new PasswordsNotMatchingException("Passwords do not match");
@@ -77,8 +72,7 @@ public class PasswordEmailService {
         throw new RuntimeException("Unexpected error occurred");
     }
 
-    private SimpleMailMessage constructEmail(String subject, String body,
-                                            User user) {
+    private SimpleMailMessage constructEmail(String subject, String body, User user) {
 
         SimpleMailMessage email = new SimpleMailMessage();
         email.setSubject(subject);
@@ -87,19 +81,13 @@ public class PasswordEmailService {
         return email;
     }
 
-    private SimpleMailMessage constructResetTokenEmail(
-            String token, User user) {
+    private SimpleMailMessage constructResetTokenEmail(String token, User user) {
 
-        String url = UriComponentsBuilder
-                .fromUriString(applicationProperties.getBaseUrl())
-                .path("/email" + CHANGE_PASSWORD_FROM_TOKEN)
-                .pathSegment("{token}")
-                .buildAndExpand(token)
-                .toUriString();
+        String url = UriComponentsBuilder.fromUriString(applicationProperties.getBaseUrl()).path("/email" + CHANGE_PASSWORD_FROM_TOKEN).pathSegment("{token}").buildAndExpand(token).toUriString();
 
         String message = """
-           Click the link below to reset your password:
-           %s""".formatted(url);
+                Click the link below to reset your password:
+                %s""".formatted(url);
 
         return constructEmail("Reset Password", message, user);
     }

@@ -24,13 +24,9 @@ public class PurchaseController {
     }
 
     @GetMapping("")
-    public Page<PurchaseDto> getPurchaseListByType(@AuthenticationPrincipal AccountabilitySessionUser user,
-                                                   @RequestParam(defaultValue = "") List<Long> userIds,
-                                                    @RequestParam(defaultValue = "LISTED, PURCHASED"
-                                                    ) List<PurchaseStatus> status,
-                                                    @PageableDefault(size = 20) Pageable pageable){
+    public Page<PurchaseDto> getPurchaseListByType(@AuthenticationPrincipal AccountabilitySessionUser user, @RequestParam(defaultValue = "") List<Long> userIds, @RequestParam(defaultValue = "LISTED, PURCHASED") List<PurchaseStatus> status, @PageableDefault(size = 20) Pageable pageable) {
 
-        if(userIds.isEmpty()){
+        if (userIds.isEmpty()) {
             return purchaseService.findByUserIdAndStatus(List.of(user.getId()), status, pageable);
         }
 
@@ -38,7 +34,7 @@ public class PurchaseController {
     }
 
     @PostMapping("/{purchaseId}")
-    public PurchaseDto purchase(@PathVariable Long purchaseId){
+    public PurchaseDto purchase(@PathVariable Long purchaseId) {
 
         PurchaseDto purchase = purchaseService.makePurchase(purchaseId);
 
@@ -50,8 +46,7 @@ public class PurchaseController {
     }
 
     @PostMapping("/add-to-wishlist")
-    public PurchaseDto addToWishList(@AuthenticationPrincipal AccountabilitySessionUser user,
-                                @RequestBody PurchaseDto purchaseDto){
+    public PurchaseDto addToWishList(@AuthenticationPrincipal AccountabilitySessionUser user, @RequestBody PurchaseDto purchaseDto) {
 
         return purchaseService.addToWishList(user.getId(), purchaseDto.getPrice(), purchaseDto.getDescription());
     }

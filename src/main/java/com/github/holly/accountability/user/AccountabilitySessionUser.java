@@ -48,5 +48,7 @@ public class AccountabilitySessionUser implements UserDetails {
         return id;
     }
 
-    public String getEmail() { return email; }
+    public String getEmail() {
+        return email;
+    }
 }
