@@ -213,8 +213,8 @@ export async function clientLoader({params,}: Route.ClientLoaderArgs) {
             }
         })
 
-        const limitedDataList = allDataCorrectDates.slice(0, 2);
-        const limitedPartnerData = partnerData.slice(0, 2)
+        const limitedDataList = allDataCorrectDates.slice(0, 3);
+        const limitedPartnerData = partnerData.slice(0, 3)
         const currentUserInfo = await getCurrentUserInfo();
 
         return {
@@ -247,7 +247,7 @@ export default function _index(props: { disableCustomTheme?: boolean }) {
             <CssBaseline enableColorScheme/>
             <Box sx={{display: 'flex'}}>
                 <SideMenu user={user}/>
-                <AppNavbar user={user}/>
+                <AppNavbar/>
                 {/* Main content */}
                 <Box
                     component="main"
