@@ -170,7 +170,7 @@ export default function Purchases({loaderData}: Route.ComponentProps) {
                     <Stack
                         direction="column"
                         sx={{
-                            alignItems: "stretch", mx: 3, pb: 5, mt: {xs: 8, md: 0},
+                            alignItems: "stretch", mx: 1, pb: 1, mt: {xs: 1, md: 0},
                         }}
                     >
                         <PurchaseDataGrid data={loaderData.purchases} wallet={loaderData.wallet}

@@ -46,7 +46,11 @@ export default function PartnerTaskDataGrid({data}: PartnerTaskDataGridProps) {
 
             if (status == TaskStatus.COMPLETED) {
                 return (<Form method="post">
-                    <Button value="APPROVE" name="intent" type="submit">APPROVE</Button>
+                    <Button value="APPROVE"
+                            name="intent"
+                            type="submit"
+                            variant="outlined"
+                            size="small">APPROVE</Button>
                     <input type="hidden" id="taskId" name="taskId" value={id}/>
                 </Form>);
             }

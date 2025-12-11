@@ -100,7 +100,7 @@ export default function PartnerDataGrid({listType, friends}: PartnerDataGridProp
                 spacing={1}
                 direction="column"
                 sx={{
-                    alignItems: 'stretch', justifyContent: "flex-start", mx: 2, pb: 3, mt: {xs: 4, md: 0},
+                    alignItems: 'stretch', justifyContent: "flex-start", mx: 1, pb: 1, mt: {xs: 1, md: 0},
                 }}>
 
                 <Typography variant="h2" sx={{fontWeight: 500, lineHeight: '16px'}}>

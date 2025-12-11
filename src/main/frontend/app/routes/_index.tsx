@@ -247,7 +247,7 @@ export default function _index(props: { disableCustomTheme?: boolean }) {
             <CssBaseline enableColorScheme/>
             <Box sx={{display: 'flex'}}>
                 <SideMenu user={user}/>
-                <AppNavbar/>
+                <AppNavbar user={user}/>
                 {/* Main content */}
                 <Box
                     component="main"

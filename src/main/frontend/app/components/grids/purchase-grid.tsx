@@ -10,6 +10,7 @@ import type {WalletDto} from "~/dto/WalletDto";
 import Typography from "@mui/material/Typography";
 import {useTheme} from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import Stack from "@mui/material/Stack";
 
 interface PurchaseDataGridProps {
     data: Page<PurchaseDto>;
@@ -62,9 +63,9 @@ export default function PurchaseDataGrid({data, wallet, title}: PurchaseDataGrid
     }, {
         field: 'status', headerName: 'Status', flex: 0.5, minWidth: 80,
     }, {
-        field: 'purchaseTimeString', headerName: 'Timestamp', flex: 0.5, minWidth: 80,
+        field: 'purchaseTimeString', headerName: 'Timestamp', flex: 0.5, minWidth: 100,
     }, {
-        field: 'actions', headerName: 'Action', flex: 0.5, minWidth: 80, renderCell: (params) => {
+        field: 'actions', headerName: 'Action', flex: 0.5, minWidth: 100, renderCell: (params) => {
             const {id, price, status} = params.row
 
             const action = buttonLabel(status, price);
@@ -73,24 +74,27 @@ export default function PurchaseDataGrid({data, wallet, title}: PurchaseDataGrid
                 return (<Button
                         name="intent"
                         disabled={true}
-                    >
-                        {action}
-                    </Button>);
+                    >{action}</Button>);
             }
 
             return (<Button
                     value={action}
                     onClick={() => handleAction(id, action)}
                     name="intent"
-                >
-                    {action}
-                </Button>);
+                >{action}</Button>);
         }
     },];
 
 
     return (<>
-            <Typography fontWeight="medium" sx={{flex: 1, mx: 0.5}}>
+        <Stack
+            spacing={1}
+            direction="column"
+            sx={{
+                alignItems: 'stretch', justifyContent: "flex-start", mx: 1, pb: 1, mt: {xs: 1, md: 0},
+            }}>
+
+            <Typography variant="h2" sx={{fontWeight: 500, lineHeight: '16px'}}>
                 {title}
             </Typography>
             <DataGrid
@@ -130,6 +134,7 @@ export default function PurchaseDataGrid({data, wallet, title}: PurchaseDataGrid
                     },
                 }}
             />
+        </Stack>
         </>
 
     );
