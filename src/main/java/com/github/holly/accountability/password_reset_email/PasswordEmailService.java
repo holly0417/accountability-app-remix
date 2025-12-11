@@ -1,6 +1,5 @@
 package com.github.holly.accountability.password_reset_email;
 
-import com.github.holly.accountability.config.GenericResponse;
 import com.github.holly.accountability.config.properties.ApplicationProperties;
 import com.github.holly.accountability.user.PasswordResetToken;
 import com.github.holly.accountability.user.PasswordResetTokenRepository;
@@ -36,7 +35,8 @@ public class PasswordEmailService {
                                 ApplicationProperties applicationProperties,
                                 PasswordResetTokenRepository passwordResetTokenRepository,
                                 JavaMailSender mailSender,
-                                PasswordEncoder passwordEncoder) {
+                                PasswordEncoder passwordEncoder
+    ) {
 
         this.userService = userService;
         this.applicationProperties = applicationProperties;
@@ -78,7 +78,8 @@ public class PasswordEmailService {
     }
 
     private SimpleMailMessage constructEmail(String subject, String body,
-                                            User user) {
+                                             User user
+    ) {
 
         SimpleMailMessage email = new SimpleMailMessage();
         email.setSubject(subject);
@@ -98,8 +99,8 @@ public class PasswordEmailService {
                 .toUriString();
 
         String message = """
-           Click the link below to reset your password:
-           %s""".formatted(url);
+                Click the link below to reset your password:
+                %s""".formatted(url);
 
         return constructEmail("Reset Password", message, user);
     }

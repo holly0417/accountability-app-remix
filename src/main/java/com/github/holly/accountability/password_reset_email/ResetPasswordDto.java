@@ -9,7 +9,7 @@ public class ResetPasswordDto {
     public static final String PASSWORD_PATTERN = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&+=-]).{8,20}$";
 
     @NotBlank(message = "Password is required")
-    @Size(min = 8, max = 20, message="Must be between 8 and 20 characters.")
+    @Size(min = 8, max = 20, message = "Must be between 8 and 20 characters.")
     @Pattern(regexp = PASSWORD_PATTERN, message = "Password must contain at least one uppercase, lowercase, special character (not -), and number.")
     private String password;
 

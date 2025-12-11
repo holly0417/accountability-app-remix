@@ -8,7 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -23,36 +22,38 @@ public class RelationshipService {
     private UserService userService;
 
     public RelationshipService(RelationshipRepository relationshipRepository,
-                               UserService userService) {
+                               UserService userService
+    ) {
         this.relationshipRepository = relationshipRepository;
         this.userService = userService;
     }
 
-    public boolean checkIfUserIsRecipient(Long relationshipId, Long userId){
+    public boolean checkIfUserIsRecipient(Long relationshipId, Long userId) {
         Relationship relationship = relationshipRepository.findById(relationshipId).orElse(null);
 
-        if(relationship == null) {
+        if (relationship == null) {
             return false;
         }
 
-        if(relationship.getStatus() != RelationshipStatus.PENDING) {
+        if (relationship.getStatus() != RelationshipStatus.PENDING) {
             return false;
         }
 
         return Objects.equals(relationship.getRecipient().getId(), userId);
     }
 
-    public boolean checkIfApprovedPartnership(Long currentUser, Long partner){
+    public boolean checkIfApprovedPartnership(Long currentUser, Long partner) {
         List<Relationship> existingPartners = relationshipRepository
                 .checkRelationshipExistsByStatusIgnoreDirection(
                         currentUser,
                         partner,
-                        List.of(RelationshipStatus.APPROVED));
+                        List.of(RelationshipStatus.APPROVED)
+                );
 
         return !existingPartners.isEmpty();
     }
 
-    public Relationship findOrMakeRelationship(Long userId, Long partnerId){
+    public Relationship findOrMakeRelationship(Long userId, Long partnerId) {
 
         Optional<Relationship> existingRelationship = relationshipRepository.findRelationship(userId, partnerId);
 
@@ -73,15 +74,15 @@ public class RelationshipService {
         List<User> searchList = userService.findUsersByNameExceptOne(search, currentUserId);
 
         if (!Objects.equals(search, "")) {
-            if(!searchList.isEmpty()) {
+            if (!searchList.isEmpty()) {
                 return searchList.stream()
                         .map(partner -> {
-                                    Relationship relationship = findOrMakeRelationship(currentUserId, partner.getId());
-                                    Relationship flipped = convertToRelationshipWhereGivenUserIsNeverPartner(
-                                            currentUserId, relationship
-                                    );
-                                    return convertRelationshipToRelationshipDto(flipped);
-                                }
+                                 Relationship relationship = findOrMakeRelationship(currentUserId, partner.getId());
+                                 Relationship flipped = convertToRelationshipWhereGivenUserIsNeverPartner(
+                                         currentUserId, relationship
+                                 );
+                                 return convertRelationshipToRelationshipDto(flipped);
+                             }
                         ).toList();
             }
         }
@@ -89,20 +90,21 @@ public class RelationshipService {
         return List.of();
     }
 
-    public List<RelationshipDto> getPartners(Long currentUserId, Pageable pageable){
+    public List<RelationshipDto> getPartners(Long currentUserId, Pageable pageable) {
 
         Page<Relationship> relationships = relationshipRepository
                 .getRelationshipsByUserIdAndStatusIgnoreDirection(
                         currentUserId, List.of(RelationshipStatus.APPROVED),
-                        pageable);
+                        pageable
+                );
 
         List<RelationshipDto> partnerDtos = relationships.stream()
                 .map(res ->
-                        convertToRelationshipWhereGivenUserIsNeverPartner(currentUserId, res))
+                             convertToRelationshipWhereGivenUserIsNeverPartner(currentUserId, res))
                 .map(this::convertRelationshipToRelationshipDto)
                 .toList();
 
-        if(partnerDtos.isEmpty()){
+        if (partnerDtos.isEmpty()) {
             return List.of();
         }
 
@@ -110,9 +112,10 @@ public class RelationshipService {
     }
 
     public Page<RelationshipDto> getRelationshipsByStatus(Long currentUserId,
-                                            List<RelationshipStatus> statuses,
-                                            List<RelationshipDirection> directions,
-                                            Pageable pageable){
+                                                          List<RelationshipStatus> statuses,
+                                                          List<RelationshipDirection> directions,
+                                                          Pageable pageable
+    ) {
 
         //return relationships where current user has sent the request
         if (directions.equals(List.of(RelationshipDirection.REQUESTER))) {
@@ -139,7 +142,7 @@ public class RelationshipService {
     }
 
     //user as requester
-    public RelationshipDto sendRequest(Long currentUserId, Long partnerId){
+    public RelationshipDto sendRequest(Long currentUserId, Long partnerId) {
 
         if (relationshipRepository
                 .findRelationship(currentUserId, partnerId).isPresent()) {
@@ -158,7 +161,7 @@ public class RelationshipService {
         return convertRelationshipToRelationshipDto(newRequest);
     }
 
-    public void deleteRequest(Long relationshipId){
+    public void deleteRequest(Long relationshipId) {
         Relationship relationshipToDelete =
                 relationshipRepository.getReferenceById(relationshipId);
 
@@ -166,7 +169,7 @@ public class RelationshipService {
     }
 
     //user is recipient here
-    public RelationshipDto answerRequest(Long relationshipId, RelationshipStatus status){
+    public RelationshipDto answerRequest(Long relationshipId, RelationshipStatus status) {
         Relationship relationship = relationshipRepository.getReferenceById(relationshipId);
         relationship.setStatus(status);
         relationshipRepository.save(relationship);
@@ -174,7 +177,8 @@ public class RelationshipService {
     }
 
     public Relationship convertToRelationshipWhereGivenUserIsNeverPartner(Long currentUserId,
-                                                                          Relationship relationship){
+                                                                          Relationship relationship
+    ) {
         if (Objects.equals(relationship.getRecipient().getId(), currentUserId)) {
             return relationship.flipped();
         }

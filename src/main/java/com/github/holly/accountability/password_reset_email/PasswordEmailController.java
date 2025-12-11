@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Objects;
 
 
 @Controller
@@ -30,7 +30,8 @@ public class PasswordEmailController {
     @Autowired
     public PasswordEmailController(PasswordEmailService passwordEmailService,
                                    ApplicationProperties applicationProperties,
-                                   UserService userService) {
+                                   UserService userService
+    ) {
         this.passwordEmailService = passwordEmailService;
         this.applicationProperties = applicationProperties;
         this.userService = userService;
@@ -47,7 +48,7 @@ public class PasswordEmailController {
     }
 
     @GetMapping(CHANGE_PASSWORD_FROM_TOKEN + "/{token}")
-    public ResponseEntity<?>  showChangePasswordFromTokenPage(@PathVariable("token") String token) {
+    public ResponseEntity<?> showChangePasswordFromTokenPage(@PathVariable("token") String token) {
         boolean isValid = passwordEmailService.validatePasswordResetToken(token);
 
         if (!isValid) {
@@ -79,9 +80,10 @@ public class PasswordEmailController {
     @ResponseBody
     @PostMapping("/set-new-password")
     public GenericResponse changePasswordFromToken(@RequestBody @Valid ResetPasswordDto passwordDto,
-                                                     BindingResult bindingResult) {
+                                                   BindingResult bindingResult
+    ) {
 
-        if(!Objects.equals(passwordDto.getPassword(), passwordDto.getPasswordRepeated())) {
+        if (!Objects.equals(passwordDto.getPassword(), passwordDto.getPasswordRepeated())) {
             return new GenericResponse("Password inputs must match", true);
         }
 
@@ -93,7 +95,8 @@ public class PasswordEmailController {
                         "Password changed successfully!", false);
 
 
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 return new GenericResponse(e.getMessage(), true);
             }
         }

@@ -36,7 +36,7 @@ public class RegistrationController {
     }
 
     @PostMapping("")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterUser registerUser, BindingResult bindingResult){
+    public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterUser registerUser, BindingResult bindingResult) {
 
         if (!Objects.equals(registerUser.getPassword(), registerUser.getPasswordRepeated())) {
             bindingResult.rejectValue("password", "Passwords do not match.");
@@ -65,12 +65,12 @@ public class RegistrationController {
 
 
         User user = userRepository.save(
-                        new User(
-                            registerUser.getUsername(),
-                            registerUser.getName(),
-                            passwordEncoder.encode(registerUser.getPassword()),
-                            registerUser.getEmail()
-                        )
+                new User(
+                        registerUser.getUsername(),
+                        registerUser.getName(),
+                        passwordEncoder.encode(registerUser.getPassword()),
+                        registerUser.getEmail()
+                )
         );
 
 

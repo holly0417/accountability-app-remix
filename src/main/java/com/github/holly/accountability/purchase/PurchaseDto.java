@@ -60,6 +60,7 @@ public class PurchaseDto {
     public void setStatus(PurchaseStatus status) {
         this.status = status;
     }
+
     public PurchaseStatus getStatus() {
         return status;
     }

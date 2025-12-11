@@ -18,21 +18,22 @@ public class PurchaseService {
 
     public PurchaseService(PurchaseRepository purchaseRepository,
                            UserService userService,
-                           WalletService walletService) {
+                           WalletService walletService
+    ) {
         this.purchaseRepository = purchaseRepository;
         this.userService = userService;
         this.walletService = walletService;
     }
 
-    public Page<PurchaseDto> findByUserIdAndStatus(List<Long> userIds, List<PurchaseStatus> statuses, Pageable pageable){
+    public Page<PurchaseDto> findByUserIdAndStatus(List<Long> userIds, List<PurchaseStatus> statuses, Pageable pageable) {
         return purchaseRepository.findByUserIdAndStatus(userIds, statuses, pageable).map(this::convertPurchaseToDto);
     }
 
-    public PurchaseDto makePurchase(Long purchaseId){
+    public PurchaseDto makePurchase(Long purchaseId) {
 
         Purchase purchase = purchaseRepository.getReferenceById(purchaseId);
 
-        if(!walletService.subtractBalance(purchase.getUser().getId(), purchase.getPrice())){
+        if (!walletService.subtractBalance(purchase.getUser().getId(), purchase.getPrice())) {
             return null;
         }
 
@@ -42,7 +43,7 @@ public class PurchaseService {
         return convertPurchaseToDto(purchase);
     }
 
-    public PurchaseDto addToWishList(Long userId, Double price, String description){
+    public PurchaseDto addToWishList(Long userId, Double price, String description) {
         Purchase purchase = new Purchase();
 
         purchase.setPrice(price);
@@ -53,7 +54,7 @@ public class PurchaseService {
         return convertPurchaseToDto(purchase);
     }
 
-    private PurchaseDto convertPurchaseToDto(Purchase purchase){
+    private PurchaseDto convertPurchaseToDto(Purchase purchase) {
         PurchaseDto purchaseDto = new PurchaseDto();
         purchaseDto.setId(purchase.getId());
         purchaseDto.setDescription(purchase.getDescription());

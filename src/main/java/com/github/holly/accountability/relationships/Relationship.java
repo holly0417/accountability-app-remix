@@ -1,6 +1,6 @@
 package com.github.holly.accountability.relationships;
-import com.github.holly.accountability.user.User;
 
+import com.github.holly.accountability.user.User;
 import jakarta.persistence.*;
 
 @EntityListeners(RelationshipEntityListener.class)
@@ -13,7 +13,7 @@ public class Relationship {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @JoinColumn(name="status")
+    @JoinColumn(name = "status")
     private RelationshipStatus status;
 
     @ManyToOne
@@ -66,7 +66,7 @@ public class Relationship {
         this.requester = requester;
     }
 
-    public Relationship flipped()  {
+    public Relationship flipped() {
         Relationship flipped = new Relationship(this.getRecipient(), this.getRequester(), this.getStatus());
         flipped.setId(this.getId());
         return flipped;

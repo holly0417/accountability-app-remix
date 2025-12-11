@@ -1,10 +1,10 @@
-
 package com.github.holly.accountability.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 @Component
 public class UserService {
@@ -16,7 +16,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public UserDto convertUserToDto(User user){
+    public UserDto convertUserToDto(User user) {
 
         UserDto userDto = new UserDto();
 
@@ -27,25 +27,25 @@ public class UserService {
         return userDto;
     }
 
-    public User findUserById(Long userId){
+    public User findUserById(Long userId) {
         return userRepository.findUserById(userId);
     }
 
-    public Optional<User> findUserByEmail(String email){
+    public Optional<User> findUserByEmail(String email) {
         return userRepository.findUserByEmail(email);
     }
 
-    public User saveChangesToUser(User user){
+    public User saveChangesToUser(User user) {
         return userRepository.save(user);
     }
 
-    public List<User> findUsersByNameExceptOne(String name, Long currentUserId){
+    public List<User> findUsersByNameExceptOne(String name, Long currentUserId) {
         List<User> searchList = userRepository.findUsersByUsernameContainsIgnoreCase(name);
         String excludedName = findUserById(currentUserId).getUsername();
 
         return searchList.stream()
                 .filter(thisPartner ->
-                        !thisPartner.getUsername().equals(excludedName))
+                                !thisPartner.getUsername().equals(excludedName))
                 .toList();
     }
 

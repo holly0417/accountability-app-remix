@@ -1,14 +1,15 @@
 package com.github.holly.accountability.wallet;
 
-import com.github.holly.accountability.purchase.PurchaseService;
 import com.github.holly.accountability.user.AccountabilitySessionUser;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
@@ -25,10 +26,11 @@ public class WalletController {
 
     @GetMapping("")
     public Page<WalletDto> getWallet(@AuthenticationPrincipal AccountabilitySessionUser user,
-                               @RequestParam(required = false) List<Long> userIds,
-                               @PageableDefault(size=20) Pageable pageable){
+                                     @RequestParam(required = false) List<Long> userIds,
+                                     @PageableDefault(size = 20) Pageable pageable
+    ) {
 
-        if(userIds == null || userIds.isEmpty()) {
+        if (userIds == null || userIds.isEmpty()) {
             return walletService.findWalletsByUserIds(List.of(user.getId()), pageable)
                     .map(this::convertWalletToWalletDto);
         }
@@ -38,9 +40,10 @@ public class WalletController {
 
     @GetMapping("/history")
     public Page<WalletHistoryDto> getWalletHistory(@AuthenticationPrincipal AccountabilitySessionUser user,
-                                                @RequestParam(required = false) List<Long> userIds,
-                                                @PageableDefault(size=20) Pageable pageable){
-        if(userIds == null || userIds.isEmpty()) {
+                                                   @RequestParam(required = false) List<Long> userIds,
+                                                   @PageableDefault(size = 20) Pageable pageable
+    ) {
+        if (userIds == null || userIds.isEmpty()) {
             return walletService.findWalletHistoryByUserId(List.of(user.getId()), pageable)
                     .map(this::convertWalletHistoryToWalletHistoryDto);
         }
@@ -50,9 +53,10 @@ public class WalletController {
 
     @GetMapping("/history-timeline")
     public Page<WalletHistoryDto> getWalletHistoryTimeline(@AuthenticationPrincipal AccountabilitySessionUser user,
-                                                   @RequestParam(required = false) Long userId,
-                                                   @PageableDefault(size=20) Pageable pageable){
-        if(userId == null) {
+                                                           @RequestParam(required = false) Long userId,
+                                                           @PageableDefault(size = 20) Pageable pageable
+    ) {
+        if (userId == null) {
             return walletService.getWalletDailyTimelineByUserId(user.getId(), pageable)
                     .map(this::convertWalletHistoryToWalletHistoryDto);
         }
@@ -61,7 +65,7 @@ public class WalletController {
     }
 
 
-    private WalletDto convertWalletToWalletDto(Wallet wallet){
+    private WalletDto convertWalletToWalletDto(Wallet wallet) {
         WalletDto walletDto = new WalletDto();
         walletDto.setId(wallet.getId());
         walletDto.setBalance(wallet.getBalance());
@@ -70,7 +74,7 @@ public class WalletController {
         return walletDto;
     }
 
-    private WalletHistoryDto convertWalletHistoryToWalletHistoryDto(WalletHistory walletHistory){
+    private WalletHistoryDto convertWalletHistoryToWalletHistoryDto(WalletHistory walletHistory) {
         WalletHistoryDto walletHistoryDto = new WalletHistoryDto();
         walletHistoryDto.setId(walletHistory.getId());
         walletHistoryDto.setUserId(walletHistory.getUserId());

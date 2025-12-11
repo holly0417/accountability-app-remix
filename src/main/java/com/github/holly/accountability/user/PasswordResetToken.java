@@ -2,10 +2,7 @@ package com.github.holly.accountability.user;
 
 import jakarta.persistence.*;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.temporal.TemporalAmount;
-import java.util.Date;
 
 @Entity
 @Table(name = "password_reset_token")
@@ -21,7 +18,7 @@ public class PasswordResetToken {
     private String token;
 
     @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
-    @JoinColumn(nullable = false, name="user_id")
+    @JoinColumn(nullable = false, name = "user_id")
     private User user;
 
     @Column(name = "expiry_date", columnDefinition = "DATETIME")
