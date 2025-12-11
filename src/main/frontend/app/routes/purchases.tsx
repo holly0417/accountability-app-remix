@@ -14,7 +14,8 @@ import {purchaseData} from "~/composables/PurchaseData";
 import {
     chartsCustomizations,
     dataGridCustomizations,
-    datePickersCustomizations, treeViewCustomizations
+    datePickersCustomizations,
+    treeViewCustomizations
 } from "~/dashboard/ui/Dashboard/theme/customizations";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
@@ -28,27 +29,25 @@ import AppTheme from "~/dashboard/shared-theme/AppTheme";
 import PurchaseForm from "~/components/forms/PurchaseForm";
 
 export const handle = {
-    breadcrumb: () => (
-        <Link to="/purchases">Purchases</Link>
-    ),
+    breadcrumb: () => (<Link to="/purchases">Purchases</Link>),
 };
 
-export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
+export async function clientLoader({params,}: Route.ClientLoaderArgs) {
     const {getCurrentUserWallet} = walletData();
-    const { getCurrentUserPurchaseHistory, getCurrentUserPurchaseListByStatus } = purchaseData();
+    const {getCurrentUserPurchaseHistory, getCurrentUserPurchaseListByStatus} = purchaseData();
     const {getCurrentUserInfo} = userData();
     const yourWallet = await getCurrentUserWallet();
-    const { status } = params;
+    const {status} = params;
     let thisUserPurchaseHistory: Page<PurchaseDto>;
     let title: string;
 
     const user = await getCurrentUserInfo();
 
     if (!user) {
-        throw data("User not found", { status: 404 });
+        throw data("User not found", {status: 404});
     }
 
-    switch(status) {
+    switch (status) {
         case PurchaseRouteStatus.LISTED:
             thisUserPurchaseHistory = await getCurrentUserPurchaseListByStatus(PurchaseStatus.LISTED);
             title = "WISHLIST"
@@ -63,21 +62,18 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
     }
 
     return {
-        wallet: yourWallet,
-        purchases: thisUserPurchaseHistory,
-        title: title,
-        user:user
+        wallet: yourWallet, purchases: thisUserPurchaseHistory, title: title, user: user
     };
 }
 
-export async function clientAction({ request }: ActionFunctionArgs) {
-    const { addToWishList, makePurchase } = purchaseData();
+export async function clientAction({request}: ActionFunctionArgs) {
+    const {addToWishList, makePurchase} = purchaseData();
     const formData = await request.formData();
     const {getCurrentUserInfo} = userData();
     const thisUser = await getCurrentUserInfo();
 
     if (!thisUser) {
-        throw data("User not found", { status: 404 });
+        throw data("User not found", {status: 404});
     }
 
     const intent = formData.get('intent');
@@ -86,7 +82,7 @@ export async function clientAction({ request }: ActionFunctionArgs) {
         const description = formData.get('newPurchaseDescription');
         const price = formData.get('newPurchasePrice');
 
-        if(description && price){
+        if (description && price) {
             let newWishListItem: PurchaseDto = {
                 id: 0,
                 userId: thisUser.id,
@@ -99,9 +95,9 @@ export async function clientAction({ request }: ActionFunctionArgs) {
 
             try {
                 await addToWishList(newWishListItem);
-                return { ok: true };
-            } catch(e) {
-                return { ok: false };
+                return {ok: true};
+            } catch (e) {
+                return {ok: false};
             }
 
         }
@@ -112,93 +108,75 @@ export async function clientAction({ request }: ActionFunctionArgs) {
 
         try {
             await makePurchase(Number(item));
-            return { ok: true };
-        } catch(e) {
-            return { ok: false };
+            return {ok: true};
+        } catch (e) {
+            return {ok: false};
         }
     }
 }
 
-export default function Purchases({loaderData}: Route.ComponentProps){
+export default function Purchases({loaderData}: Route.ComponentProps) {
 
     const xThemeComponents = {
-        ...chartsCustomizations,
-        ...dataGridCustomizations,
-        ...datePickersCustomizations,
-        ...treeViewCustomizations,
+        ...chartsCustomizations, ...dataGridCustomizations, ...datePickersCustomizations, ...treeViewCustomizations,
     };
 
-    return(
+    return (
 
-    <AppTheme themeComponents={xThemeComponents}>
-        <CssBaseline enableColorScheme />
-        <Box sx={{ display: 'flex' }}>
-            <SideMenu user={loaderData.user}/>
-            <AppNavbar />
-            <Box
-                component="main"
-                sx={(theme) => ({
-                    flexGrow: 1,
-                    backgroundColor: theme.vars
-                        ? `rgba(${theme.vars.palette.background.defaultChannel} / 1)`
-                        : alpha(theme.palette.background.default, 1),
-                    overflow: 'auto',
-                })}
-            >
+        <AppTheme themeComponents={xThemeComponents}>
+            <CssBaseline enableColorScheme/>
+            <Box sx={{display: 'flex'}}>
+                <SideMenu user={loaderData.user}/>
+                <AppNavbar/>
+                <Box
+                    component="main"
+                    sx={(theme) => ({
+                        flexGrow: 1,
+                        backgroundColor: theme.vars ? `rgba(${theme.vars.palette.background.defaultChannel} / 1)` : alpha(theme.palette.background.default, 1),
+                        overflow: 'auto',
+                    })}
+                >
 
-                <Stack
-                    spacing={2}
-                    sx={{
-                        alignItems: 'center',
-                        mx: 3,
-                        pb: 5,
-                        mt: { xs: 8, md: 0 },
-                    }}
-                >
-                    <Header />
-                </Stack>
+                    <Stack
+                        spacing={2}
+                        sx={{
+                            alignItems: 'center', mx: 3, pb: 5, mt: {xs: 8, md: 0},
+                        }}
+                    >
+                        <Header/>
+                    </Stack>
 
-                <Stack
-                    spacing={2}
-                    sx={{
-                        alignItems: 'flex-start',
-                        justifyContent: "flex-start",
-                        mx: 3,
-                        pb: 5,
-                        mt: { xs: 8, md: 0 },
-                    }}
-                >
-                    <Typography variant="h1" sx={{ fontWeight: 500, lineHeight: '16px' }}>
-                        Wallet
-                    </Typography>
-                </Stack>
+                    <Stack
+                        spacing={2}
+                        sx={{
+                            alignItems: 'flex-start', justifyContent: "flex-start", mx: 3, pb: 5, mt: {xs: 8, md: 0},
+                        }}
+                    >
+                        <Typography variant="h1" sx={{fontWeight: 500, lineHeight: '16px'}}>
+                            Wallet
+                        </Typography>
+                    </Stack>
 
-                <Stack
-                    spacing={2}
-                    direction="row"
-                    sx={{
-                        alignItems: 'center',
-                        mx: 3,
-                        pb: 5,
-                        mt: { xs: 8, md: 0 },
-                    }}
-                >
-                    <Wallet wallet={loaderData.wallet}/>
-                    <PurchaseForm />
-                </Stack>
-                <Stack
-                    direction="column"
-                    sx={{
-                        alignItems: "stretch",
-                        mx: 3,
-                        pb: 5,
-                        mt: { xs: 8, md: 0 },
-                    }}
-                >
-                    <PurchaseDataGrid data={loaderData.purchases} wallet={loaderData.wallet} title={loaderData.title}/>
-                </Stack>
+                    <Stack
+                        spacing={2}
+                        direction="row"
+                        sx={{
+                            alignItems: 'center', mx: 3, pb: 5, mt: {xs: 8, md: 0},
+                        }}
+                    >
+                        <Wallet wallet={loaderData.wallet}/>
+                        <PurchaseForm/>
+                    </Stack>
+                    <Stack
+                        direction="column"
+                        sx={{
+                            alignItems: "stretch", mx: 3, pb: 5, mt: {xs: 8, md: 0},
+                        }}
+                    >
+                        <PurchaseDataGrid data={loaderData.purchases} wallet={loaderData.wallet}
+                                          title={loaderData.title}/>
+                    </Stack>
+                </Box>
             </Box>
-        </Box>
-    </AppTheme>
-    );
+        </AppTheme>);
 }

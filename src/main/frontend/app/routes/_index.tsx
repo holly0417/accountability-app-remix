@@ -1,8 +1,4 @@
-import type {} from '@mui/x-date-pickers/themeAugmentation';
-import type {} from '@mui/x-charts/themeAugmentation';
-import type {} from '@mui/x-data-grid-pro/themeAugmentation';
-import type {} from '@mui/x-tree-view/themeAugmentation';
-import { alpha } from '@mui/material/styles';
+import {alpha} from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
@@ -12,13 +8,8 @@ import MainGrid from '~/dashboard/ui/Dashboard/MainGrid';
 import SideMenu from '~/dashboard/ui/Dashboard/SideMenu';
 import AppTheme from '~/dashboard/shared-theme/AppTheme';
 import type {Route} from "./+types/_index"; //this is OK!
-
-
 import {
-  chartsCustomizations,
-  dataGridCustomizations,
-  datePickersCustomizations,
-  treeViewCustomizations,
+    chartsCustomizations, dataGridCustomizations, datePickersCustomizations, treeViewCustomizations,
 } from '~/dashboard/ui/Dashboard/theme/customizations';
 
 import {walletData} from "~/composables/WalletData";
@@ -30,15 +21,12 @@ import {userData} from "~/composables/UserData";
 import {useLoaderData} from "react-router-dom";
 
 const xThemeComponents = {
-  ...chartsCustomizations,
-  ...dataGridCustomizations,
-  ...datePickersCustomizations,
-  ...treeViewCustomizations,
+    ...chartsCustomizations, ...dataGridCustomizations, ...datePickersCustomizations, ...treeViewCustomizations,
 };
 
-const { getCurrentUserWalletHistoryTimeline, getWalletHistoryByUserIds } = walletData();
+const {getCurrentUserWalletHistoryTimeline, getWalletHistoryByUserIds} = walletData();
 const {getPartnersLimit} = relationshipData();
-const { getTasksByCurrentUserAndStatus, getTasksByUserListAndStatus } = taskData();
+const {getTasksByCurrentUserAndStatus, getTasksByUserListAndStatus} = taskData();
 const {getCurrentUserInfo} = userData();
 
 export type DataGridAxisValues = {
@@ -64,7 +52,7 @@ function getEarlierDate(date1: string, date2: string): number {
     const firstYear = Number(firstDate.at(2));
     const secondYear = Number(secondDate.at(2));
 
-    if(firstYear > secondYear){
+    if (firstYear > secondYear) {
         return 1;
     } else if (firstYear < secondYear) {
         return -1;
@@ -74,7 +62,7 @@ function getEarlierDate(date1: string, date2: string): number {
     const firstMonth = Number(firstDate.at(0));
     const secondMonth = Number(secondDate.at(0));
 
-    if(firstMonth > secondMonth){
+    if (firstMonth > secondMonth) {
         return 1;
     } else if (firstMonth < secondMonth) {
         return -1;
@@ -83,7 +71,7 @@ function getEarlierDate(date1: string, date2: string): number {
     const firstDay = Number(firstDate.at(1));
     const secondDay = Number(secondDate.at(1));
 
-    if(firstDay > secondDay){
+    if (firstDay > secondDay) {
         return 1;
     } else if (firstDay < secondDay) {
         return -1;
@@ -92,16 +80,16 @@ function getEarlierDate(date1: string, date2: string): number {
     return 0;
 }
 
-function sortDateLists(dateList:string[]): string[] {
+function sortDateLists(dateList: string[]): string[] {
     return [...new Set([...dateList])].sort((a, b) => getEarlierDate(a, b));
 }
 
-export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
+export async function clientLoader({params,}: Route.ClientLoaderArgs) {
     try {
         const partners = await getPartnersLimit(10);
 
         if (!partners) {
-            throw data("User not found", { status: 404 });
+            throw data("User not found", {status: 404});
         }
 
         let partnerData: DataGridProps[] = [];
@@ -115,8 +103,7 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
 
             let dataValues: DataGridAxisValues[] = walletHistory.content.map((item) => {
                 return {
-                    xAxisValue: item.dateAsString,
-                    yAxisValue: item.balance
+                    xAxisValue: item.dateAsString, yAxisValue: item.balance
                 };
             });
 
@@ -138,8 +125,7 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
 
         let userDataValues: DataGridAxisValues[] = thisUserBalanceDailyHistory.content.map((item) => {
             return {
-                xAxisValue: item.dateAsString,
-                yAxisValue: item.balance
+                xAxisValue: item.dateAsString, yAxisValue: item.balance
             };
         });
 
@@ -164,7 +150,7 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
         let finalDates: string[] = []
         let placeholder: string[] = []
 
-        for(const date of allDates) {
+        for (const date of allDates) {
             finalDates = [...placeholder, ...date];
             placeholder = finalDates;
         }
@@ -174,15 +160,15 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
         //Map of existing dates to wallet balances and user ID to refer to when ordering data
         const datesToBalance = new Map<string, Map<string, number>>();
 
-        for(const date of uniqueDates) {
+        for (const date of uniqueDates) {
             let userNameToBalance = new Map<string, number>();
-            for (const item of allUsersWalletTaskData){
+            for (const item of allUsersWalletTaskData) {
                 let itemDateList = item.data.map(point => point.xAxisValue);
                 let itemBalanceList = item.data.map(point => point.yAxisValue);
                 let itemUserId = item.username;
                 let index = 0;
-                for (const indDate of itemDateList){
-                    if (indDate == date){
+                for (const indDate of itemDateList) {
+                    if (indDate == date) {
                         userNameToBalance.set(itemUserId.toString(), itemBalanceList.at(index) as number);
                         datesToBalance.set(date.toString(), userNameToBalance);
                     }
@@ -198,19 +184,18 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
             let addNewValue = true;
             let itemUserId = item.username;
 
-            for (const date of uniqueDates){
-                for (const eachDay of thisDates){
-                    if(eachDay == date){
+            for (const date of uniqueDates) {
+                for (const eachDay of thisDates) {
+                    if (eachDay == date) {
                         addNewValue = false;
                         let userNameToBalance = datesToBalance.get(date.toString())!;
                         previousBalance = userNameToBalance.get(itemUserId.toString())!;
                     }
                 }
 
-                if(addNewValue) {
+                if (addNewValue) {
                     let newDataGridAxisValue: DataGridAxisValues = {
-                        xAxisValue: date,
-                        yAxisValue: previousBalance
+                        xAxisValue: date, yAxisValue: previousBalance
                     }
                     item.data.push(newDataGridAxisValue);
                 }
@@ -228,12 +213,19 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
             }
         })
 
-        const limitedDataList = allDataCorrectDates.slice(0,2);
-        const limitedPartnerData = partnerData.slice(0,2)
+        const limitedDataList = allDataCorrectDates.slice(0, 2);
+        const limitedPartnerData = partnerData.slice(0, 2)
         const currentUserInfo = await getCurrentUserInfo();
 
-        return {currentUserInfo, thisUserData, limitedPartnerData,
-            partnerData, allUsersWalletTaskData, uniqueDates, limitedDataList, allDataCorrectDates
+        return {
+            currentUserInfo,
+            thisUserData,
+            limitedPartnerData,
+            partnerData,
+            allUsersWalletTaskData,
+            uniqueDates,
+            limitedDataList,
+            allDataCorrectDates
         };
 
     } catch (e: any) {
@@ -248,40 +240,33 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
 
 export default function _index(props: { disableCustomTheme?: boolean }) {
 
-    const { currentUserInfo } = useLoaderData<typeof clientLoader>();
+    const {currentUserInfo} = useLoaderData<typeof clientLoader>();
     const user = currentUserInfo!;
 
-  return (
-    <AppTheme {...props} themeComponents={xThemeComponents}>
-      <CssBaseline enableColorScheme />
-      <Box sx={{ display: 'flex' }}>
-        <SideMenu user={user} />
-        <AppNavbar />
-        {/* Main content */}
-        <Box
-          component="main"
-          sx={(theme) => ({
-            flexGrow: 1,
-            backgroundColor: theme.vars
-              ? `rgba(${theme.vars.palette.background.defaultChannel} / 1)`
-              : alpha(theme.palette.background.default, 1),
-            overflow: 'auto',
-          })}
-        >
-          <Stack
-            spacing={2}
-            sx={{
-              alignItems: 'center',
-              mx: 3,
-              pb: 5,
-              mt: { xs: 8, md: 0 },
-            }}
-          >
-            <Header />
-            <MainGrid />
-          </Stack>
-        </Box>
-      </Box>
-    </AppTheme>
-  );
+    return (<AppTheme {...props} themeComponents={xThemeComponents}>
+            <CssBaseline enableColorScheme/>
+            <Box sx={{display: 'flex'}}>
+                <SideMenu user={user}/>
+                <AppNavbar/>
+                {/* Main content */}
+                <Box
+                    component="main"
+                    sx={(theme) => ({
+                        flexGrow: 1,
+                        backgroundColor: theme.vars ? `rgba(${theme.vars.palette.background.defaultChannel} / 1)` : alpha(theme.palette.background.default, 1),
+                        overflow: 'auto',
+                    })}
+                >
+                    <Stack
+                        spacing={2}
+                        sx={{
+                            alignItems: 'center', mx: 3, pb: 5, mt: {xs: 8, md: 0},
+                        }}
+                    >
+                        <Header/>
+                        <MainGrid/>
+                    </Stack>
+                </Box>
+            </Box>
+        </AppTheme>);
 }

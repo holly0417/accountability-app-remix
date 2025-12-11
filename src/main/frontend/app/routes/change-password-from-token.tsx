@@ -1,8 +1,4 @@
-import type {} from '@mui/x-date-pickers/themeAugmentation';
-import type {} from '@mui/x-charts/themeAugmentation';
-import type {} from '@mui/x-data-grid-pro/themeAugmentation';
-import type {} from '@mui/x-tree-view/themeAugmentation';
-import { alpha } from '@mui/material/styles';
+import {alpha} from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
@@ -10,12 +6,8 @@ import AppNavbar from '~/dashboard/ui/Dashboard/AppNavbar';
 import Header from '~/dashboard/ui/Dashboard/Header';
 import AppTheme from '~/dashboard/shared-theme/AppTheme';
 import type {Route} from "./+types/change-password-from-token"; //this is OK!
-
 import {
-    chartsCustomizations,
-    dataGridCustomizations,
-    datePickersCustomizations,
-    treeViewCustomizations,
+    chartsCustomizations, dataGridCustomizations, datePickersCustomizations, treeViewCustomizations,
 } from '~/dashboard/ui/Dashboard/theme/customizations';
 import {useNavigate, useSearchParams} from "react-router";
 import Card from "@mui/material/Card";
@@ -31,10 +23,7 @@ import Button from "@mui/material/Button";
 import type {GenericResponseDto} from "~/dto/GenericResponseDto";
 
 const xThemeComponents = {
-    ...chartsCustomizations,
-    ...dataGridCustomizations,
-    ...datePickersCustomizations,
-    ...treeViewCustomizations,
+    ...chartsCustomizations, ...dataGridCustomizations, ...datePickersCustomizations, ...treeViewCustomizations,
 };
 
 export default function ChangePasswordFromToken({loaderData}: Route.ComponentProps) {
@@ -43,15 +32,13 @@ export default function ChangePasswordFromToken({loaderData}: Route.ComponentPro
     const token = searchParams.get("token");
     const navigate = useNavigate();
 
-    const { register, handleSubmit } = useForm({
+    const {register, handleSubmit} = useForm({
         defaultValues: {
-            password: '',
-            passwordRepeated: '',
-            token: token
+            password: '', passwordRepeated: '', token: token
         } as ResetPasswordDto
     });
 
-    async function setPassword(data: ResetPasswordDto){
+    async function setPassword(data: ResetPasswordDto) {
         const response: GenericResponseDto = await setNewPassword(data);
         const message = response.message;
 
@@ -67,38 +54,32 @@ export default function ChangePasswordFromToken({loaderData}: Route.ComponentPro
         }
     }
 
-    return (
-        <AppTheme themeComponents={xThemeComponents}>
-            <CssBaseline enableColorScheme />
-            <Box sx={{ display: 'flex' }}>
-                <AppNavbar />
+    return (<AppTheme themeComponents={xThemeComponents}>
+            <CssBaseline enableColorScheme/>
+            <Box sx={{display: 'flex'}}>
+                <AppNavbar/>
                 {/* Main content */}
                 <Box
                     component="main"
                     sx={(theme) => ({
                         flexGrow: 1,
-                        backgroundColor: theme.vars
-                            ? `rgba(${theme.vars.palette.background.defaultChannel} / 1)`
-                            : alpha(theme.palette.background.default, 1),
+                        backgroundColor: theme.vars ? `rgba(${theme.vars.palette.background.defaultChannel} / 1)` : alpha(theme.palette.background.default, 1),
                         overflow: 'auto',
                     })}
                 >
                     <Stack
                         spacing={2}
                         sx={{
-                            alignItems: 'center',
-                            mx: 3,
-                            pb: 5,
-                            mt: { xs: 8, md: 0 },
+                            alignItems: 'center', mx: 3, pb: 5, mt: {xs: 8, md: 0},
                         }}
                     >
-                        <Header />
-                        <Toaster />
-                        <Card variant="outlined" sx={{ maxWidth: 360 }}>
-                            <Box sx={{ p: 2 }} component="form">
+                        <Header/>
+                        <Toaster/>
+                        <Card variant="outlined" sx={{maxWidth: 360}}>
+                            <Box sx={{p: 2}} component="form">
                                 <Stack
                                     direction="column"
-                                    sx={{ justifyContent: 'space-between', alignItems: 'center' }}
+                                    sx={{justifyContent: 'space-between', alignItems: 'center'}}
                                 >
                                     <FormControl variant="outlined">
                                         <InputLabel htmlFor="password">New Password</InputLabel>
@@ -138,6 +119,5 @@ export default function ChangePasswordFromToken({loaderData}: Route.ComponentPro
                     </Stack>
                 </Box>
             </Box>
-        </AppTheme>
-    );
+        </AppTheme>);
 }

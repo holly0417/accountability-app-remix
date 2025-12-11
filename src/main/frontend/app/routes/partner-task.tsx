@@ -22,26 +22,25 @@ import Typography from "@mui/material/Typography";
 import {
     chartsCustomizations,
     dataGridCustomizations,
-    datePickersCustomizations, treeViewCustomizations
+    datePickersCustomizations,
+    treeViewCustomizations
 } from "~/dashboard/ui/Dashboard/theme/customizations";
 import {userData} from "~/composables/UserData";
 
 export const handle = {
-    breadcrumb: () => (
-        <Link to="/partner-task">Partner tasks</Link>
-    ),
+    breadcrumb: () => (<Link to="/partner-task">Partner tasks</Link>),
 };
 
-export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
-    const { status } = params;
-    const { getAllTasksByUserList, getTasksByUserListAndStatus } = taskData();
-    const { getPartners } = relationshipData();
+export async function clientLoader({params,}: Route.ClientLoaderArgs) {
+    const {status} = params;
+    const {getAllTasksByUserList, getTasksByUserListAndStatus} = taskData();
+    const {getPartners} = relationshipData();
     const {getCurrentUserInfo} = userData();
 
     const user = await getCurrentUserInfo();
 
     if (!user) {
-        throw data("User not found", { status: 404 });
+        throw data("User not found", {status: 404});
     }
 
     // REMEMBER: const CANNOT be reassigned but let can!
@@ -52,13 +51,13 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
     if (!partners) {
         console.log("partner ID List empty");
     } else {
-        const partnerIdList:number[] = partners.map(partner => {
+        const partnerIdList: number[] = partners.map(partner => {
             return partner.id;
         });
 
         let totalPage = await getAllTasksByUserList(partnerIdList);
 
-        switch(status) {
+        switch (status) {
             case TaskRouteStatus.IN_PROGRESS:
                 totalPage = await getTasksByUserListAndStatus(partnerIdList, TaskStatus.IN_PROGRESS, 0, 50);
                 break;
@@ -80,14 +79,12 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
     }
 
     return {
-        list: finalList,
-        action: actionAllowed,
-        user: user
+        list: finalList, action: actionAllowed, user: user
     };
 }
 
-export async function clientAction({ request }: ActionFunctionArgs) {
-    const { processTaskForPartner } = taskData();
+export async function clientAction({request}: ActionFunctionArgs) {
+    const {processTaskForPartner} = taskData();
     const formData = await request.formData();
     const intent = formData.get('intent');
 
@@ -98,83 +95,66 @@ export async function clientAction({ request }: ActionFunctionArgs) {
         status: TaskStatus.COMPLETED
     }
 
-    switch(intent) {
+    switch (intent) {
         case PartnerTaskAction.APPROVE:
             newStatus.status = TaskStatus.APPROVED;
             await processTaskForPartner(taskIdNumber, newStatus);
-            return { ok: true };
+            return {ok: true};
         case PartnerTaskAction.REJECT:
             newStatus.status = TaskStatus.REJECTED;
             await processTaskForPartner(taskIdNumber, newStatus);
-            return { ok: true };
+            return {ok: true};
     }
 }
 
-export default function PartnerTask({loaderData}: Route.ComponentProps){
+export default function PartnerTask({loaderData}: Route.ComponentProps) {
     const xThemeComponents = {
-        ...chartsCustomizations,
-        ...dataGridCustomizations,
-        ...datePickersCustomizations,
-        ...treeViewCustomizations,
+        ...chartsCustomizations, ...dataGridCustomizations, ...datePickersCustomizations, ...treeViewCustomizations,
     };
 
-    return(
-    <AppTheme themeComponents={xThemeComponents}>
-        <CssBaseline enableColorScheme />
-        <Box sx={{ display: 'flex' }}>
-            <SideMenu user={loaderData.user}/>
-            <AppNavbar />
-            <Box
-                component="main"
-                sx={(theme) => ({
-                    flexGrow: 1,
-                    backgroundColor: theme.vars
-                        ? `rgba(${theme.vars.palette.background.defaultChannel} / 1)`
-                        : alpha(theme.palette.background.default, 1),
-                    overflow: 'auto',
-                })}
-            >
-
-                <Stack
-                    spacing={2}
-                    sx={{
-                        alignItems: 'center',
-                        mx: 3,
-                        pb: 5,
-                        mt: { xs: 8, md: 0 },
-                    }}
+    return (<AppTheme themeComponents={xThemeComponents}>
+            <CssBaseline enableColorScheme/>
+            <Box sx={{display: 'flex'}}>
+                <SideMenu user={loaderData.user}/>
+                <AppNavbar/>
+                <Box
+                    component="main"
+                    sx={(theme) => ({
+                        flexGrow: 1,
+                        backgroundColor: theme.vars ? `rgba(${theme.vars.palette.background.defaultChannel} / 1)` : alpha(theme.palette.background.default, 1),
+                        overflow: 'auto',
+                    })}
                 >
-                    <Header />
-                </Stack>
 
-                <Stack
-                    spacing={2}
-                    sx={{
-                        alignItems: 'flex-start',
-                        justifyContent: "flex-start",
-                        mx: 3,
-                        pb: 5,
-                        mt: { xs: 8, md: 0 },
-                    }}
-                >
-                    <Typography variant="h1" sx={{ fontWeight: 500, lineHeight: '16px' }}>
-                        Tasks by your partners
-                    </Typography>
-                </Stack>
+                    <Stack
+                        spacing={2}
+                        sx={{
+                            alignItems: 'center', mx: 3, pb: 5, mt: {xs: 8, md: 0},
+                        }}
+                    >
+                        <Header/>
+                    </Stack>
 
-                <Stack
-                    direction="column"
-                    sx={{
-                        alignItems: "stretch",
-                        mx: 3,
-                        pb: 5,
-                        mt: { xs: 8, md: 0 },
-                    }}
-                >
-                    <PartnerTaskDataGrid data={loaderData.list} actionAllowed={loaderData.action}/>
-                </Stack>
+                    <Stack
+                        spacing={2}
+                        sx={{
+                            alignItems: 'flex-start', justifyContent: "flex-start", mx: 3, pb: 5, mt: {xs: 8, md: 0},
+                        }}
+                    >
+                        <Typography variant="h1" sx={{fontWeight: 500, lineHeight: '16px'}}>
+                            Tasks by your partners
+                        </Typography>
+                    </Stack>
+
+                    <Stack
+                        direction="column"
+                        sx={{
+                            alignItems: "stretch", mx: 3, pb: 5, mt: {xs: 8, md: 0},
+                        }}
+                    >
+                        <PartnerTaskDataGrid data={loaderData.list} actionAllowed={loaderData.action}/>
+                    </Stack>
+                </Box>
             </Box>
-        </Box>
-    </AppTheme>
-    );
+        </AppTheme>);
 }

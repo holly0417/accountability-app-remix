@@ -22,37 +22,36 @@ import Typography from "@mui/material/Typography";
 import {
     chartsCustomizations,
     dataGridCustomizations,
-    datePickersCustomizations, treeViewCustomizations
+    datePickersCustomizations,
+    treeViewCustomizations
 } from "~/dashboard/ui/Dashboard/theme/customizations";
 import {userData} from "~/composables/UserData";
 
 export const handle = {
-    breadcrumb: () => (
-        <Link to="/partner-purchases">Partner purchases</Link>
-    ),
+    breadcrumb: () => (<Link to="/partner-purchases">Partner purchases</Link>),
 };
 
-export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
-    const {getWalletsByUserIds } = walletData();
-    const { getPurchaseListByStatusAndUserId, getPurchaseListByUserIds } = purchaseData();
+export async function clientLoader({params,}: Route.ClientLoaderArgs) {
+    const {getWalletsByUserIds} = walletData();
+    const {getPurchaseListByStatusAndUserId, getPurchaseListByUserIds} = purchaseData();
     const {getPartners} = relationshipData();
     const {getCurrentUserInfo} = userData();
     const user = await getCurrentUserInfo();
 
     if (!user) {
-        throw data("User not found", { status: 404 });
+        throw data("User not found", {status: 404});
     }
 
     const partnerList = await getPartners();
-    if(!partnerList){
-        throw data("Partner data not found", { status: 404 });
+    if (!partnerList) {
+        throw data("Partner data not found", {status: 404});
     }
     const partnerWallets = await getWalletsByUserIds(partnerList.map(item => item.id));
-    const { status } = params;
+    const {status} = params;
     let partnersPurchaseHistory: Page<PurchaseDto>;
     let title: string;
 
-    switch(status) {
+    switch (status) {
         case PurchaseRouteStatus.LISTED:
             partnersPurchaseHistory = await getPurchaseListByStatusAndUserId(partnerList.map(item => item.id), PurchaseStatus.LISTED);
             title = "PARTNERS' WISHLIST ITEMS"
@@ -67,79 +66,59 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
     }
 
     return {
-        wallets: partnerWallets,
-        history: partnersPurchaseHistory,
-        title: title,
-        user: user
+        wallets: partnerWallets, history: partnersPurchaseHistory, title: title, user: user
     };
 }
 
 
-export default function PartnerPurchases({loaderData}: Route.ComponentProps){
+export default function PartnerPurchases({loaderData}: Route.ComponentProps) {
     const xThemeComponents = {
-        ...chartsCustomizations,
-        ...dataGridCustomizations,
-        ...datePickersCustomizations,
-        ...treeViewCustomizations,
+        ...chartsCustomizations, ...dataGridCustomizations, ...datePickersCustomizations, ...treeViewCustomizations,
     };
 
-    return(
-    <AppTheme themeComponents={xThemeComponents}>
-        <CssBaseline enableColorScheme />
-        <Box sx={{ display: 'flex' }}>
-            <SideMenu user={loaderData.user}/>
-            <AppNavbar />
-            <Box
-                component="main"
-                sx={(theme) => ({
-                    flexGrow: 1,
-                    backgroundColor: theme.vars
-                        ? `rgba(${theme.vars.palette.background.defaultChannel} / 1)`
-                        : alpha(theme.palette.background.default, 1),
-                    overflow: 'auto',
-                })}
-            >
-
-                <Stack
-                    spacing={2}
-                    sx={{
-                        alignItems: 'center',
-                        mx: 3,
-                        pb: 5,
-                        mt: { xs: 8, md: 0 },
-                    }}
+    return (<AppTheme themeComponents={xThemeComponents}>
+            <CssBaseline enableColorScheme/>
+            <Box sx={{display: 'flex'}}>
+                <SideMenu user={loaderData.user}/>
+                <AppNavbar/>
+                <Box
+                    component="main"
+                    sx={(theme) => ({
+                        flexGrow: 1,
+                        backgroundColor: theme.vars ? `rgba(${theme.vars.palette.background.defaultChannel} / 1)` : alpha(theme.palette.background.default, 1),
+                        overflow: 'auto',
+                    })}
                 >
-                    <Header />
-                </Stack>
 
-                <Stack
-                    spacing={2}
-                    sx={{
-                        alignItems: 'flex-start',
-                        justifyContent: "flex-start",
-                        mx: 3,
-                        pb: 5,
-                        mt: { xs: 8, md: 0 },
-                    }}
-                >
-                    <Typography variant="h1" sx={{ fontWeight: 500, lineHeight: '16px' }}>
-                        Past purchases of your partners
-                    </Typography>
-                </Stack>
+                    <Stack
+                        spacing={2}
+                        sx={{
+                            alignItems: 'center', mx: 3, pb: 5, mt: {xs: 8, md: 0},
+                        }}
+                    >
+                        <Header/>
+                    </Stack>
 
-                <Stack
-                    direction="column"
-                    sx={{
-                        alignItems: "stretch",
-                        mx: 3,
-                        pb: 5,
-                        mt: { xs: 8, md: 0 },
-                    }}
-                >
-                    <PartnerWishlistGrid data={loaderData.history} title={loaderData.title}/>
-                </Stack>
+                    <Stack
+                        spacing={2}
+                        sx={{
+                            alignItems: 'flex-start', justifyContent: "flex-start", mx: 3, pb: 5, mt: {xs: 8, md: 0},
+                        }}
+                    >
+                        <Typography variant="h1" sx={{fontWeight: 500, lineHeight: '16px'}}>
+                            Past purchases of your partners
+                        </Typography>
+                    </Stack>
+
+                    <Stack
+                        direction="column"
+                        sx={{
+                            alignItems: "stretch", mx: 3, pb: 5, mt: {xs: 8, md: 0},
+                        }}
+                    >
+                        <PartnerWishlistGrid data={loaderData.history} title={loaderData.title}/>
+                    </Stack>
+                </Box>
             </Box>
-        </Box>
-    </AppTheme>
-    );
+        </AppTheme>);
 }
