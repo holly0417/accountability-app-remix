@@ -64,7 +64,7 @@ export default function PurchaseDataGrid({data, wallet, title}: PurchaseDataGrid
     }, {
         field: 'purchaseTimeString', headerName: 'Timestamp', flex: 0.5, minWidth: 80,
     }, {
-        field: 'actions', headerName: 'Action', flex: 0.5, minWidth: 150, renderCell: (params) => {
+        field: 'actions', headerName: 'Action', flex: 0.5, minWidth: 80, renderCell: (params) => {
             const {id, price, status} = params.row
 
             const action = buttonLabel(status, price);

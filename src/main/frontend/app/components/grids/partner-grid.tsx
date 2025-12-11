@@ -8,12 +8,17 @@ import type {RelationshipDto} from "~/dto/relationship/RelationshipDto";
 import Typography from "@mui/material/Typography";
 import Collapse from "@mui/material/Collapse";
 import Stack from "@mui/material/Stack";
+import {useTheme} from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 type PartnerDataGridProps = {
     listType: string; friends: Page<RelationshipDto>;
 };
 
 export default function PartnerDataGrid({listType, friends}: PartnerDataGridProps) {
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
     const row = friends;
 
     const submit = useSubmit(); // 2. Get the submit function
@@ -60,14 +65,14 @@ export default function PartnerDataGrid({listType, friends}: PartnerDataGridProp
     const columns: GridColDef[] = [{
         field: 'id', headerName: 'relationship id', flex: 0.5, minWidth: 80,
     }, {
-        field: 'username', headerName: 'username', flex: 0.5, minWidth: 80, renderCell: (params) => {
+        field: 'username', headerName: 'Name', flex: 0.5, minWidth: 100, renderCell: (params) => {
             const {partner} = params.row
             return partner.username;
         }
     }, {
         field: 'status', headerName: 'status', flex: 0.5, minWidth: 80,
     }, {
-        field: 'actions', headerName: 'Action', flex: 0.5, minWidth: 150, renderCell: (params) => {
+        field: 'actions', headerName: 'Action', flex: 0.5, minWidth: 80, renderCell: (params) => {
             const {id} = params.row
             const option = checkButtonOptions();
             return (<Button value={option}
@@ -75,7 +80,7 @@ export default function PartnerDataGrid({listType, friends}: PartnerDataGridProp
                             name="intent">{option}</Button>);
         }
     }, {
-        field: 'second-action', headerName: 'More Actions', flex: 0.5, minWidth: 150, renderCell: (params) => {
+        field: 'secondaction', headerName: 'Action', flex: 0.5, minWidth: 80, renderCell: (params) => {
             const {id} = params.row
             const option = checkSecondButtonOptions();
             if (option == "REJECT") {
@@ -92,10 +97,10 @@ export default function PartnerDataGrid({listType, friends}: PartnerDataGridProp
 
         <Collapse in={row.content.length > 0}>
             <Stack
-                spacing={2}
+                spacing={1}
                 direction="column"
                 sx={{
-                    alignItems: 'stretch', justifyContent: "flex-start", mx: 3, pb: 5, mt: {xs: 8, md: 0},
+                    alignItems: 'stretch', justifyContent: "flex-start", mx: 2, pb: 3, mt: {xs: 4, md: 0},
                 }}>
 
                 <Typography variant="h2" sx={{fontWeight: 500, lineHeight: '16px'}}>
@@ -110,7 +115,13 @@ export default function PartnerDataGrid({listType, friends}: PartnerDataGridProp
                         pagination: {paginationModel: {pageSize: 20}},
                     }}
                     pageSizeOptions={[10, 20, 50]}
-                    disableColumnResize
+                    columnVisibilityModel={{
+                        id: false,
+                        username: true,
+                        status: !isMobile,
+                        actions: true,
+                        secondaction: true,
+                    }}
                     density="compact"
                     slotProps={{
                         filterPanel: {

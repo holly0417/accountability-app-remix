@@ -41,7 +41,7 @@ export function TaskDataGrid({row}: TaskDataGridProps) {
     }, {
         field: 'status', headerName: 'Status', flex: 0.5, minWidth: 80,
     }, {
-        field: 'actions', headerName: 'Action', flex: 0.5, minWidth: 150, renderCell: (params) => {
+        field: 'actions', headerName: 'Action', flex: 0.5, minWidth: 80, renderCell: (params) => {
             const {id, status} = params.row
 
             const action = buttonLabel(status);

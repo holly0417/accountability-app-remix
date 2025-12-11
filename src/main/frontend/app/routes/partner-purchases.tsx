@@ -106,7 +106,7 @@ export default function PartnerPurchases({loaderData}: Route.ComponentProps) {
                         }}
                     >
                         <Typography variant="h1" sx={{fontWeight: 500, lineHeight: '16px'}}>
-                            Past purchases of your partners
+                            {loaderData.title}
                         </Typography>
                     </Stack>
 

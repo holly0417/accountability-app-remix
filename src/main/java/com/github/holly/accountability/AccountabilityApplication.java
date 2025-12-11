@@ -18,7 +18,7 @@ import java.io.IOException;
 @SpringBootApplication
 
 public class AccountabilityApplication {
-    static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException {
         SpringApplication.run(AccountabilityApplication.class, args);
     }
 }
