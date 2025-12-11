@@ -12,6 +12,7 @@ import ColorModeIconDropdown from '../../shared-theme/ColorModeIconDropdown';
 import type {UserDto} from "~/dto/user/UserDto";
 import Avatar from "@mui/material/Avatar";
 import AppIcon from "~/img/app_icon.jpg";
+import {useNavigate} from "react-router";
 
 const Toolbar = styled(MuiToolbar)({
     width: '100%',
@@ -32,10 +33,15 @@ interface AppNavbarProps {
 }
 
 export default function AppNavbar({user}: AppNavbarProps) {
+    const navigate = useNavigate();
     const [open, setOpen] = React.useState(false);
 
     const toggleDrawer = (newOpen: boolean) => () => {
         setOpen(newOpen);
+    };
+
+    const goToHome = () => {
+        navigate('/');
     };
 
     return (<AppBar
@@ -60,17 +66,20 @@ export default function AppNavbar({user}: AppNavbarProps) {
                 <Stack
                     direction="row"
                     spacing={1}
-                    sx={{justifyContent: 'center', mr: 'auto'}}
+                    sx={{justifyContent: 'center', mr: 'auto', alignItems: 'center'}}
                 >
                     <Avatar
                         sizes="medium"
                         alt="Holly's Accountability App"
                         src={AppIcon}
+                        onClick={goToHome}
                         sx={{width: 100, height: 100}}
                     />
+
                     <Typography variant="h4" component="h1" sx={{color: 'text.primary'}}>
                         Dashboard
                     </Typography>
+
                 </Stack>
                 <ColorModeIconDropdown/>
                 <MenuButton aria-label="menu" onClick={toggleDrawer(true)}>
