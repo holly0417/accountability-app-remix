@@ -74,6 +74,8 @@ export default function PurchaseDataGrid({data, wallet, title}: PurchaseDataGrid
                 return (<Button
                         name="intent"
                         disabled={true}
+                        variant="outlined"
+                        size="small"
                     >{action}</Button>);
             }
 
@@ -81,6 +83,8 @@ export default function PurchaseDataGrid({data, wallet, title}: PurchaseDataGrid
                     value={action}
                     onClick={() => handleAction(id, action)}
                     name="intent"
+                    variant="outlined"
+                    size="small"
                 >{action}</Button>);
         }
     },];

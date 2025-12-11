@@ -77,7 +77,9 @@ export default function PartnerDataGrid({listType, friends}: PartnerDataGridProp
             const option = checkButtonOptions();
             return (<Button value={option}
                             onClick={() => relationshipHandler(id, option)}
-                            name="intent">{option}</Button>);
+                            name="intent"
+                            variant="outlined"
+                            size="small">{option}</Button>);
         }
     }, {
         field: 'secondaction', headerName: 'Action', flex: 0.5, minWidth: 80, renderCell: (params) => {
@@ -86,7 +88,9 @@ export default function PartnerDataGrid({listType, friends}: PartnerDataGridProp
             if (option == "REJECT") {
                 return (<Button value={option}
                                 onClick={() => rejectionHandler(id, option)} //gets confused about intent from having 2 buttons at once
-                                name="intent">{option}</Button>);
+                                name="intent"
+                                variant="outlined"
+                                size="small">{option}</Button>);
             }
             return (<Button>{option}</Button>);
         }

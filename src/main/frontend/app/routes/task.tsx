@@ -50,27 +50,33 @@ export async function clientLoader({params,}: Route.ClientLoaderArgs) {
     }
 
     let dataPage: Page<TaskDataDto> = await getAllTasksByUserList([user.id]);
+    let title: string = "Your tasks";
 
     switch (status) {
         case TaskRouteStatus.IN_PROGRESS:
             dataPage = await getTasksByCurrentUserAndStatus(TaskStatus.IN_PROGRESS);
+            title = "Your in-progress tasks"
             break;
         case TaskRouteStatus.APPROVED:
             dataPage = await getTasksByCurrentUserAndStatus(TaskStatus.APPROVED);
+            title = "Your approved tasks"
             break;
         case TaskRouteStatus.REJECTED:
             dataPage = await getTasksByCurrentUserAndStatus(TaskStatus.REJECTED);
+            title = "Your rejected tasks"
             break;
         case TaskRouteStatus.COMPLETED:
             dataPage = await getTasksByCurrentUserAndStatus(TaskStatus.COMPLETED);
+            title = "Your completed tasks"
             break;
         case TaskRouteStatus.PENDING:
             dataPage = await getTasksByCurrentUserAndStatus(TaskStatus.PENDING);
+            title = "Your pending tasks"
             break;
     }
 
     return {
-        rowData: dataPage.content, user: user
+        rowData: dataPage.content, user: user, title: title
     };
 }
 
@@ -142,8 +148,8 @@ export default function Task({loaderData}: Route.ComponentProps) {
                             alignItems: 'flex-start', justifyContent: "flex-start", mx: 3, pb: 5, mt: {xs: 8, md: 0},
                         }}
                     >
-                        <Typography variant="h1" sx={{fontWeight: 500, lineHeight: '16px'}}>
-                            Tasks
+                        <Typography variant="h1" sx={{fontWeight: 500, lineHeight: '50px'}}>
+                            {loaderData.title}
                         </Typography>
                     </Stack>
 

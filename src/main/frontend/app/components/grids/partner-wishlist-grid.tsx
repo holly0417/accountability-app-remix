@@ -5,6 +5,7 @@ import type {Page} from "~/dto/pagination/Page";
 import Typography from "@mui/material/Typography";
 import {useTheme} from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import Stack from "@mui/material/Stack";
 
 interface PartnerWishlistGridProps {
     data: Page<PurchaseDto>;
@@ -32,10 +33,22 @@ export default function PartnerWishlistGrid({data, title}: PartnerWishlistGridPr
     },];
 
     return (<>
-            <Typography fontWeight="medium" sx={{flex: 1, mx: 0.5}}>
+        <Stack
+            spacing={1}
+            sx={{
+                alignItems: 'flex-start', justifyContent: "flex-start", mx: 3, pb: 1, mt: {xs: 8, md: 0},
+            }}
+        >
+            <Typography variant="h1" sx={{fontWeight: 500, lineHeight: '50px'}}>
                 {title}
             </Typography>
-
+        </Stack>
+        <Stack
+            direction="column"
+            sx={{
+                alignItems: "stretch", mx: 3, pb: 5, mt: {xs: 5, md: 0},
+            }}
+        >
             <DataGrid
                 rows={row}
                 columns={columns}
@@ -73,5 +86,6 @@ export default function PartnerWishlistGrid({data, title}: PartnerWishlistGridPr
                     },
                 }}
             />
+        </Stack>
         </>);
 }

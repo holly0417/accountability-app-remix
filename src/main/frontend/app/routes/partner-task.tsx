@@ -134,12 +134,12 @@ export default function PartnerTask({loaderData}: Route.ComponentProps) {
                     </Stack>
 
                     <Stack
-                        spacing={2}
+                        spacing={1}
                         sx={{
-                            alignItems: 'flex-start', justifyContent: "flex-start", mx: 3, pb: 5, mt: {xs: 8, md: 0},
+                            alignItems: 'flex-start', justifyContent: "flex-start", mx: 3, pb: 1, mt: {xs: 8, md: 0},
                         }}
                     >
-                        <Typography variant="h1" sx={{fontWeight: 500, lineHeight: '16px'}}>
+                        <Typography variant="h1" sx={{fontWeight: 500, lineHeight: '50px'}}>
                             Tasks by your partners
                         </Typography>
                     </Stack>
@@ -147,7 +147,7 @@ export default function PartnerTask({loaderData}: Route.ComponentProps) {
                     <Stack
                         direction="column"
                         sx={{
-                            alignItems: "stretch", mx: 3, pb: 5, mt: {xs: 8, md: 0},
+                            alignItems: "stretch", mx: 3, pb: 5, mt: {xs: 5, md: 0},
                         }}
                     >
                         <PartnerTaskDataGrid data={loaderData.list}/>

@@ -1,4 +1,4 @@
-import {DataGrid, type GridColDef} from '@mui/x-data-grid';
+import {DataGrid, type GridColDef, type GridEventListener, type GridRowClassNameParams} from '@mui/x-data-grid';
 import Button from "@mui/material/Button";
 import React from "react";
 import {Form} from "react-router";
@@ -33,6 +33,7 @@ export default function PartnerTaskDataGrid({data}: PartnerTaskDataGridProps) {
             <Tooltip title={`User: ${params.row.userName} | Status: ${params.row.status}`} arrow>
                 {/* 2. We need a span/div here to catch the hover event */}
                 <span style={{ cursor: 'pointer', width: '100%' }}>
+                    {params.value}
                 </span>
             </Tooltip>
         ),
@@ -62,13 +63,31 @@ export default function PartnerTaskDataGrid({data}: PartnerTaskDataGridProps) {
 
             if (status == TaskStatus.COMPLETED) {
                 return (<Form method="post">
-                    <Button value="REJECT" name="intent" type="submit">REJECT</Button>
+                    <Button value="REJECT"
+                            name="intent"
+                            type="submit"
+                            variant="outlined"
+                            size="small">REJECT</Button>
                     <input type="hidden" id="taskId" name="taskId" value={id}/>
                 </Form>);
             }
             return "";
         }
     },];
+
+    const [selectedRow, setSelectedRow] = React.useState({
+        userName: '',
+        description: '',
+        durationString: '',
+        status: ''
+    });
+
+    const [open, setOpen] = React.useState(false);
+
+    const handleRowClick = (params: { row: React.SetStateAction<{ userName: string; description: string; durationString: string; status: string; }>; }) => {
+        setSelectedRow(params.row); // Save the clicked row data
+        setOpen(true);              // Open the modal
+    };
 
     return (<>
         <DataGrid
@@ -78,6 +97,7 @@ export default function PartnerTaskDataGrid({data}: PartnerTaskDataGridProps) {
             initialState={{
                 pagination: {paginationModel: {pageSize: 20}},
             }}
+            onRowClick={handleRowClick}
             pageSizeOptions={[10, 20, 50]}
             disableColumnResize
             columnVisibilityModel={{
@@ -110,6 +130,20 @@ export default function PartnerTaskDataGrid({data}: PartnerTaskDataGridProps) {
                 },
             }}
         />
+
+            <Dialog open={open} onClose={() => setOpen(false)}>
+                <DialogTitle>Task Details</DialogTitle>
+                <DialogContent>
+                    {selectedRow && (
+                        <div>
+                            <Typography><strong>Task Owner:</strong> {selectedRow.userName}</Typography>
+                            <Typography><strong>Task:</strong> {selectedRow.description}</Typography>
+                            <Typography><strong>Duration:</strong> {selectedRow.durationString}</Typography>
+                            <Typography><strong>Status:</strong> {selectedRow.status}</Typography>
+                        </div>
+                    )}
+                </DialogContent>
+            </Dialog>
 
     </>
         );

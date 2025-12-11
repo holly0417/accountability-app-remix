@@ -99,25 +99,8 @@ export default function PartnerPurchases({loaderData}: Route.ComponentProps) {
                         <Header/>
                     </Stack>
 
-                    <Stack
-                        spacing={2}
-                        sx={{
-                            alignItems: 'flex-start', justifyContent: "flex-start", mx: 3, pb: 5, mt: {xs: 8, md: 0},
-                        }}
-                    >
-                        <Typography variant="h1" sx={{fontWeight: 500, lineHeight: '16px'}}>
-                            {loaderData.title}
-                        </Typography>
-                    </Stack>
+                    <PartnerWishlistGrid data={loaderData.history} title={loaderData.title}/>
 
-                    <Stack
-                        direction="column"
-                        sx={{
-                            alignItems: "stretch", mx: 3, pb: 5, mt: {xs: 8, md: 0},
-                        }}
-                    >
-                        <PartnerWishlistGrid data={loaderData.history} title={loaderData.title}/>
-                    </Stack>
                 </Box>
             </Box>
         </AppTheme>);
