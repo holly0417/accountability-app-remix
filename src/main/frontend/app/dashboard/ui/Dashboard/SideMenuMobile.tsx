@@ -13,6 +13,7 @@ import {useNavigate} from "react-router";
 import type {UserDto} from "~/dto/user/UserDto";
 import OptionsMenu from "~/dashboard/ui/Dashboard/OptionsMenu";
 import HighlightedCard from "~/dashboard/ui/Dashboard/HighlightedCard";
+import IconButton from "@mui/material/IconButton";
 
 interface SideMenuMobileProps {
   open: boolean | undefined;
@@ -31,6 +32,10 @@ export default function SideMenuMobile({ open, toggleDrawer, user }: SideMenuMob
                     alert("Logout failed")
                 }
             })
+    };
+
+    const goToHome = () => {
+        navigate('/');
     };
 
   return (
@@ -55,15 +60,16 @@ export default function SideMenuMobile({ open, toggleDrawer, user }: SideMenuMob
         <Stack direction="row" sx={{ p: 2, pb: 0, gap: 1 }}>
           <Stack
             direction="row"
-            sx={{ gap: 1, alignItems: 'center', flexGrow: 1, p: 1 }}
+            sx={{ gap: 2, alignItems: 'center', flexGrow: 2, p: 2 }}
           >
               <Avatar
                   sizes="medium"
                   alt="Holly's Accountability App"
                   src={AppIcon}
-                  sx={{width: 100, height: 100}}
+                  onClick={goToHome}
+                  sx={{width: 60, height: 60}}
               />
-              <Typography variant="body2" sx={{fontWeight: 500, lineHeight: '16px'}}>
+              <Typography variant="h6" sx={{fontWeight: 500, lineHeight: '20px'}}>
                   {user.username}
               </Typography>
           </Stack>
