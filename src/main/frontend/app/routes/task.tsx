@@ -18,7 +18,7 @@ import AppNavbar from "~/dashboard/ui/Dashboard/AppNavbar";
 import {alpha} from "@mui/material/styles";
 import Stack from "@mui/material/Stack";
 import Header from "~/dashboard/ui/Dashboard/Header";
-import MainGrid from "~/dashboard/ui/Dashboard/MainGrid";
+
 import {
     chartsCustomizations,
     dataGridCustomizations,

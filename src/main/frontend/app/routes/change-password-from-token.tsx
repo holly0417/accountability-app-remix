@@ -8,7 +8,6 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import AppNavbar from '~/dashboard/ui/Dashboard/AppNavbar';
 import Header from '~/dashboard/ui/Dashboard/Header';
-import SideMenu from '~/dashboard/ui/Dashboard/SideMenu';
 import AppTheme from '~/dashboard/shared-theme/AppTheme';
 import type {Route} from "./+types/change-password-from-token"; //this is OK!
 
@@ -18,21 +17,17 @@ import {
     datePickersCustomizations,
     treeViewCustomizations,
 } from '~/dashboard/ui/Dashboard/theme/customizations';
-import {data, Link, redirect, useNavigate, useSearchParams} from "react-router";
-import {userData} from "~/composables/UserData";
+import {useNavigate, useSearchParams} from "react-router";
 import Card from "@mui/material/Card";
-import Typography from "@mui/material/Typography";
 import * as React from "react";
-import {FormHelperText, InputLabel} from "@mui/material";
+import {InputLabel} from "@mui/material";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import FormControl from "@mui/material/FormControl";
 import {useForm} from "react-hook-form";
-import type {RequestReset} from "~/dto/RequestReset";
 import type {ResetPasswordDto} from "~/dto/user/ResetPasswordDto";
 import {toast, Toaster} from "react-hot-toast";
 import {useEmail} from "~/composables/EmailComposable";
 import Button from "@mui/material/Button";
-import type {AxiosError} from "axios";
 import type {GenericResponseDto} from "~/dto/GenericResponseDto";
 
 const xThemeComponents = {
@@ -41,11 +36,6 @@ const xThemeComponents = {
     ...datePickersCustomizations,
     ...treeViewCustomizations,
 };
-
-interface ErrorMessageSet {
-    password: string,
-    passwordRepeated: string
-}
 
 export default function ChangePasswordFromToken({loaderData}: Route.ComponentProps) {
     let [searchParams] = useSearchParams();

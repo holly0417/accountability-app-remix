@@ -12,7 +12,7 @@ import MainGrid from '~/dashboard/ui/Dashboard/MainGrid';
 import SideMenu from '~/dashboard/ui/Dashboard/SideMenu';
 import AppTheme from '~/dashboard/shared-theme/AppTheme';
 import type {Route} from "./+types/_index"; //this is OK!
-import type {LocalDateTime} from "ts-extended-types";
+
 
 import {
   chartsCustomizations,
@@ -20,7 +20,7 @@ import {
   datePickersCustomizations,
   treeViewCustomizations,
 } from '~/dashboard/ui/Dashboard/theme/customizations';
-import type {StatCardProps} from "~/dashboard/ui/Dashboard/StatCard";
+
 import {walletData} from "~/composables/WalletData";
 import {relationshipData} from "~/composables/RelationshipData";
 import {data, redirect} from "react-router";

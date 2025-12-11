@@ -1,4 +1,4 @@
-import { TaskStatus } from 'components/dto/task/TaskStatus.ts';
+import type { TaskStatus } from './TaskStatus';
 
 export interface TaskStatusDto {
   status: TaskStatus

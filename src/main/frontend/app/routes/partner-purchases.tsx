@@ -2,7 +2,6 @@ import {data, Link} from "react-router";
 import type {Route} from "./+types/partner-purchases"; //this is OK!
 import React from "react";
 import {walletData} from "~/composables/WalletData";
-import {useLoaderData} from "react-router-dom";
 import type {PurchaseDto} from "~/dto/purchase/PurchaseDto";
 import {PurchaseStatus} from "~/dto/purchase/PurchaseStatus";
 import {PurchaseRouteStatus} from "~/dto/purchase/PurchaseRouteStatus";
@@ -19,9 +18,7 @@ import {alpha} from "@mui/material/styles";
 import Stack from "@mui/material/Stack";
 import Header from "~/dashboard/ui/Dashboard/Header";
 import Typography from "@mui/material/Typography";
-import Wallet from "~/components/Wallet";
-import PurchaseForm from "~/components/forms/PurchaseForm";
-import PurchaseDataGrid from "~/components/grids/purchase-grid";
+
 import {
     chartsCustomizations,
     dataGridCustomizations,

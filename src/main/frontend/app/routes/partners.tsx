@@ -7,7 +7,6 @@ import {RelationshipDirection} from "~/dto/relationship/RelationshipDirection";
 import PartnerDataGrid from "~/components/grids/partner-grid";
 import type { Route } from "./+types/partners";
 import {RelationshipAction} from "~/dto/relationship/RelationshipAction";
-import type {RelationshipStatusDto} from "~/dto/relationship/RelationshipStatusDto";
 import AppTheme from "~/dashboard/shared-theme/AppTheme";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";

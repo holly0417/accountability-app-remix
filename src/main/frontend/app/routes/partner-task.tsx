@@ -18,7 +18,7 @@ import {alpha} from "@mui/material/styles";
 import Stack from "@mui/material/Stack";
 import Header from "~/dashboard/ui/Dashboard/Header";
 import Typography from "@mui/material/Typography";
-import type {UserDto} from "~/dto/user/UserDto";
+
 import {
     chartsCustomizations,
     dataGridCustomizations,

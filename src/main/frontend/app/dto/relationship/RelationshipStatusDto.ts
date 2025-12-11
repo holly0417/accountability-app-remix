@@ -1,4 +1,4 @@
-import { RelationshipStatus } from 'components/dto/relationship/RelationshipStatus.ts';
+import { RelationshipStatus } from './RelationshipStatus';
 
 export interface RelationshipStatusDto {
   status: RelationshipStatus

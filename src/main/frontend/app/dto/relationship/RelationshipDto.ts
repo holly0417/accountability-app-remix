@@ -1,5 +1,5 @@
-import { UserDto } from 'components/dto/UserDto.ts';
-import {RelationshipStatusDto} from 'components/dto/relationship/RelationshipStatusDto.ts';
+import type {UserDto} from '../user/UserDto';
+import type {RelationshipStatusDto} from './RelationshipStatusDto';
 
 
 export interface RelationshipDto {
