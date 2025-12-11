@@ -6,7 +6,6 @@ import {userData} from "~/composables/UserData";
 import {RelationshipDirection} from "~/dto/relationship/RelationshipDirection";
 import PartnerDataGrid from "~/components/grids/partner-grid";
 import type { Route } from "./+types/partners";
-import {useLoaderData} from "react-router-dom";
 import {RelationshipAction} from "~/dto/relationship/RelationshipAction";
 import type {RelationshipStatusDto} from "~/dto/relationship/RelationshipStatusDto";
 import AppTheme from "~/dashboard/shared-theme/AppTheme";
@@ -18,9 +17,8 @@ import {alpha} from "@mui/material/styles";
 import Stack from "@mui/material/Stack";
 import Header from "~/dashboard/ui/Dashboard/Header";
 import Typography from "@mui/material/Typography";
-import TaskForm from "~/components/forms/TaskForm";
-import {TaskDataGrid} from "~/components/grids/task-grid";
 import React from "react";
+
 import {
     chartsCustomizations,
     dataGridCustomizations,
@@ -45,9 +43,9 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
             throw data("User not found", { status: 404 });
         }
 
-        const waitList = await getRequests(RelationshipStatus.PENDING, RelationshipDirection.RECEIVER);
-        const answerList = await getRequests(RelationshipStatus.PENDING, RelationshipDirection.SENDER);
-        const rejectedList = await getRequests(RelationshipStatus.REJECTED, RelationshipDirection.SENDER);
+        const waitList = await getRequests(RelationshipStatus.PENDING, RelationshipDirection.REQUESTER);
+        const answerList = await getRequests(RelationshipStatus.PENDING, RelationshipDirection.RECIPIENT);
+        const rejectedList = await getRequests(RelationshipStatus.REJECTED, RelationshipDirection.REQUESTER);
         const approvedList = await getRelationshipsByStatus(RelationshipStatus.APPROVED);
 
         return {

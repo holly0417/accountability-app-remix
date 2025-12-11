@@ -22,10 +22,6 @@ export default function PartnerDataGrid({listType, friends, currentUser}: Partne
 
     const submit = useSubmit(); // 2. Get the submit function
 
-    const checkIdDoesNotMatchCurrentUserId = (value: number) => {
-        return value != currentUser.id;
-    }
-
     const checkButtonOptions = () => {
         if(listType == "answer"){
             return "APPROVE";
@@ -78,13 +74,8 @@ export default function PartnerDataGrid({listType, friends, currentUser}: Partne
             flex: 0.5,
             minWidth: 80,
             renderCell: (params) => {
-                const {partner, user} = params.row
-                const userId = user.id;
-                if(checkIdDoesNotMatchCurrentUserId(userId)){
-                    return user.username;
-                } else {
+                const {partner} = params.row
                     return partner.username;
-                }
             }
         },
         {

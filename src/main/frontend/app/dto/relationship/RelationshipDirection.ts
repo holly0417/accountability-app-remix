@@ -1,4 +1,4 @@
 export enum RelationshipDirection {
-  SENDER = 'SENDER',
-  RECEIVER = 'RECEIVER'
+  REQUESTER = 'REQUESTER',
+  RECIPIENT = 'RECIPIENT'
 }

@@ -5,7 +5,6 @@ import type {Route} from "./+types/partner-task"; //this is OK!
 import {TaskRouteStatus} from "~/dto/task/TaskRouteStatus";
 import React from "react";
 import {relationshipData} from "~/composables/RelationshipData";
-import {useLoaderData} from "react-router-dom";
 import PartnerTaskDataGrid from "~/components/grids/partner-task-grid";
 import type {TaskDataDto} from "~/dto/task/TaskDataDto";
 import {PartnerTaskAction} from "~/dto/task/PartnerTaskAction";
@@ -19,8 +18,7 @@ import {alpha} from "@mui/material/styles";
 import Stack from "@mui/material/Stack";
 import Header from "~/dashboard/ui/Dashboard/Header";
 import Typography from "@mui/material/Typography";
-import TaskForm from "~/components/forms/TaskForm";
-import {TaskDataGrid} from "~/components/grids/task-grid";
+import type {UserDto} from "~/dto/user/UserDto";
 import {
     chartsCustomizations,
     dataGridCustomizations,
@@ -54,8 +52,8 @@ export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
     if (!partners) {
         console.log("partner ID List empty");
     } else {
-        const partnerIdList:number[] = partners.map(person => {
-            return person.id;
+        const partnerIdList:number[] = partners.map(partner => {
+            return partner.id;
         });
 
         let totalPage = await getAllTasksByUserList(partnerIdList);

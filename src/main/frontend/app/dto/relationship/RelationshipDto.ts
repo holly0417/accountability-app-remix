@@ -4,7 +4,6 @@ import {RelationshipStatusDto} from 'components/dto/relationship/RelationshipSta
 
 export interface RelationshipDto {
   id: number,
-  user: UserDto,
   partner: UserDto,
   status: RelationshipStatusDto
 }

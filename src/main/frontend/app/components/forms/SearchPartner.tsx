@@ -85,7 +85,6 @@ export default function SearchPartner() {
                         case RelationshipStatus.PENDING:
                         case RelationshipStatus.APPROVED:
                         case RelationshipStatus.REJECTED:
-                        case RelationshipStatus.REQUESTED:
                             return true;
                         default:
                             return false;

@@ -16,7 +16,15 @@ import {useNavigate} from "react-router";
 
 export function relationshipData() {
 
-    const getPartners = async (): Promise<UserDto[] | null> => {
+    const search= async (inputName: string): Promise<RelationshipDto[]> => {
+        return (await api.get<RelationshipDto[]>('/relationships/search', {
+            params: {
+                username: inputName
+            }
+        })).data;
+    }
+
+    const getPartners = async (): Promise<UserDto[]> => {
         try {
             const response = await api.get<UserDto[]>('/relationships/get-partners');
             return response.data;
@@ -29,6 +37,7 @@ export function relationshipData() {
             throw e;
         }
     }
+
 
   const getPartnersLimit = async (limit: number): Promise<UserDto[] | null> => {
       try {
@@ -75,25 +84,19 @@ export function relationshipData() {
     })).data;
   }
 
+  const sendRequest= async (partnerId: number): Promise<RelationshipDto> => {
+      return (await api.put(`/relationships/${partnerId}`)).data;
+  }
+
+  const deleteRelationship = async (relationshipId: number): Promise<void> => {
+      await api.delete(`/relationships/${relationshipId}`)
+  }
+
   const updateRelationship = async (relationshipId: number, newStatus: RelationshipStatusDto): Promise<RelationshipDto> => {
     return (await api.post<RelationshipDto>(`/relationships/${relationshipId}`, newStatus)).data;
   }
 
-  const deleteRelationship = async (relationshipId: number): Promise<void> => {
-    await api.delete(`/relationships/${relationshipId}`)
-  }
 
-  async function sendRequest(partnerId: number) {
-    await api.put(`/relationships/request/${partnerId}`)
-  }
-
-  async function search(inputName: string): Promise<RelationshipDto[]> {
-    return (await api.get<RelationshipDto[]>('/relationships/search', {
-      params: {
-        username: inputName
-      }
-    })).data;
-  }
 
 
   return { getPartnersLimit, getPartners, getRelationshipsByStatus, getRequests, deleteRelationship, sendRequest, search, updateRelationship };
