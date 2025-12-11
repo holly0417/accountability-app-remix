@@ -29,7 +29,7 @@ public class WalletHistoryDto {
     }
 
     public Long getId() {
-        return id;
+            return id;
     }
 
     public void setId(Long id) {

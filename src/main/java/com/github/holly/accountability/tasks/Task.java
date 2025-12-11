@@ -90,7 +90,5 @@ public class Task {
         this.duration = duration;
     }
 
-    public Duration getDuration() {
-        return this.duration;
-    }
+    public Duration getDuration() { return this.duration; }
 }

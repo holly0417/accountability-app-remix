@@ -39,13 +39,15 @@ public class UserDto {
 
     public boolean equals(Object compared) {
 
-        if (this == compared) {
+        if(this == compared){
 
             return true;
         }
 
         UserDto userDtoCompared = (UserDto) compared;
 
-        return Objects.equals(this.id, userDtoCompared.id) && Objects.equals(this.username, userDtoCompared.username) && Objects.equals(this.email, userDtoCompared.email);
+        return Objects.equals(this.id, userDtoCompared.id) &&
+                Objects.equals(this.username, userDtoCompared.username) &&
+                Objects.equals(this.email, userDtoCompared.email);
     }
 }

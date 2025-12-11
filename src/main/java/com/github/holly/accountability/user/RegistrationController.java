@@ -36,7 +36,7 @@ public class RegistrationController {
     }
 
     @PostMapping("")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterUser registerUser, BindingResult bindingResult) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterUser registerUser, BindingResult bindingResult){
 
         if (!Objects.equals(registerUser.getPassword(), registerUser.getPasswordRepeated())) {
             bindingResult.rejectValue("password", "Passwords do not match.");
@@ -64,7 +64,14 @@ public class RegistrationController {
         }
 
 
-        User user = userRepository.save(new User(registerUser.getUsername(), registerUser.getName(), passwordEncoder.encode(registerUser.getPassword()), registerUser.getEmail()));
+        User user = userRepository.save(
+                        new User(
+                            registerUser.getUsername(),
+                            registerUser.getName(),
+                            passwordEncoder.encode(registerUser.getPassword()),
+                            registerUser.getEmail()
+                        )
+        );
 
 
         walletRepository.save(new Wallet(user));
@@ -74,7 +81,9 @@ public class RegistrationController {
 
     private static boolean patternMatches(String emailAddress, String regexPattern) {
 
-        return Pattern.compile(regexPattern).matcher(emailAddress).matches();
+        return Pattern.compile(regexPattern)
+                .matcher(emailAddress)
+                .matches();
     }
 
 

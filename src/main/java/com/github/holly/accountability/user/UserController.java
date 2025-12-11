@@ -11,9 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Locale;
 
 @Controller
 @RequestMapping("/api/user")
@@ -43,9 +43,11 @@ public class UserController {
     }
 
     @GetMapping("/all-platform-users")
-    public Page<UserDto> getAllPlatformUsers(@AuthenticationPrincipal AccountabilitySessionUser user, @PageableDefault(size = 20) Pageable pageable) {
+    public Page<UserDto> getAllPlatformUsers(@AuthenticationPrincipal AccountabilitySessionUser user,
+                                             @PageableDefault(size = 20) Pageable pageable) {
 
-        return userRepository.getAllExceptCurrentUser(user.getId(), pageable).map(res -> userService.convertUserToDto(res));
+        return userRepository.getAllExceptCurrentUser(user.getId(), pageable)
+                .map(res -> userService.convertUserToDto(res));
     }
 
 }

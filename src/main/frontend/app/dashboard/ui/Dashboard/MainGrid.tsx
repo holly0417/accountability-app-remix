@@ -20,7 +20,7 @@ import type {clientLoader} from "~/routes/_index";
 export default function MainGrid() {
     const {allDataCorrectDates} = useLoaderData<typeof clientLoader>();
 
-    const allPartnerWalletData: StatCardProps[] = allDataCorrectDates.map(partner => {
+    const partnerWalletData: StatCardProps[] = allDataCorrectDates.map(partner => {
         if (partner.username == "You") {
             return {
                 interval: 'Daily progress',
@@ -41,8 +41,6 @@ export default function MainGrid() {
         }
     })
 
-    const limitedPartnerWalletData = allPartnerWalletData.slice(0, 3);
-
     return (<Box sx={{width: '100%', maxWidth: {sm: '100%', md: '1700px'}}}>
             {/* cards */}
             <Typography component="h2" variant="h6" sx={{mb: 2}}>
@@ -55,7 +53,7 @@ export default function MainGrid() {
                 sx={{mb: (theme) => theme.spacing(2)}}
             >
 
-                {limitedPartnerWalletData.map((card, index) => (<Grid key={index} size={{xs: 12, sm: 6, lg: 3}}>
+                {partnerWalletData.map((card, index) => (<Grid key={index} size={{xs: 12, sm: 6, lg: 3}}>
                         <StatCard {...card} />
                     </Grid>))}
 

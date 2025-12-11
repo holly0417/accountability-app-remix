@@ -6,20 +6,20 @@ import jakarta.persistence.*;
 
 @EntityListeners(WalletEntityListener.class)
 @Entity
-@Table(name = "wallet")
+@Table(name="wallet")
 public class Wallet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name="user_id", nullable = false)
     private User user;
 
-    @Column(name = "balance")
+    @Column(name="balance")
     private double balance = 0.00D;
 
-    public Wallet() {
+    public Wallet(){
     }
 
     public Wallet(User user) {
@@ -55,7 +55,7 @@ public class Wallet {
     }
 
     public void subtractBalance(double balance) {
-        if (this.balance - balance < 0) {
+        if(this.balance - balance < 0) {
             throw new IllegalArgumentException("Balance cannot be negative");
         }
 

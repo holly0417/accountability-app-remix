@@ -18,7 +18,7 @@ public class TaskHistory {
     @Column(name = "task_id", nullable = false)
     private Long taskId;
 
-    @Column(name = "description")
+    @Column(name="description")
     private String description;
 
     @Enumerated(EnumType.STRING)

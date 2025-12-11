@@ -18,7 +18,7 @@ public class WalletHistory {
     @Column(name = "wallet_id", nullable = false)
     private Long walletId;
 
-    @Column(name = "balance")
+    @Column(name="balance")
     private Double balance;
 
     @Column(name = "timestamp", columnDefinition = "TIMESTAMP")

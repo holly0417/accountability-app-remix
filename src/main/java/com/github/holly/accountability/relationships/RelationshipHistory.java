@@ -21,7 +21,7 @@ public class RelationshipHistory {
     @Column(name = "partnerB_id", nullable = false)
     private Long partnerBId;
 
-    @Column(name = "status")
+    @Column(name="status")
     private RelationshipStatus status;
 
     @Column(name = "timestamp", columnDefinition = "TIMESTAMP")
