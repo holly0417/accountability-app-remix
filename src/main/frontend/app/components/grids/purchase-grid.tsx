@@ -8,6 +8,8 @@ import {WishlistAction} from "~/dto/purchase/WishlistAction";
 import {PurchaseStatus} from "~/dto/purchase/PurchaseStatus";
 import type {WalletDto} from "~/dto/WalletDto";
 import Typography from "@mui/material/Typography";
+import {useTheme} from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 interface PurchaseDataGridProps {
     data: Page<PurchaseDto>;
@@ -16,6 +18,11 @@ interface PurchaseDataGridProps {
 }
 
 export default function PurchaseDataGrid({data, wallet, title}: PurchaseDataGridProps) {
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+    const isHistory = title == "PAST PURCHASES";
+
     const row = data.content;
     const thisUserWalletBalance = wallet.balance;
 
@@ -49,13 +56,13 @@ export default function PurchaseDataGrid({data, wallet, title}: PurchaseDataGrid
     const columns: GridColDef[] = [{
         field: 'id', headerName: 'purchase id', flex: 0.5, minWidth: 80,
     }, {
-        field: 'description', headerName: 'description', flex: 0.5, minWidth: 80,
+        field: 'description', headerName: 'Item', flex: 0.5, minWidth: 80,
     }, {
-        field: 'price', headerName: 'price', flex: 0.5, minWidth: 80,
+        field: 'price', headerName: 'Price', flex: 0.5, minWidth: 80,
     }, {
-        field: 'status', headerName: 'status', flex: 0.5, minWidth: 80,
+        field: 'status', headerName: 'Status', flex: 0.5, minWidth: 80,
     }, {
-        field: 'purchaseTimeString', headerName: 'purchaseTimeString', flex: 0.5, minWidth: 80,
+        field: 'purchaseTimeString', headerName: 'Timestamp', flex: 0.5, minWidth: 80,
     }, {
         field: 'actions', headerName: 'Action', flex: 0.5, minWidth: 150, renderCell: (params) => {
             const {id, price, status} = params.row
@@ -96,6 +103,15 @@ export default function PurchaseDataGrid({data, wallet, title}: PurchaseDataGrid
                 pageSizeOptions={[10, 20, 50]}
                 disableColumnResize
                 density="compact"
+                columnVisibilityModel={{
+                    // Hide columns based on the isMobile boolean
+                    id: false,             // Always hidden (example)
+                    description: true,
+                    price: true, // Hidden if mobile is true
+                    status: !isMobile,
+                    purchaseTimeString: isHistory,
+                    actions: !isHistory,
+                }}
                 slotProps={{
                     filterPanel: {
                         filterFormProps: {

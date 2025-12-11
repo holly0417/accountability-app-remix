@@ -5,6 +5,8 @@ import {TaskStatus} from "~/dto/task/TaskStatus";
 import {TaskAction} from "~/dto/task/TaskAction";
 import {Form} from "react-router";
 import type {TaskDataDto} from "~/dto/task/TaskDataDto";
+import {useTheme} from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 function buttonLabel(value: TaskStatus) {
     switch (value) {
@@ -23,18 +25,21 @@ interface TaskDataGridProps {
 
 export function TaskDataGrid({row}: TaskDataGridProps) {
 
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
     const columns: GridColDef[] = [{
-        field: 'id', headerName: 'task id', flex: 0.5, minWidth: 80,
+        field: 'id', headerName: 'TaskId', flex: 0.5, minWidth: 80,
     }, {
-        field: 'userId', headerName: 'user', flex: 0.5, minWidth: 80,
+        field: 'userId', headerName: 'UserId', flex: 0.5, minWidth: 80,
     }, {
-        field: 'userName', headerName: 'userName', flex: 0.5, minWidth: 80,
+        field: 'userName', headerName: 'Username', flex: 0.5, minWidth: 80,
     }, {
-        field: 'description', headerName: 'description', flex: 0.5, minWidth: 80,
+        field: 'description', headerName: 'Task', flex: 0.5, minWidth: 80,
     }, {
-        field: 'durationNumber', headerName: 'durationNumber', flex: 0.5, minWidth: 80,
+        field: 'durationNumber', headerName: 'Duration in seconds', flex: 0.5, minWidth: 80,
     }, {
-        field: 'status', headerName: 'status', flex: 0.5, minWidth: 80,
+        field: 'status', headerName: 'Status', flex: 0.5, minWidth: 80,
     }, {
         field: 'actions', headerName: 'Action', flex: 0.5, minWidth: 150, renderCell: (params) => {
             const {id, status} = params.row
@@ -56,7 +61,6 @@ export function TaskDataGrid({row}: TaskDataGridProps) {
         }
     },];
 
-
     return (<DataGrid
             rows={row}
             columns={columns}
@@ -68,6 +72,16 @@ export function TaskDataGrid({row}: TaskDataGridProps) {
             disableColumnResize
             density="compact"
             getRowHeight={() => 'auto'}
+            columnVisibilityModel={{
+                // Hide columns based on the isMobile boolean
+                id: false,             // Always hidden (example)
+                userId: false,   // Always show
+                userName: false,
+                description: true,
+                durationNumber: !isMobile, // Hidden if mobile is true
+                status: !isMobile,
+                actions: true,
+            }}
             slotProps={{
                 filterPanel: {
                     filterFormProps: {

@@ -5,17 +5,34 @@ import Drawer, { drawerClasses } from '@mui/material/Drawer';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
-import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded';
-import MenuButton from './MenuButton';
-import MenuContent from './MenuContent';
-import CardAlert from './CardAlert';
+import AppIcon from "~/img/app_icon.jpg";
+import CustomizedTreeView from "~/dashboard/ui/Dashboard/CustomizedTreeView";
+import {api} from "~/axios";
+import type {AxiosError} from "axios";
+import {useNavigate} from "react-router";
+import type {UserDto} from "~/dto/user/UserDto";
+import OptionsMenu from "~/dashboard/ui/Dashboard/OptionsMenu";
+import HighlightedCard from "~/dashboard/ui/Dashboard/HighlightedCard";
 
 interface SideMenuMobileProps {
   open: boolean | undefined;
   toggleDrawer: (newOpen: boolean) => () => void;
+  user: UserDto;
 }
 
-export default function SideMenuMobile({ open, toggleDrawer }: SideMenuMobileProps) {
+export default function SideMenuMobile({ open, toggleDrawer, user }: SideMenuMobileProps) {
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        api.post('/logout')
+            .then(() => navigate('/login'))
+            .catch((err: AxiosError) => {
+                if (err.response?.status === 401) {
+                    alert("Logout failed")
+                }
+            })
+    };
+
   return (
     <Drawer
       anchor="right"
@@ -40,31 +57,43 @@ export default function SideMenuMobile({ open, toggleDrawer }: SideMenuMobilePro
             direction="row"
             sx={{ gap: 1, alignItems: 'center', flexGrow: 1, p: 1 }}
           >
-            <Avatar
-              sizes="small"
-              alt="Riley Carter"
-              src="/static/images/avatar/7.jpg"
-              sx={{ width: 24, height: 24 }}
-            />
-            <Typography component="p" variant="h6">
-              Riley Carter
-            </Typography>
+              <Avatar
+                  sizes="medium"
+                  alt="Holly's Accountability App"
+                  src={AppIcon}
+                  sx={{width: 100, height: 100}}
+              />
+              <Typography variant="body2" sx={{fontWeight: 500, lineHeight: '16px'}}>
+                  {user.username}
+              </Typography>
           </Stack>
-          <MenuButton showBadge>
-            <NotificationsRoundedIcon />
-          </MenuButton>
+
+            <Stack
+                direction="row"
+                sx={{
+                    p: 2, gap: 1, alignItems: 'center', borderTop: '1px solid', borderColor: 'divider',
+                }}
+            >
+                <OptionsMenu/>
+            </Stack>
+
         </Stack>
+
         <Divider />
+
         <Stack sx={{ flexGrow: 1 }}>
-          <MenuContent />
+            <CustomizedTreeView/>
           <Divider />
         </Stack>
-        <CardAlert />
+
+        <HighlightedCard />
+
         <Stack sx={{ p: 2 }}>
-          <Button variant="outlined" fullWidth startIcon={<LogoutRoundedIcon />}>
+          <Button variant="outlined" onClick={handleLogout} fullWidth startIcon={<LogoutRoundedIcon />}>
             Logout
           </Button>
         </Stack>
+
       </Stack>
     </Drawer>
   );

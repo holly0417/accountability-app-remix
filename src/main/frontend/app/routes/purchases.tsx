@@ -127,7 +127,7 @@ export default function Purchases({loaderData}: Route.ComponentProps) {
             <CssBaseline enableColorScheme/>
             <Box sx={{display: 'flex'}}>
                 <SideMenu user={loaderData.user}/>
-                <AppNavbar/>
+                <AppNavbar user={loaderData.user}/>
                 <Box
                     component="main"
                     sx={(theme) => ({

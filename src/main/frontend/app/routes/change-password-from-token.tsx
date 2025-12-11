@@ -57,7 +57,7 @@ export default function ChangePasswordFromToken({loaderData}: Route.ComponentPro
     return (<AppTheme themeComponents={xThemeComponents}>
             <CssBaseline enableColorScheme/>
             <Box sx={{display: 'flex'}}>
-                <AppNavbar/>
+                <AppNavbar user={loaderData.user}/>
                 {/* Main content */}
                 <Box
                     component="main"

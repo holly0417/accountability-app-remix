@@ -53,7 +53,7 @@ export default function AccountInformation({loaderData}: Route.ComponentProps) {
             <CssBaseline enableColorScheme/>
             <Box sx={{display: 'flex'}}>
                 <SideMenu user={loaderData.user}/>
-                <AppNavbar/>
+                <AppNavbar user={loaderData.user}/>
                 {/* Main content */}
                 <Box
                     component="main"
