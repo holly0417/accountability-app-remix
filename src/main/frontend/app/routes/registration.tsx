@@ -15,13 +15,16 @@ import {styled} from '@mui/material/styles';
 import AppTheme from '~/dashboard/shared-theme/AppTheme';
 import ColorModeSelect from '~/dashboard/shared-theme/ColorModeSelect';
 import {SitemarkIcon} from '~/dashboard/ui/SignIn/CustomIcons';
-import {NavLink, useNavigate} from "react-router";
+import {NavLink} from "react-router";
 import Popover from '@mui/material/Popover';
 import axios from 'axios';
 import type {RegisterUser} from "~/dto/user/RegisterUser";
 import {useForm} from 'react-hook-form';
 import {useConstraintViolations} from "~/composables/ConstraintViolations";
 import type {ConstraintViolation} from "~/dto/ConstraintViolation";
+import {InputLabel} from "@mui/material";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import PasswordInput from "~/components/PasswordInput";
 
 const Card = styled(MuiCard)(({theme}) => ({
     display: 'flex',
@@ -69,7 +72,7 @@ export default function Registration(props: { disableCustomTheme?: boolean }) {
 
     const [validationErrors, setValidationErrors] = React.useState<ConstraintViolation[]>([]);
 
-    const { hasError, getMessages, removeFieldError, getMessageElements } = useConstraintViolations();
+    const { hasError, removeFieldError, getMessageElements } = useConstraintViolations();
 
     //setup for Popover form submit error message
     const [submitError, setSubmitError] = React.useState(false);
@@ -106,12 +109,13 @@ export default function Registration(props: { disableCustomTheme?: boolean }) {
                     // The request was made but no response was received (possible network error)
                     // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
                     // http.ClientRequest in node.js
-                    console.log(error.request);
-                } else {
+                    if (error.request){
+                        setSubmitErrorMessage(error.request);
+                    }
                     // Something happened in setting up the request that triggered an Error
-                    console.log('Error', error.message);
+                    setSubmitErrorMessage(error.message);
+                    setSubmitError(true);
                 }
-                console.log(error.config);
             });
     };
 
@@ -181,19 +185,14 @@ export default function Registration(props: { disableCustomTheme?: boolean }) {
                         </FormControl>
                         <FormControl>
                             <FormLabel htmlFor="password">Password</FormLabel>
-                            <TextField
-                                required
-                                fullWidth
+                            <PasswordInput
+                                id="password"
                                 {...register("password")}
                                 placeholder="••••••"
-                                type="password"
-                                id="password"
-                                autoComplete="new-password"
-                                variant="outlined"
                                 error={hasError("password", validationErrors)}
                                 helperText={getMessageElements("password", validationErrors)}
                                 color={hasError("password", validationErrors) ? 'error' : 'primary'}
-                                onChange={ () => setValidationErrors(removeFieldError('password', validationErrors)) }
+                                onChange={() => setValidationErrors(removeFieldError('password', validationErrors))}
                             />
                         </FormControl>
                         <FormControl>

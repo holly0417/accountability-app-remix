@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -81,7 +80,7 @@ public class PasswordEmailController {
     @ResponseBody
     @PostMapping("/set-new-password")
     public ResponseEntity<?> changePasswordFromToken(@RequestBody @Valid ResetPasswordDto passwordDto,
-                                                   BindingResult bindingResult
+                                                     BindingResult bindingResult
     ) {
 
         if (!Objects.equals(passwordDto.getPassword(), passwordDto.getPasswordRepeated())) {

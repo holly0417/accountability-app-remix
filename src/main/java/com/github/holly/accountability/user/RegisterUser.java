@@ -1,6 +1,8 @@
 package com.github.holly.accountability.user;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 import static com.github.holly.accountability.user.UserUtil.EMAIL_PATTERN;
 import static com.github.holly.accountability.user.UserUtil.PASSWORD_PATTERN;

@@ -38,7 +38,8 @@ public class RegistrationController {
 
     @PostMapping("")
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterUser registerUser,
-                                          BindingResult bindingResult) {
+                                          BindingResult bindingResult
+    ) {
 
         if (!Objects.equals(registerUser.getPassword(), registerUser.getPasswordRepeated())) {
             bindingResult.rejectValue("password", "Passwords do not match.");
@@ -63,7 +64,8 @@ public class RegistrationController {
 
         return new ResponseEntity<Void>(
                 MultiValueMap.fromSingleValue(Map.of("Location", "/login")),
-                HttpStatus.FOUND);
+                HttpStatus.FOUND
+        );
     }
 
 }

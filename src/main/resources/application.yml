@@ -46,5 +46,5 @@ logging:
     com.github.holly: INFO
 
 application:
-  base-url: "http://localhost:8080"
+  base-url: "${APPLICATION_BASE_URL:http://localhost:8080}"
 

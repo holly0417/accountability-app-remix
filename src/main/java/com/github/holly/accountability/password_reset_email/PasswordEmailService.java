@@ -15,7 +15,6 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -64,6 +63,7 @@ public class PasswordEmailService {
             User user = thisToken.get().getUser();
             user.setPassword(passwordEncoder.encode(passwordDto.getPassword()));
             userService.saveChangesToUser(user);
+            return;
         }
 
         throw new IllegalArgumentException("Token is invalid");
