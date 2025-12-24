@@ -56,25 +56,17 @@ public class PasswordEmailService {
         mailSender.send(constructResetTokenEmail(token, user));
     }
 
-    public ResetPasswordDto setNewPassword(String token, ResetPasswordDto passwordDto) throws RuntimeException {
+    public void setNewPassword(String token, ResetPasswordDto passwordDto) throws RuntimeException {
 
         Optional<PasswordResetToken> thisToken = passwordResetTokenRepository.findByToken(token);
 
         if (thisToken.isPresent()) {
-
             User user = thisToken.get().getUser();
-
-            if (Objects.equals(passwordDto.getPassword(), passwordDto.getPasswordRepeated())) {
-                user.setPassword(passwordEncoder.encode(passwordDto.getPassword()));
-                userService.saveChangesToUser(user);
-                return passwordDto;
-            }
-
-            throw new PasswordsNotMatchingException("Passwords do not match");
-
+            user.setPassword(passwordEncoder.encode(passwordDto.getPassword()));
+            userService.saveChangesToUser(user);
         }
 
-        throw new RuntimeException("Unexpected error occurred");
+        throw new IllegalArgumentException("Token is invalid");
     }
 
     private SimpleMailMessage constructEmail(String subject, String body,

@@ -20,6 +20,8 @@ import Popover from '@mui/material/Popover';
 import axios from 'axios';
 import type {RegisterUser} from "~/dto/user/RegisterUser";
 import {useForm} from 'react-hook-form';
+import {useConstraintViolations} from "~/composables/ConstraintViolations";
+import type {ConstraintViolation} from "~/dto/ConstraintViolation";
 
 const Card = styled(MuiCard)(({theme}) => ({
     display: 'flex',
@@ -65,6 +67,10 @@ export default function Registration(props: { disableCustomTheme?: boolean }) {
         } as RegisterUser
     });
 
+    const [validationErrors, setValidationErrors] = React.useState<ConstraintViolation[]>([]);
+
+    const { hasError, getMessages, removeFieldError, getMessageElements } = useConstraintViolations();
+
     //setup for Popover form submit error message
     const [submitError, setSubmitError] = React.useState(false);
     const [submitErrorMessage, setSubmitErrorMessage] = React.useState('');
@@ -80,10 +86,7 @@ export default function Registration(props: { disableCustomTheme?: boolean }) {
     };
     const handleClose = () => {
         setAnchorEl(null);
-        setSubmitError(false);
     };
-
-    const navigate = useNavigate();
 
     const api = axios.create({
         baseURL: '/', headers: {'Content-Type': 'application/json',}, maxRedirects: 0
@@ -92,22 +95,15 @@ export default function Registration(props: { disableCustomTheme?: boolean }) {
     const onSubmit = async (data: RegisterUser) => {
         await api.post<RegisterUser>('/registration', data)
             .then(response => {
-                console.log(response);
-                navigate('/');
+                if (response.status === 302) {
+                    window.location.href = response.headers['Location']
+                }
             })
             .catch((error) => {
                 if (error.response) {
-                    console.log('Error message:', error.response.data.violations[0].messages[3]);
-                    console.log(error.response.data);
-                    console.log(error.response.status);
-                    console.log(error.response.headers);
-
-                    const errorMessage = error.response.data.violations[0].messages[3];
-
-                    setSubmitErrorMessage(errorMessage);
-                    setSubmitError(true);
+                    setValidationErrors(error.response.data.violations);
                 } else if (error.request) {
-                    // The request was made but no response was received
+                    // The request was made but no response was received (possible network error)
                     // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
                     // http.ClientRequest in node.js
                     console.log(error.request);
@@ -146,6 +142,10 @@ export default function Registration(props: { disableCustomTheme?: boolean }) {
                                 fullWidth
                                 id="username"
                                 placeholder="JonSnow45"
+                                error={hasError("username", validationErrors)}
+                                helperText={getMessageElements("username", validationErrors)}
+                                color={hasError("username", validationErrors) ? 'error' : 'primary'}
+                                onChange={ () => setValidationErrors(removeFieldError('username', validationErrors)) }
                             />
                         </FormControl>
                         <FormControl>
@@ -157,6 +157,10 @@ export default function Registration(props: { disableCustomTheme?: boolean }) {
                                 id="name"
                                 placeholder="Jon Snow"
                                 {...register("name")}
+                                error={hasError("name", validationErrors)}
+                                helperText={getMessageElements("name", validationErrors)}
+                                color={hasError("name", validationErrors) ? 'error' : 'primary'}
+                                onChange={ () => setValidationErrors(removeFieldError('name', validationErrors)) }
                             />
                         </FormControl>
                         <FormControl>
@@ -169,6 +173,10 @@ export default function Registration(props: { disableCustomTheme?: boolean }) {
                                 id="email"
                                 autoComplete="email"
                                 variant="outlined"
+                                error={hasError("email", validationErrors)}
+                                helperText={getMessageElements("email", validationErrors)}
+                                color={hasError("email", validationErrors) ? 'error' : 'primary'}
+                                onChange={ () => setValidationErrors(removeFieldError('email', validationErrors)) }
                             />
                         </FormControl>
                         <FormControl>
@@ -182,6 +190,10 @@ export default function Registration(props: { disableCustomTheme?: boolean }) {
                                 id="password"
                                 autoComplete="new-password"
                                 variant="outlined"
+                                error={hasError("password", validationErrors)}
+                                helperText={getMessageElements("password", validationErrors)}
+                                color={hasError("password", validationErrors) ? 'error' : 'primary'}
+                                onChange={ () => setValidationErrors(removeFieldError('password', validationErrors)) }
                             />
                         </FormControl>
                         <FormControl>
@@ -195,6 +207,10 @@ export default function Registration(props: { disableCustomTheme?: boolean }) {
                                 id="passwordRepeated"
                                 autoComplete="new-passwordRepeated"
                                 variant="outlined"
+                                error={hasError("passwordRepeated", validationErrors)}
+                                helperText={getMessageElements("passwordRepeated", validationErrors)}
+                                color={hasError("passwordRepeated", validationErrors) ? 'error' : 'primary'}
+                                onChange={ () => setValidationErrors(removeFieldError('passwordRepeated', validationErrors)) }
                             />
                         </FormControl>
                         <Button
@@ -213,10 +229,11 @@ export default function Registration(props: { disableCustomTheme?: boolean }) {
                         anchorEl={anchorEl}
                         onClose={handleClose}
                         anchorOrigin={{
-                            vertical: 'bottom', horizontal: 'left',
+                            vertical: 'bottom',
+                            horizontal: 'left',
                         }}
                     >
-                        <Typography sx={{p: 2}}>{submitErrorMessage}</Typography>
+                        <Typography sx={{ p: 2 }}>{submitErrorMessage}</Typography>
                     </Popover>
 
                     <Divider>

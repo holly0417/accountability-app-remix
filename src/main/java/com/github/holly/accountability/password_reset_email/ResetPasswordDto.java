@@ -4,9 +4,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-public class ResetPasswordDto {
+import static com.github.holly.accountability.user.UserUtil.PASSWORD_PATTERN;
 
-    public static final String PASSWORD_PATTERN = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&+=-]).{8,20}$";
+public class ResetPasswordDto {
 
     @NotBlank(message = "Password is required")
     @Size(min = 8, max = 20, message = "Must be between 8 and 20 characters.")

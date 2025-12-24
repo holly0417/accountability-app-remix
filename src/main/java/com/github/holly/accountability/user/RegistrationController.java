@@ -18,12 +18,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Map;
 import java.util.Objects;
-import java.util.regex.Pattern;
+
 
 @Controller
 @RequestMapping("/registration")
 @ResponseBody
 public class RegistrationController {
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final WalletRepository walletRepository;
@@ -36,33 +37,17 @@ public class RegistrationController {
     }
 
     @PostMapping("")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterUser registerUser, BindingResult bindingResult) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterUser registerUser,
+                                          BindingResult bindingResult) {
 
         if (!Objects.equals(registerUser.getPassword(), registerUser.getPasswordRepeated())) {
             bindingResult.rejectValue("password", "Passwords do not match.");
             return new ResponseEntity<>(new BindingResultWrapper(bindingResult), HttpStatus.BAD_REQUEST);
         }
 
-        if (!patternMatches(registerUser.getPassword(), "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=-!]).{8,20}$")) {
-            bindingResult.rejectValue("password", "Password not in correct format.");
+        if (bindingResult.hasErrors()) {
             return new ResponseEntity<>(new BindingResultWrapper(bindingResult), HttpStatus.BAD_REQUEST);
         }
-
-        if (userRepository.findByUsernameIgnoreCase(registerUser.getUsername()).isPresent()) {
-            bindingResult.rejectValue("username", "Sorry, this username already exists.");
-            return new ResponseEntity<>(new BindingResultWrapper(bindingResult), HttpStatus.BAD_REQUEST);
-        }
-
-        if (!patternMatches(registerUser.getEmail(), "^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")) {
-            bindingResult.rejectValue("email", "Email is not in correct format. needs to have (@) symbol");
-            return new ResponseEntity<>(new BindingResultWrapper(bindingResult), HttpStatus.BAD_REQUEST);
-        }
-
-        if (userRepository.findUserByEmail(registerUser.getEmail()).isPresent()) {
-            bindingResult.rejectValue("email", "Sorry, a user with this email already exists.");
-            return new ResponseEntity<>(new BindingResultWrapper(bindingResult), HttpStatus.BAD_REQUEST);
-        }
-
 
         User user = userRepository.save(
                 new User(
@@ -76,15 +61,9 @@ public class RegistrationController {
 
         walletRepository.save(new Wallet(user));
 
-        return new ResponseEntity<Void>(MultiValueMap.fromSingleValue(Map.of("Location", "/login")), HttpStatus.FOUND);
+        return new ResponseEntity<Void>(
+                MultiValueMap.fromSingleValue(Map.of("Location", "/login")),
+                HttpStatus.FOUND);
     }
-
-    private static boolean patternMatches(String emailAddress, String regexPattern) {
-
-        return Pattern.compile(regexPattern)
-                .matcher(emailAddress)
-                .matches();
-    }
-
 
 }

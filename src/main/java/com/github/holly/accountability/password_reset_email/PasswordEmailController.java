@@ -3,6 +3,7 @@ package com.github.holly.accountability.password_reset_email;
 import com.github.holly.accountability.config.GenericResponse;
 import com.github.holly.accountability.config.properties.ApplicationProperties;
 import com.github.holly.accountability.user.UserService;
+import com.github.holly.accountability.validation.BindingResultWrapper;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -79,37 +80,32 @@ public class PasswordEmailController {
 
     @ResponseBody
     @PostMapping("/set-new-password")
-    public GenericResponse changePasswordFromToken(@RequestBody @Valid ResetPasswordDto passwordDto,
+    public ResponseEntity<?> changePasswordFromToken(@RequestBody @Valid ResetPasswordDto passwordDto,
                                                    BindingResult bindingResult
     ) {
 
         if (!Objects.equals(passwordDto.getPassword(), passwordDto.getPasswordRepeated())) {
-            return new GenericResponse("Password inputs must match", true);
+            bindingResult.rejectValue("password", "Passwords do not match.");
+            return new ResponseEntity<>(new BindingResultWrapper(bindingResult), HttpStatus.BAD_REQUEST);
         }
 
         if (!bindingResult.hasErrors()) {
             try {
                 passwordEmailService.setNewPassword(passwordDto.getToken(), passwordDto);
 
-                return new GenericResponse(
-                        "Password changed successfully!", false);
-
+                return ResponseEntity.ok(
+                        new GenericResponse("Password changed successfully!", false)
+                );
 
             }
-            catch (Exception e) {
-                return new GenericResponse(e.getMessage(), true);
+            catch (IllegalArgumentException e) {
+                return ResponseEntity
+                        .badRequest()
+                        .body(new GenericResponse(e.getMessage(), true));
             }
         }
 
-        StringBuilder sb = new StringBuilder();
-
-        for (FieldError error : bindingResult.getFieldErrors()) {
-            sb.append(error.getDefaultMessage()).append("\n \n");
-        }
-
-        String allErrors = sb.toString();
-        return new GenericResponse(allErrors, true);
-
+        return new ResponseEntity<>(new BindingResultWrapper(bindingResult), HttpStatus.BAD_REQUEST);
     }
 
 }

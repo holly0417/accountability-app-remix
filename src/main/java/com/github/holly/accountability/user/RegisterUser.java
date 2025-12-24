@@ -1,10 +1,28 @@
 package com.github.holly.accountability.user;
 
+import jakarta.validation.constraints.*;
+
+import static com.github.holly.accountability.user.UserUtil.EMAIL_PATTERN;
+import static com.github.holly.accountability.user.UserUtil.PASSWORD_PATTERN;
+
 public class RegisterUser {
+
+    @Size(min = 4, max = 60, message = "Must be between 4 and 60 characters.")
     private String username;
+
+    @Size(min = 4, max = 60, message = "Must be between 4 and 60 characters.")
     private String name;
+
+    @Size(min = 4, max = 60, message = "Must be between 4 and 60 characters.")
+    @Pattern(regexp = EMAIL_PATTERN, message = "Email must contain @ sign.")
     private String email;
+
+    @NotBlank(message = "Password is required")
+    @Size(min = 8, max = 20, message = "Must be between 8 and 20 characters.")
+    @Pattern(regexp = PASSWORD_PATTERN, message = "Password must contain at least one uppercase, lowercase, special character (not -), and number.")
     private String password;
+
+    @NotBlank(message = "Repeated password is required")
     private String passwordRepeated;
 
     public RegisterUser(String username, String name, String email, String password, String passwordRepeated) {
