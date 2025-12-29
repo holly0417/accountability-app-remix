@@ -69,9 +69,10 @@ public class RegistrationController {
 
         walletRepository.save(new Wallet(user));
 
+        //REACT ROUTER V7: FOR SPA, USE 200 OR 201 FOR SUCCESSFUL RESPONSE
         return new ResponseEntity<Void>(
                 MultiValueMap.fromSingleValue(Map.of("Location", "/login")),
-                HttpStatus.FOUND
+                HttpStatus.OK
         );
     }
 

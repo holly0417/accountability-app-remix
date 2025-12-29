@@ -25,6 +25,7 @@ import type {ConstraintViolation} from "~/dto/ConstraintViolation";
 import {InputLabel} from "@mui/material";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import PasswordInput from "~/components/PasswordInput";
+import {toast, Toaster} from "react-hot-toast";
 
 const Card = styled(MuiCard)(({theme}) => ({
     display: 'flex',
@@ -96,11 +97,19 @@ export default function Registration(props: { disableCustomTheme?: boolean }) {
     });
 
     const onSubmit = async (data: RegisterUser) => {
-        await api.post<RegisterUser>('/registration', data)
+        await api.post<any>('/registration', data)
             .then(response => {
-                if (response.status === 302) {
-                    window.location.href = response.headers['Location']
+                console.log(response);
+
+                if (response.status && response.status === 200) {
+
+                    toast("Registration successful", {
+                        duration: 1000,
+                    });
+
+                    setTimeout(() => window.location.href = response.headers['Location'], 1500);
                 }
+
             })
             .catch((error) => {
                 if (error.response) {
@@ -122,6 +131,7 @@ export default function Registration(props: { disableCustomTheme?: boolean }) {
     return (<AppTheme {...props}>
             <CssBaseline enableColorScheme/>
             <ColorModeSelect sx={{position: 'fixed', top: '1rem', right: '1rem'}}/>
+            <Toaster/>
             <SignUpContainer direction="column" justifyContent="space-between">
                 <Card variant="outlined">
                     <SitemarkIcon/>
