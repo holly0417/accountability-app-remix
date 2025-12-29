@@ -44,12 +44,6 @@ public class PasswordEmailService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public class PasswordsNotMatchingException extends RuntimeException {
-        public PasswordsNotMatchingException(String message) {
-            super(message);
-        }
-    }
-
     public void sendPasswordEmail(User user) throws MailSendException {
         String token = createPasswordResetTokenForUser(user);
         mailSender.send(constructResetTokenEmail(token, user));

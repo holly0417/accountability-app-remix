@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 
 @Controller
@@ -41,9 +42,16 @@ public class RegistrationController {
                                           BindingResult bindingResult
     ) {
 
+        if (userRepository.findUserByEmail(registerUser.getEmail()).isPresent()) {
+            bindingResult.rejectValue("email", "Email already in use.");
+        }
+
+        if (userRepository.findByUsernameIgnoreCase(registerUser.getUsername()).isPresent()) {
+            bindingResult.rejectValue("username", "Username already in use.");
+        }
+
         if (!Objects.equals(registerUser.getPassword(), registerUser.getPasswordRepeated())) {
             bindingResult.rejectValue("password", "Passwords do not match.");
-            return new ResponseEntity<>(new BindingResultWrapper(bindingResult), HttpStatus.BAD_REQUEST);
         }
 
         if (bindingResult.hasErrors()) {
@@ -58,7 +66,6 @@ public class RegistrationController {
                         registerUser.getEmail()
                 )
         );
-
 
         walletRepository.save(new Wallet(user));
 

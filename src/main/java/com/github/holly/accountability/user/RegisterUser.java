@@ -21,7 +21,7 @@ public class RegisterUser {
 
     @NotBlank(message = "Password is required")
     @Size(min = 8, max = 20, message = "Must be between 8 and 20 characters.")
-    @Pattern(regexp = PASSWORD_PATTERN, message = "Password must contain at least one uppercase, lowercase, special character (not -), and number.")
+    @Pattern(regexp = PASSWORD_PATTERN, message = "Password must contain at least one uppercase, lowercase, special character, and number.")
     private String password;
 
     @NotBlank(message = "Repeated password is required")
