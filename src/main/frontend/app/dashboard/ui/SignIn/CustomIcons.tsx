@@ -1,4 +1,19 @@
 import SvgIcon from '@mui/material/SvgIcon';
+import AppIcon from "~/img/app_icon.jpg";
+import Avatar from "@mui/material/Avatar";
+import * as React from "react";
+
+export function AccountabilityIcon() {
+    return (
+        <Avatar
+            sizes="medium"
+            alt="Holly's Accountability App"
+            src={AppIcon}
+            sx={{width: 100, height: 100}}
+        />
+    );
+}
+
 
 export function SitemarkIcon() {
   return (

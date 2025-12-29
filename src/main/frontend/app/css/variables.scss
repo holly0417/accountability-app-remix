@@ -32,14 +32,6 @@ $warning: #F2C037;
   color: white; //for text color!
 }
 
-@mixin card-height-static {
-  height: 425px;
-}
-
-@mixin inner-card-height-static {
-  height: 330px;
-}
-
 @mixin card-title-style {
   font-size: 2em;
   font-weight: bold;

@@ -14,7 +14,7 @@ import MuiCard from '@mui/material/Card';
 import {styled} from '@mui/material/styles';
 import AppTheme from '~/dashboard/shared-theme/AppTheme';
 import ColorModeSelect from '~/dashboard/shared-theme/ColorModeSelect';
-import {SitemarkIcon} from '~/dashboard/ui/SignIn/CustomIcons';
+import {AccountabilityIcon, SitemarkIcon} from '~/dashboard/ui/SignIn/CustomIcons';
 import {NavLink} from "react-router";
 import Popover from '@mui/material/Popover';
 import axios from 'axios';
@@ -44,8 +44,8 @@ const Card = styled(MuiCard)(({theme}) => ({
 }));
 
 const SignUpContainer = styled(Stack)(({theme}) => ({
-    height: 'calc((1 - var(--template-frame-height, 0)) * 100dvh)',
-    minHeight: '100%',
+    minHeight: 'calc((1 - var(--template-frame-height, 0)) * 100dvh)',
+    width: '100%',
     padding: theme.spacing(2),
     [theme.breakpoints.up('sm')]: {
         padding: theme.spacing(4),
@@ -134,7 +134,7 @@ export default function Registration(props: { disableCustomTheme?: boolean }) {
             <Toaster/>
             <SignUpContainer direction="column" justifyContent="space-between">
                 <Card variant="outlined">
-                    <SitemarkIcon/>
+                    <AccountabilityIcon/>
                     <Typography
                         component="h1"
                         variant="h4"
