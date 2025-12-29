@@ -1,6 +1,6 @@
 package com.github.holly.accountability.relationships;
-import com.github.holly.accountability.user.User;
 
+import com.github.holly.accountability.user.User;
 import jakarta.persistence.*;
 
 @EntityListeners(RelationshipEntityListener.class)
@@ -13,24 +13,24 @@ public class Relationship {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @JoinColumn(name="status")
+    @JoinColumn(name = "status")
     private RelationshipStatus status;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "requester_id", nullable = false)
+    private User requester;
 
     @ManyToOne
-    @JoinColumn(name = "partner_id", nullable = false)
-    private User partner;
+    @JoinColumn(name = "recipient_id", nullable = false)
+    private User recipient;
 
     public Relationship() {
 
     }
 
-    public Relationship(User user, User partner, RelationshipStatus status) {
-        this.user = user;
-        this.partner = partner;
+    public Relationship(User requester, User recipient, RelationshipStatus status) {
+        this.requester = requester;
+        this.recipient = recipient;
         this.status = status;
     }
 
@@ -50,25 +50,26 @@ public class Relationship {
         this.status = status;
     }
 
-    public User getPartner() {
-        return partner;
+    public User getRecipient() {
+        return recipient;
     }
 
-    public void setPartner(User partner) {
-        this.partner = partner;
+    public void setRecipient(User recipient) {
+        this.recipient = recipient;
     }
 
-    public User getUser() {
-        return user;
+    public User getRequester() {
+        return requester;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setRequester(User requester) {
+        this.requester = requester;
     }
 
-    public Relationship flipped()  {
-        Relationship flipped = new Relationship(this.getPartner(), this.getUser(), this.getStatus());
+    public Relationship flipped() {
+        Relationship flipped = new Relationship(this.getRecipient(), this.getRequester(), this.getStatus());
         flipped.setId(this.getId());
         return flipped;
     }
+
 }

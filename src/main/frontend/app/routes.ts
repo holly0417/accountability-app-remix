@@ -1,4 +1,4 @@
-import {type RouteConfig, index, route} from "@react-router/dev/routes";
+import {index, route, type RouteConfig} from "@react-router/dev/routes";
 
 
 //BACKEND notes: from WebSecurityConfig
@@ -10,8 +10,7 @@ import {type RouteConfig, index, route} from "@react-router/dev/routes";
 //if there is any address that does NOT match "/index.html","/api","/error","/h2-console"
 //and not already checked beforehand will be forwarded to "index.html";
 
-export default [
-    //this is NOT the same thing as index.html.
+export default [//this is NOT the same thing as index.html.
     //this would connect "/" to "_index.tsx" if security permissions from backend allow (AKA: if signed in successfully).
     index("./routes/_index.tsx"),
 
@@ -25,14 +24,15 @@ export default [
 
     route("partners", "./routes/partners.tsx"),
 
-    route("partner-task/:status?", "./routes/PartnerTask.tsx"),
-
-    route("wallet-purchases", "./routes/wallet-purchases.tsx"),
+    route("partner-task/:status?", "./routes/partner-task.tsx"),
 
     route("purchases/:status?", "./routes/purchases.tsx"),
 
     route("partner-purchases/:status?", "./routes/partner-purchases.tsx"),
-    //Nested routes
+
+    route("account-information", "./routes/account-information.tsx"),
+
+    route("change-password-from-token", "./routes/change-password-from-token.tsx"), //Nested routes
 
 
 ] satisfies RouteConfig;

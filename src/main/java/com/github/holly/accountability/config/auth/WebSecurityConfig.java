@@ -50,34 +50,41 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .cors( Customizer.withDefaults() )
+                .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authenticationProvider(authenticationProvider())
-                .authorizeHttpRequests( authorizationManagerRequestMatcherRegistry ->
-                    authorizationManagerRequestMatcherRegistry
-                    .requestMatchers(extensions("css", "js")).permitAll()
-                    .requestMatchers(extensions("png", "jpg", "jpeg", "svg", "gif")).permitAll()
-                    .requestMatchers(extensions("woff", "woff2", "tff", "otf") ).permitAll()
-                    .requestMatchers(extensions("ico")).permitAll()
-                    .requestMatchers("/index.html" ,"/registration", "/email/**", "/h2-console/**","/change-password-from-token/**", "/error").permitAll()
-                    .requestMatchers("/api/**").authenticated()
-                    .anyRequest().authenticated()
-            )
-            .formLogin (logInConfigurer ->
-                    logInConfigurer
-                    .loginPage("/login")
-                    .loginProcessingUrl("/api/login")
-                    .successHandler(formLoginHandler)
-                    .failureHandler(formLoginHandler)
-                    .permitAll()
-            )
-            .logout ( logOutConfigurer ->
-                    logOutConfigurer
-                    .logoutUrl("/api/logout")
-                    .logoutSuccessUrl("/login")
-                    .permitAll()
-            )
-            .build();
+                .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
+                                               authorizationManagerRequestMatcherRegistry
+                                                       .requestMatchers(extensions("css", "js")).permitAll()
+                                                       .requestMatchers(extensions("png", "jpg", "jpeg", "svg", "gif")).permitAll()
+                                                       .requestMatchers(extensions("woff", "woff2", "tff", "otf")).permitAll()
+                                                       .requestMatchers(extensions("ico")).permitAll()
+                                                       .requestMatchers(
+                                                               "/index.html",
+                                                               "/registration",
+                                                               "/email/**",
+                                                               "/h2-console/**",
+                                                               "/change-password-from-token/**",
+                                                               "/error"
+                                                       ).permitAll()
+                                                       .requestMatchers("/api/**").authenticated()
+                                                       .anyRequest().authenticated()
+                )
+                .formLogin(logInConfigurer ->
+                                   logInConfigurer
+                                           .loginPage("/login")
+                                           .loginProcessingUrl("/api/login")
+                                           .successHandler(formLoginHandler)
+                                           .failureHandler(formLoginHandler)
+                                           .permitAll()
+                )
+                .logout(logOutConfigurer ->
+                                logOutConfigurer
+                                        .logoutUrl("/api/logout")
+                                        .logoutSuccessUrl("/login")
+                                        .permitAll()
+                )
+                .build();
     }
 
     static class FileExtensionRequestMatcher implements RequestMatcher {
@@ -101,7 +108,6 @@ public class WebSecurityConfig {
     @Controller
     public class LoginController {
 
-        // used to serve the correct route inside our VueJS application
         @GetMapping("/login")
         public ModelAndView login(@AuthenticationPrincipal Object principal) {
             if (principal instanceof AccountabilitySessionUser) {

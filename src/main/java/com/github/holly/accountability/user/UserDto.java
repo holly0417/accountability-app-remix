@@ -39,7 +39,7 @@ public class UserDto {
 
     public boolean equals(Object compared) {
 
-        if(this == compared){
+        if (this == compared) {
 
             return true;
         }

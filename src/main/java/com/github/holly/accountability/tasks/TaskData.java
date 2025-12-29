@@ -45,6 +45,7 @@ public class TaskData {
     public Long getDurationNumber() {
         return this.durationNumber;
     }
+
     public void setDurationNumber() {
         this.durationNumber = this.duration.toSeconds();
     }
@@ -61,9 +62,13 @@ public class TaskData {
         return this.status;
     }
 
-    public Duration getDuration() { return this.duration; }
+    public Duration getDuration() {
+        return this.duration;
+    }
 
-    public String getDurationString() { return this.durationString; }
+    public String getDurationString() {
+        return this.durationString;
+    }
 
     public Long getUserId() {
         return userId;

@@ -1,54 +1,107 @@
-import {type ActionFunctionArgs} from "react-router";
+import {data, Link} from "react-router";
 import type {Route} from "./+types/partner-purchases"; //this is OK!
 import React from "react";
-import PurchaseDataGrid from "~/components/Tables/purchase-grid";
-import PurchaseForm from "~/components/Forms/PurchaseForm";
-import Wallet from "~/components/Wallet";
 import {walletData} from "~/composables/WalletData";
-import {useLoaderData} from "react-router-dom";
-import {WishlistAction} from "~/components/dto/WishlistAction";
-import type {PurchaseDto} from "~/components/dto/PurchaseDto";
-import {PurchaseStatus} from "~/components/dto/PurchaseStatus";
-import {PurchaseRouteStatus} from "~/components/dto/PurchaseRouteStatus";
-import type {Page} from "~/components/pagination/Page";
+import type {PurchaseDto} from "~/dto/purchase/PurchaseDto";
+import {PurchaseStatus} from "~/dto/purchase/PurchaseStatus";
+import {PurchaseRouteStatus} from "~/dto/purchase/PurchaseRouteStatus";
+import type {Page} from "~/dto/pagination/Page";
 import {relationshipData} from "~/composables/RelationshipData";
-import PartnerWishlistGrid from "~/components/Tables/partner-wishlist-grid";
+import PartnerWishlistGrid from "~/components/grids/partner-wishlist-grid";
 import {purchaseData} from "~/composables/PurchaseData";
+import AppTheme from "~/dashboard/shared-theme/AppTheme";
+import CssBaseline from "@mui/material/CssBaseline";
+import Box from "@mui/material/Box";
+import SideMenu from "~/dashboard/ui/Dashboard/SideMenu";
+import AppNavbar from "~/dashboard/ui/Dashboard/AppNavbar";
+import {alpha} from "@mui/material/styles";
+import Stack from "@mui/material/Stack";
+import Header from "~/dashboard/ui/Dashboard/Header";
+import Typography from "@mui/material/Typography";
 
-export async function clientLoader({ params, }: Route.ClientLoaderArgs) {
-    const {getWalletsByUserIds } = walletData();
-    const { getPurchaseListByStatusAndUserId, getPurchaseListByUserIds } = purchaseData();
-    const {getPartnerIdList} = relationshipData();
-    const partnerIdList = await getPartnerIdList();
-    const partnerWallets = await getWalletsByUserIds(partnerIdList);
-    const { status } = params;
+import {
+    chartsCustomizations,
+    dataGridCustomizations,
+    datePickersCustomizations,
+    treeViewCustomizations
+} from "~/dashboard/ui/Dashboard/theme/customizations";
+import {userData} from "~/composables/UserData";
+
+export const handle = {
+    breadcrumb: () => (<Link to="/partner-purchases">Partner purchases</Link>),
+};
+
+export async function clientLoader({params,}: Route.ClientLoaderArgs) {
+    const {getWalletsByUserIds} = walletData();
+    const {getPurchaseListByStatusAndUserId, getPurchaseListByUserIds} = purchaseData();
+    const {getPartners} = relationshipData();
+    const {getCurrentUserInfo} = userData();
+    const user = await getCurrentUserInfo();
+
+    if (!user) {
+        throw data("User not found", {status: 404});
+    }
+
+    const partnerList = await getPartners();
+    if (!partnerList) {
+        throw data("Partner data not found", {status: 404});
+    }
+    const partnerWallets = await getWalletsByUserIds(partnerList.map(item => item.id));
+    const {status} = params;
     let partnersPurchaseHistory: Page<PurchaseDto>;
     let title: string;
 
-    switch(status) {
+    switch (status) {
         case PurchaseRouteStatus.LISTED:
-            partnersPurchaseHistory = await getPurchaseListByStatusAndUserId(partnerIdList, PurchaseStatus.LISTED);
+            partnersPurchaseHistory = await getPurchaseListByStatusAndUserId(partnerList.map(item => item.id), PurchaseStatus.LISTED);
             title = "PARTNERS' WISHLIST ITEMS"
             break;
         case PurchaseRouteStatus.PURCHASED:
-            partnersPurchaseHistory = await getPurchaseListByStatusAndUserId(partnerIdList, PurchaseStatus.PURCHASED);
+            partnersPurchaseHistory = await getPurchaseListByStatusAndUserId(partnerList.map(item => item.id), PurchaseStatus.PURCHASED);
             title = "PARTNERS' PAST PURCHASES"
             break;
         default:
             title = "PARTNERS' WISHLIST ITEMS AND PURCHASES"
-            partnersPurchaseHistory = await getPurchaseListByUserIds(partnerIdList);
+            partnersPurchaseHistory = await getPurchaseListByUserIds(partnerList.map(item => item.id));
     }
 
-    return {partnerWallets, partnersPurchaseHistory, title};
+    return {
+        wallets: partnerWallets, history: partnersPurchaseHistory, title: title, user: user
+    };
 }
 
 
-export default function Purchases(){
-    const {partnerWallets, partnersPurchaseHistory, title} = useLoaderData<typeof clientLoader>();
+export default function PartnerPurchases({loaderData}: Route.ComponentProps) {
+    const xThemeComponents = {
+        ...chartsCustomizations, ...dataGridCustomizations, ...datePickersCustomizations, ...treeViewCustomizations,
+    };
 
-    return(
-        <div>
-            <PartnerWishlistGrid data={partnersPurchaseHistory} title={title}/>
-        </div>
-    );
+    return (<AppTheme themeComponents={xThemeComponents}>
+            <CssBaseline enableColorScheme/>
+            <Box sx={{display: 'flex'}}>
+                <SideMenu user={loaderData.user}/>
+                <AppNavbar user={loaderData.user}/>
+                <Box
+                    component="main"
+                    sx={(theme) => ({
+                        flexGrow: 1,
+                        backgroundColor: theme.vars ? `rgba(${theme.vars.palette.background.defaultChannel} / 1)` : alpha(theme.palette.background.default, 1),
+                        overflow: 'auto',
+                    })}
+                >
+
+                    <Stack
+                        spacing={2}
+                        sx={{
+                            alignItems: 'center', mx: 3, pb: 5, mt: {xs: 8, md: 0},
+                        }}
+                    >
+                        <Header/>
+                    </Stack>
+
+                    <PartnerWishlistGrid data={loaderData.history} title={loaderData.title}/>
+
+                </Box>
+            </Box>
+        </AppTheme>);
 }

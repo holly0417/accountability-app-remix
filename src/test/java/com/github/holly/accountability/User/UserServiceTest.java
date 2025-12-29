@@ -1,5 +1,9 @@
 package com.github.holly.accountability.User;
-import com.github.holly.accountability.user.*;
+
+import com.github.holly.accountability.user.User;
+import com.github.holly.accountability.user.UserDto;
+import com.github.holly.accountability.user.UserRepository;
+import com.github.holly.accountability.user.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -10,7 +14,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -132,7 +137,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void userService_saveChangesToUser(){
+    public void userService_saveChangesToUser() {
         User user = new User();
         user.setId(1L);
         user.setUsername("username");

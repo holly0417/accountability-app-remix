@@ -1,4 +1,5 @@
 package com.github.holly.accountability.tasks;
+
 import com.github.holly.accountability.relationships.RelationshipService;
 import com.github.holly.accountability.user.UserService;
 import com.github.holly.accountability.wallet.WalletService;
@@ -27,21 +28,21 @@ public class TaskService {
                        WalletService walletService,
                        UserService userService,
                        RelationshipService relationshipService
-    ){
+    ) {
         this.taskRepository = taskRepository;
         this.walletService = walletService;
         this.userService = userService;
         this.relationshipService = relationshipService;
     }
 
-    public Double calculateFromTaskDto(TaskData taskDto){
+    public Double calculateFromTaskDto(TaskData taskDto) {
         Duration time = taskDto.getDuration();
         //to avoid floating point error, multiply first
         double beforeHourDivision = time.toMinutes() * GERMAN_MINIMUM_WAGE;
-        return beforeHourDivision/MINUTES_IN_HOUR;
+        return beforeHourDivision / MINUTES_IN_HOUR;
     }
 
-    public boolean startOrEndTask(Task task, String action){
+    public boolean startOrEndTask(Task task, String action) {
 
         if (action.equals("start")) {
             if (task.getTimeStart() != null) {
@@ -66,15 +67,15 @@ public class TaskService {
         return false;
     }
 
-    public TaskCalculator getWageFromSeconds(TaskStatus status, Long currentUserId){
+    public TaskCalculator getWageFromSeconds(TaskStatus status, Long currentUserId) {
         Double taskInSeconds = null;
 
-        if (status == TaskStatus.COMPLETED){
+        if (status == TaskStatus.COMPLETED) {
             taskInSeconds = taskRepository
                     .getTotalSecondsWithEndTime(currentUserId, TaskStatus.COMPLETED);
         }
 
-        if (status == TaskStatus.IN_PROGRESS){
+        if (status == TaskStatus.IN_PROGRESS) {
             taskInSeconds = taskRepository
                     .getTotalSecondsNoEndTime(currentUserId, TaskStatus.IN_PROGRESS);
         }
@@ -82,8 +83,8 @@ public class TaskService {
         TaskCalculator taskCalculator = new TaskCalculator();
 
         if (taskInSeconds != null) {
-            double earnings = taskInSeconds*13;
-            earnings = earnings/3600;
+            double earnings = taskInSeconds * 13;
+            earnings = earnings / 3600;
             taskCalculator.setPayment(earnings);
         }
 
@@ -91,8 +92,9 @@ public class TaskService {
     }
 
     public Task checkIfValidTaskProcess(Long currentUserId,
-                                           Long taskId,
-                                           TaskStatusDto newStatus){
+                                        Long taskId,
+                                        TaskStatusDto newStatus
+    ) {
 
         Task task = taskRepository.findById(taskId).orElse(null);
 
@@ -100,7 +102,7 @@ public class TaskService {
             return null;
         }
 
-        if(!relationshipService.checkIfApprovedPartnership(currentUserId, task.getUser().getId())){
+        if (!relationshipService.checkIfApprovedPartnership(currentUserId, task.getUser().getId())) {
             return null;
         }
 
@@ -117,16 +119,16 @@ public class TaskService {
         return task;
     }
 
-    public void addTaskAsPayment(Long currentUserId, TaskData taskDto){
+    public void addTaskAsPayment(Long currentUserId, TaskData taskDto) {
         Double payment = calculateFromTaskDto(taskDto);
         walletService.addTaskToWallet(currentUserId, payment);
     }
 
     public Page<Task> getRelevantTasks(List<Long> userIds,
-                                           List<TaskStatus> statuses,
-                                           Pageable pageable,
-                                           Long currentUserId
-    ){
+                                       List<TaskStatus> statuses,
+                                       Pageable pageable,
+                                       Long currentUserId
+    ) {
         if (userIds == null) {
             return taskRepository.findByUserId(currentUserId, statuses, pageable);
         }
@@ -135,19 +137,21 @@ public class TaskService {
     }
 
     public Page<Task> getTasksByDuration(List<Long> userIds,
-                                             TaskStatus status,
-                                             Pageable pageable,
-                                             Long currentUserId
-    ){
+                                         TaskStatus status,
+                                         Pageable pageable,
+                                         Long currentUserId
+    ) {
         return taskRepository
                 .getTasksOrderByDurationFindByUserIdAndStatus(
-                        Objects.requireNonNullElseGet(userIds, () ->
-                                List.of(currentUserId)),
+                        Objects.requireNonNullElseGet(
+                                userIds, () ->
+                                        List.of(currentUserId)
+                        ),
                         status, pageable
                 );
     }
 
-    public Task addNewTask(TaskEditRequest request, Long currentUserId){
+    public Task addNewTask(TaskEditRequest request, Long currentUserId) {
         Task newTask = new Task();
 
         newTask.setDescription(request.getDescription());
@@ -157,7 +161,7 @@ public class TaskService {
         return newTask;
     }
 
-    public Task validateUserTask(Long taskId, Long userId){
+    public Task validateUserTask(Long taskId, Long userId) {
         Task task = taskRepository
                 .findById(taskId)
                 .orElse(null);
@@ -171,7 +175,7 @@ public class TaskService {
         return null;
     }
 
-    public boolean deleteTask(Long taskId, Long userId){
+    public boolean deleteTask(Long taskId, Long userId) {
         Task task = validateUserTask(taskId, userId);
 
         if (task == null) {
@@ -183,7 +187,7 @@ public class TaskService {
         return true;
     }
 
-    public Task editTask(Long taskId, Long userId, TaskEditRequest request){
+    public Task editTask(Long taskId, Long userId, TaskEditRequest request) {
         Task task = validateUserTask(taskId, userId);
 
         if (task == null) {

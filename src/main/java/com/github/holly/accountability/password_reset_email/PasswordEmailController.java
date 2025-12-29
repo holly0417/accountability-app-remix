@@ -1,21 +1,20 @@
 package com.github.holly.accountability.password_reset_email;
 
-import com.github.holly.accountability.config.ErrorResponse;
 import com.github.holly.accountability.config.GenericResponse;
 import com.github.holly.accountability.config.properties.ApplicationProperties;
+import com.github.holly.accountability.user.UserService;
+import com.github.holly.accountability.validation.BindingResultWrapper;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Objects;
 
 
 @Controller
@@ -26,30 +25,33 @@ public class PasswordEmailController {
     public static final String CHANGE_PASSWORD_FROM_TOKEN = "/change-password-from-token";
 
     private final PasswordEmailService passwordEmailService;
+    private final UserService userService;
 
     @Autowired
     public PasswordEmailController(PasswordEmailService passwordEmailService,
-                                   ApplicationProperties applicationProperties) {
+                                   ApplicationProperties applicationProperties,
+                                   UserService userService
+    ) {
         this.passwordEmailService = passwordEmailService;
         this.applicationProperties = applicationProperties;
+        this.userService = userService;
     }
 
     @ResponseBody
     @GetMapping("/send-token")
     public GenericResponse sendPasswordEmail(@RequestParam String email) {
-        try {
-            return passwordEmailService.sendPasswordEmail(email);
-        } catch (Exception e) {
-            return new GenericResponse(e.getMessage());
-        }
+
+        userService.findUserByEmail(email)
+                .ifPresent(passwordEmailService::sendPasswordEmail);
+
+        return new GenericResponse("If this email exists in our system, you should find an email in your mailbox.");
     }
 
     @GetMapping(CHANGE_PASSWORD_FROM_TOKEN + "/{token}")
-    public ResponseEntity<?>  showChangePasswordFromTokenPage(@PathVariable("token") String token) {
+    public ResponseEntity<?> showChangePasswordFromTokenPage(@PathVariable("token") String token) {
         boolean isValid = passwordEmailService.validatePasswordResetToken(token);
 
         if (!isValid) {
-
             String loginUrl = UriComponentsBuilder
                     .fromUriString(applicationProperties.getBaseUrl())
                     .path("/login")
@@ -78,34 +80,31 @@ public class PasswordEmailController {
     @ResponseBody
     @PostMapping("/set-new-password")
     public ResponseEntity<?> changePasswordFromToken(@RequestBody @Valid ResetPasswordDto passwordDto,
-                                                     BindingResult bindingResult) {
+                                                     BindingResult bindingResult
+    ) {
 
-        if (bindingResult.hasErrors()) {
-            Map<String, String> errorMap = new HashMap<>();
+        if (!Objects.equals(passwordDto.getPassword(), passwordDto.getPasswordRepeated())) {
+            bindingResult.rejectValue("password", "Passwords do not match.");
+            return new ResponseEntity<>(new BindingResultWrapper(bindingResult), HttpStatus.BAD_REQUEST);
+        }
 
-            for (FieldError error : bindingResult.getFieldErrors()) {
-                errorMap.put(error.getField(), error.getDefaultMessage());
+        if (!bindingResult.hasErrors()) {
+            try {
+                passwordEmailService.setNewPassword(passwordDto.getToken(), passwordDto);
+
+                return ResponseEntity.ok(
+                        new GenericResponse("Password changed successfully!", false)
+                );
+
             }
-
-            return ResponseEntity.badRequest()
-                    .body(new ErrorResponse("Validation failed", errorMap));
+            catch (IllegalArgumentException e) {
+                return ResponseEntity
+                        .badRequest()
+                        .body(new GenericResponse(e.getMessage(), true));
+            }
         }
 
-        try {
-            passwordEmailService.setNewPassword(passwordDto.getToken(), passwordDto);
-            return ResponseEntity
-                    .ok(new ErrorResponse(
-                            "Password changed successfully!"));
-
-        } catch (PasswordEmailService.PasswordsNotMatchingException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new ErrorResponse("Passwords do not match"));
-
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError()
-                    .body(new ErrorResponse("An unexpected error occurred"));
-        }
+        return new ResponseEntity<>(new BindingResultWrapper(bindingResult), HttpStatus.BAD_REQUEST);
     }
-
 
 }

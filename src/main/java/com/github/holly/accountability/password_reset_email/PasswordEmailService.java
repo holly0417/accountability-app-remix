@@ -1,6 +1,5 @@
 package com.github.holly.accountability.password_reset_email;
 
-import com.github.holly.accountability.config.GenericResponse;
 import com.github.holly.accountability.config.properties.ApplicationProperties;
 import com.github.holly.accountability.user.PasswordResetToken;
 import com.github.holly.accountability.user.PasswordResetTokenRepository;
@@ -16,7 +15,6 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -36,7 +34,8 @@ public class PasswordEmailService {
                                 ApplicationProperties applicationProperties,
                                 PasswordResetTokenRepository passwordResetTokenRepository,
                                 JavaMailSender mailSender,
-                                PasswordEncoder passwordEncoder) {
+                                PasswordEncoder passwordEncoder
+    ) {
 
         this.userService = userService;
         this.applicationProperties = applicationProperties;
@@ -45,47 +44,28 @@ public class PasswordEmailService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public class PasswordsNotMatchingException extends RuntimeException {
-        public PasswordsNotMatchingException(String message) {
-            super(message);
-        }
-    }
-
-    public GenericResponse sendPasswordEmail(String email)
-            throws ResponseStatusException, MailSendException {
-
-        User user = userService.findUserByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
+    public void sendPasswordEmail(User user) throws MailSendException {
         String token = createPasswordResetTokenForUser(user);
         mailSender.send(constructResetTokenEmail(token, user));
-
-        return new GenericResponse("Email sent!");
     }
 
-    public ResetPasswordDto setNewPassword(String token, ResetPasswordDto passwordDto) throws RuntimeException {
+    public void setNewPassword(String token, ResetPasswordDto passwordDto) throws RuntimeException {
 
         Optional<PasswordResetToken> thisToken = passwordResetTokenRepository.findByToken(token);
 
         if (thisToken.isPresent()) {
-
             User user = thisToken.get().getUser();
-
-            if (Objects.equals(passwordDto.getPassword(), passwordDto.getPasswordRepeated())) {
-                user.setPassword(passwordEncoder.encode(passwordDto.getPassword()));
-                userService.saveChangesToUser(user);
-                return passwordDto;
-            }
-
-            throw new PasswordsNotMatchingException("Passwords do not match");
-
+            user.setPassword(passwordEncoder.encode(passwordDto.getPassword()));
+            userService.saveChangesToUser(user);
+            return;
         }
 
-        throw new RuntimeException("Unexpected error occurred");
+        throw new IllegalArgumentException("Token is invalid");
     }
 
     private SimpleMailMessage constructEmail(String subject, String body,
-                                            User user) {
+                                             User user
+    ) {
 
         SimpleMailMessage email = new SimpleMailMessage();
         email.setSubject(subject);
@@ -105,8 +85,8 @@ public class PasswordEmailService {
                 .toUriString();
 
         String message = """
-           Click the link below to reset your password:
-           %s""".formatted(url);
+                Click the link below to reset your password:
+                %s""".formatted(url);
 
         return constructEmail("Reset Password", message, user);
     }

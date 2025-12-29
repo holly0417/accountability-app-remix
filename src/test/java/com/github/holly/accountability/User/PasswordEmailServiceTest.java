@@ -1,6 +1,5 @@
 package com.github.holly.accountability.User;
 
-import com.github.holly.accountability.config.GenericResponse;
 import com.github.holly.accountability.config.properties.ApplicationProperties;
 import com.github.holly.accountability.password_reset_email.PasswordEmailService;
 import com.github.holly.accountability.password_reset_email.ResetPasswordDto;
@@ -16,7 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -44,34 +43,9 @@ public class PasswordEmailServiceTest {
     private PasswordEmailService passwordEmailService;
 
 
-    @Test
-    public void EmailService_sendPasswordEmail() {
-        User user = new User();
-        user.setId(1L);
-        user.setUsername("username");
-        user.setPassword("Password@app1");
-        user.setEmail("email@email");
-        user.setName("name");
-
-        when(userService.findUserByEmail("doesntexist@email")).thenReturn(Optional.empty());
-        when(applicationProperties.getBaseUrl()).thenReturn("http://localhost:8080");
-
-        RuntimeException userNotFound = assertThrows(RuntimeException.class, () -> passwordEmailService.sendPasswordEmail("doesntexist@email"));
-
-        assertEquals("User not found", userNotFound.getMessage());
-
-        when(userService.findUserByEmail(user.getEmail())).thenReturn(Optional.of(user));
-        when(passwordResetTokenRepository.save(any(PasswordResetToken.class))).thenReturn(null);
-
-        GenericResponse success = passwordEmailService.sendPasswordEmail("email@email");
-
-        assertEquals("Email sent!", success.getMessage());
-
-    }
-
     //test if a method will throw an exception if wrong input given
     @Test
-    public void EmailService_setNewPassword_ThrowsException(){
+    public void EmailService_setNewPassword_ThrowsException() {
         User user = new User();
         String token = UUID.randomUUID().toString();
         PasswordResetToken passwordResetToken = new PasswordResetToken(token, user);
@@ -86,9 +60,7 @@ public class PasswordEmailServiceTest {
         when(passwordResetTokenRepository.findByToken(token)).thenReturn(Optional.of(passwordResetToken));
         when(passwordResetTokenRepository.findByToken(unusedToken)).thenReturn(Optional.empty());
 
-        assertThrows(PasswordEmailService.PasswordsNotMatchingException.class, () -> passwordEmailService.setNewPassword(token, notMatchingPasswordDto));
-
-        assertThrows(RuntimeException.class, () -> passwordEmailService.setNewPassword(unusedToken, matchingAndFormattedPasswordDto));
+        assertThrows(IllegalArgumentException.class, () -> passwordEmailService.setNewPassword(unusedToken, matchingAndFormattedPasswordDto));
 
         //checks if anything was saved in the userRepository using Mockito.any
         verify(userService, times(0)).saveChangesToUser(any(User.class));

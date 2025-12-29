@@ -3,27 +3,31 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
 import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
 import FormControl from '@mui/material/FormControl';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import MuiCard from '@mui/material/Card';
-import { styled } from '@mui/material/styles';
-import AppTheme from '../components/shared-theme/AppTheme';
-import ColorModeSelect from '../components/shared-theme/ColorModeSelect';
-import { GoogleIcon, FacebookIcon, SitemarkIcon } from '~/components/ui/SignIn/CustomIcons';
-import {NavLink, useNavigate} from "react-router";
+import {styled} from '@mui/material/styles';
+import AppTheme from '~/dashboard/shared-theme/AppTheme';
+import ColorModeSelect from '~/dashboard/shared-theme/ColorModeSelect';
+import {AccountabilityIcon, SitemarkIcon} from '~/dashboard/ui/SignIn/CustomIcons';
+import {NavLink} from "react-router";
 import Popover from '@mui/material/Popover';
-import axios, {type AxiosError, type AxiosResponse} from 'axios';
-import type {RegisterUser} from "~/components/dto/RegisterUser";
-import { useForm } from 'react-hook-form';
+import axios from 'axios';
+import type {RegisterUser} from "~/dto/user/RegisterUser";
+import {useForm} from 'react-hook-form';
+import {useConstraintViolations} from "~/composables/ConstraintViolations";
+import type {ConstraintViolation} from "~/dto/ConstraintViolation";
+import {InputLabel} from "@mui/material";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import PasswordInput from "~/components/PasswordInput";
+import {toast, Toaster} from "react-hot-toast";
 
-const Card = styled(MuiCard)(({ theme }) => ({
+const Card = styled(MuiCard)(({theme}) => ({
     display: 'flex',
     flexDirection: 'column',
     alignSelf: 'center',
@@ -31,20 +35,17 @@ const Card = styled(MuiCard)(({ theme }) => ({
     padding: theme.spacing(4),
     gap: theme.spacing(2),
     margin: 'auto',
-    boxShadow:
-        'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
+    boxShadow: 'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
     [theme.breakpoints.up('sm')]: {
         width: '450px',
-    },
-    ...theme.applyStyles('dark', {
-        boxShadow:
-            'hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px',
+    }, ...theme.applyStyles('dark', {
+        boxShadow: 'hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px',
     }),
 }));
 
-const SignUpContainer = styled(Stack)(({ theme }) => ({
-    height: 'calc((1 - var(--template-frame-height, 0)) * 100dvh)',
-    minHeight: '100%',
+const SignUpContainer = styled(Stack)(({theme}) => ({
+    minHeight: 'calc((1 - var(--template-frame-height, 0)) * 100dvh)',
+    width: '100%',
     padding: theme.spacing(2),
     [theme.breakpoints.up('sm')]: {
         padding: theme.spacing(4),
@@ -55,27 +56,24 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
         position: 'absolute',
         zIndex: -1,
         inset: 0,
-        backgroundImage:
-            'radial-gradient(ellipse at 50% 50%, hsl(210, 100%, 97%), hsl(0, 0%, 100%))',
-        backgroundRepeat: 'no-repeat',
-        ...theme.applyStyles('dark', {
-            backgroundImage:
-                'radial-gradient(at 50% 50%, hsla(210, 100%, 16%, 0.5), hsl(220, 30%, 5%))',
+        backgroundImage: 'radial-gradient(ellipse at 50% 50%, hsl(210, 100%, 97%), hsl(0, 0%, 100%))',
+        backgroundRepeat: 'no-repeat', ...theme.applyStyles('dark', {
+            backgroundImage: 'radial-gradient(at 50% 50%, hsla(210, 100%, 16%, 0.5), hsl(220, 30%, 5%))',
         }),
     },
 }));
 
 export default function Registration(props: { disableCustomTheme?: boolean }) {
     //RegisterUser info
-    const { register, handleSubmit } = useForm({
+    const {register, handleSubmit} = useForm({
         defaultValues: {
-        username: '',
-        name: '',
-        email: '',
-        password: '',
-        passwordRepeated: '',
+            username: '', name: '', email: '', password: '', passwordRepeated: '',
         } as RegisterUser
     });
+
+    const [validationErrors, setValidationErrors] = React.useState<ConstraintViolation[]>([]);
+
+    const { hasError, removeFieldError, getMessageElements } = useConstraintViolations();
 
     //setup for Popover form submit error message
     const [submitError, setSubmitError] = React.useState(false);
@@ -94,67 +92,63 @@ export default function Registration(props: { disableCustomTheme?: boolean }) {
         setAnchorEl(null);
     };
 
-    const navigate = useNavigate();
-
     const api = axios.create({
-        baseURL: '/',
-        headers: { 'Content-Type': 'application/json', },
-        maxRedirects: 0
+        baseURL: '/', headers: {'Content-Type': 'application/json',}, maxRedirects: 0
     });
 
-    const onSubmit =  async (data: RegisterUser) => {
-            await api.post<RegisterUser>('/registration', data)
-                .then(response => {
-                    if (response.headers['Content-Type'] !== 'application/json') {
-                        navigate('/');
-                    }
-                    console.log(response);
-                })
-                .catch ((error)=> {
-                    if(error.response) {
-                        console.log('Error message:', error.response.data.violations[0].messages[3]);
-                        console.log(error.response.data);
-                        console.log(error.response.status);
-                        console.log(error.response.headers);
+    const onSubmit = async (data: RegisterUser) => {
+        await api.post<any>('/registration', data)
+            .then(response => {
+                console.log(response);
 
-                        const errorMessage = error.response.data.violations[0].messages[3];
+                if (response.status && response.status === 200) {
 
-                        setSubmitErrorMessage(errorMessage);
-                        setSubmitError(true);
-                    } else if (error.request) {
-                        // The request was made but no response was received
-                        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-                        // http.ClientRequest in node.js
-                        console.log(error.request);
-                    } else {
-                        // Something happened in setting up the request that triggered an Error
-                        console.log('Error', error.message);
+                    toast("Registration successful", {
+                        duration: 1000,
+                    });
+
+                    setTimeout(() => window.location.href = response.headers['Location'], 1500);
+                }
+
+            })
+            .catch((error) => {
+                if (error.response) {
+                    setValidationErrors(error.response.data.violations);
+                } else if (error.request) {
+                    // The request was made but no response was received (possible network error)
+                    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+                    // http.ClientRequest in node.js
+                    if (error.request){
+                        setSubmitErrorMessage(error.request);
                     }
-                    console.log(error.config);
+                    // Something happened in setting up the request that triggered an Error
+                    setSubmitErrorMessage(error.message);
+                    setSubmitError(true);
+                }
             });
     };
 
-    return (
-        <AppTheme {...props}>
-            <CssBaseline enableColorScheme />
-            <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} />
+    return (<AppTheme {...props}>
+            <CssBaseline enableColorScheme/>
+            <ColorModeSelect sx={{position: 'fixed', top: '1rem', right: '1rem'}}/>
+            <Toaster/>
             <SignUpContainer direction="column" justifyContent="space-between">
                 <Card variant="outlined">
-                    <SitemarkIcon />
+                    <AccountabilityIcon/>
                     <Typography
                         component="h1"
                         variant="h4"
-                        sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
+                        sx={{width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)'}}
                     >
                         Sign up
                     </Typography>
                     <Box
                         component="form"
                         onSubmit={handleSubmit(onSubmit)}
-                        sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
+                        sx={{display: 'flex', flexDirection: 'column', gap: 2}}
                     >
                         <FormControl>
-                            <FormLabel htmlFor="name">Username</FormLabel>
+                            <FormLabel htmlFor="username">Username</FormLabel>
                             <TextField
                                 autoComplete="username"
                                 {...register("username")}
@@ -162,6 +156,10 @@ export default function Registration(props: { disableCustomTheme?: boolean }) {
                                 fullWidth
                                 id="username"
                                 placeholder="JonSnow45"
+                                error={hasError("username", validationErrors)}
+                                helperText={getMessageElements("username", validationErrors)}
+                                color={hasError("username", validationErrors) ? 'error' : 'primary'}
+                                onChange={ () => setValidationErrors(removeFieldError('username', validationErrors)) }
                             />
                         </FormControl>
                         <FormControl>
@@ -173,6 +171,10 @@ export default function Registration(props: { disableCustomTheme?: boolean }) {
                                 id="name"
                                 placeholder="Jon Snow"
                                 {...register("name")}
+                                error={hasError("name", validationErrors)}
+                                helperText={getMessageElements("name", validationErrors)}
+                                color={hasError("name", validationErrors) ? 'error' : 'primary'}
+                                onChange={ () => setValidationErrors(removeFieldError('name', validationErrors)) }
                             />
                         </FormControl>
                         <FormControl>
@@ -185,19 +187,22 @@ export default function Registration(props: { disableCustomTheme?: boolean }) {
                                 id="email"
                                 autoComplete="email"
                                 variant="outlined"
+                                error={hasError("email", validationErrors)}
+                                helperText={getMessageElements("email", validationErrors)}
+                                color={hasError("email", validationErrors) ? 'error' : 'primary'}
+                                onChange={ () => setValidationErrors(removeFieldError('email', validationErrors)) }
                             />
                         </FormControl>
                         <FormControl>
                             <FormLabel htmlFor="password">Password</FormLabel>
-                            <TextField
-                                required
-                                fullWidth
+                            <PasswordInput
+                                id="password"
                                 {...register("password")}
                                 placeholder="••••••"
-                                type="password"
-                                id="password"
-                                autoComplete="new-password"
-                                variant="outlined"
+                                error={hasError("password", validationErrors)}
+                                helperText={getMessageElements("password", validationErrors)}
+                                color={hasError("password", validationErrors) ? 'error' : 'primary'}
+                                onChange={() => setValidationErrors(removeFieldError('password', validationErrors))}
                             />
                         </FormControl>
                         <FormControl>
@@ -211,6 +216,10 @@ export default function Registration(props: { disableCustomTheme?: boolean }) {
                                 id="passwordRepeated"
                                 autoComplete="new-passwordRepeated"
                                 variant="outlined"
+                                error={hasError("passwordRepeated", validationErrors)}
+                                helperText={getMessageElements("passwordRepeated", validationErrors)}
+                                color={hasError("passwordRepeated", validationErrors) ? 'error' : 'primary'}
+                                onChange={ () => setValidationErrors(removeFieldError('passwordRepeated', validationErrors)) }
                             />
                         </FormControl>
                         <Button
@@ -237,11 +246,11 @@ export default function Registration(props: { disableCustomTheme?: boolean }) {
                     </Popover>
 
                     <Divider>
-                        <Typography sx={{ color: 'text.secondary' }}>or</Typography>
+                        <Typography sx={{color: 'text.secondary'}}>or</Typography>
                     </Divider>
 
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                        <Typography sx={{ textAlign: 'center' }}>
+                    <Box sx={{display: 'flex', flexDirection: 'column', gap: 2}}>
+                        <Typography sx={{textAlign: 'center'}}>
                             Already have an account?{' '}
                             <NavLink to="/login">Click me</NavLink>
                         </Typography>
@@ -249,6 +258,5 @@ export default function Registration(props: { disableCustomTheme?: boolean }) {
 
                 </Card>
             </SignUpContainer>
-        </AppTheme>
-    );
+        </AppTheme>);
 }

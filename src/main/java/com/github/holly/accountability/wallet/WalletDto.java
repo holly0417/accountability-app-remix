@@ -1,6 +1,8 @@
 package com.github.holly.accountability.wallet;
 
 public class WalletDto {
+    private Long id;
+
     private Long userId;
 
     private String userName;
@@ -29,5 +31,12 @@ public class WalletDto {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
     }
 }

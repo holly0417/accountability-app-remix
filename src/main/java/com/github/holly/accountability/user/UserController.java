@@ -7,11 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Locale;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/api/user")
@@ -26,19 +28,24 @@ public class UserController {
 
 
     @GetMapping("")
-    public UserDto getUser(@AuthenticationPrincipal AccountabilitySessionUser user) {
+    public ResponseEntity<UserDto> getUser(@AuthenticationPrincipal AccountabilitySessionUser user) {
 
         UserDto userDto = new UserDto();
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
         userDto.setUsername(user.getUsername());
         userDto.setId(user.getId());
         userDto.setEmail(user.getEmail());
-
-        return userDto;
+        return ResponseEntity.ok(userDto);
     }
 
     @GetMapping("/all-platform-users")
     public Page<UserDto> getAllPlatformUsers(@AuthenticationPrincipal AccountabilitySessionUser user,
-                                             @PageableDefault(size = 20) Pageable pageable) {
+                                             @PageableDefault(size = 20) Pageable pageable
+    ) {
 
         return userRepository.getAllExceptCurrentUser(user.getId(), pageable)
                 .map(res -> userService.convertUserToDto(res));

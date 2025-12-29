@@ -1,5 +1,5 @@
 package com.github.holly.accountability.tasks;
-import com.github.holly.accountability.relationships.*;
+
 import com.github.holly.accountability.user.AccountabilitySessionUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,11 +34,11 @@ public class TaskController {
             @RequestParam(required = false) List<Long> userIds,
             @RequestParam(
                     defaultValue = "APPROVED, PENDING, COMPLETED, IN_PROGRESS, REJECTED"
-                    ) List<TaskStatus> statuses,
+            ) List<TaskStatus> statuses,
             @PageableDefault(size = 20)
             @SortDefault.SortDefaults({
                     @SortDefault(sort = "t.id", direction = Sort.Direction.DESC)}) Pageable pageable
-    ){
+    ) {
 
         return taskService.getRelevantTasks(userIds, statuses, pageable, user.getId())
                 .map(this::convertTaskToDto);
@@ -50,7 +50,7 @@ public class TaskController {
             @RequestParam(required = false) List<Long> userIds,
             @RequestParam TaskStatus status,
             @PageableDefault(size = 20) Pageable pageable
-    ){
+    ) {
         return taskService.getTasksByDuration(userIds, status, pageable, user.getId())
                 .map(this::convertTaskToDto);
     }
@@ -59,14 +59,14 @@ public class TaskController {
     @GetMapping("/calculatePaymentCompleted")
     public TaskCalculator calculatePaymentCompleted(
             @AuthenticationPrincipal AccountabilitySessionUser user
-    ){
+    ) {
         return taskService.getWageFromSeconds(TaskStatus.COMPLETED, user.getId());
     }
 
     @GetMapping("/calculatePaymentInProgress")
     public TaskCalculator calculatePaymentInProgress(
             @AuthenticationPrincipal AccountabilitySessionUser user
-    ){
+    ) {
         return taskService.getWageFromSeconds(TaskStatus.IN_PROGRESS, user.getId());
     }
 
@@ -74,7 +74,7 @@ public class TaskController {
     public TaskData addTask(
             @AuthenticationPrincipal AccountabilitySessionUser user,
             @RequestBody TaskEditRequest request
-    ){
+    ) {
         Task task = taskService.addNewTask(request, user.getId());
         return convertTaskToDto(task);
     }
@@ -83,10 +83,12 @@ public class TaskController {
     public ResponseEntity<Void> deleteTask(
             @AuthenticationPrincipal AccountabilitySessionUser user,
             @PathVariable Long taskId
-    ){
+    ) {
         if (!taskService.deleteTask(taskId, user.getId())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Task does not exist.");
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Task does not exist."
+            );
         }
 
         return ResponseEntity.noContent().build();
@@ -97,7 +99,7 @@ public class TaskController {
             @AuthenticationPrincipal AccountabilitySessionUser user,
             @PathVariable Long taskId,
             @RequestBody TaskEditRequest request
-    ){
+    ) {
 
         Task task = taskService.editTask(taskId, user.getId(), request);
         return convertTaskToDto(task);
@@ -107,7 +109,7 @@ public class TaskController {
     public TaskData startTask(
             @AuthenticationPrincipal AccountabilitySessionUser user,
             @PathVariable Long taskId
-    ){
+    ) {
 
         Task task = taskService.validateUserTask(taskId, user.getId());
 
@@ -117,12 +119,14 @@ public class TaskController {
 
         throw new ResponseStatusException(
                 HttpStatus.BAD_REQUEST,
-                "Task has already started.");
+                "Task has already started."
+        );
     }
 
     @PostMapping("/{taskId}/end")
     public TaskData endTask(@AuthenticationPrincipal AccountabilitySessionUser user,
-                            @PathVariable Long taskId){
+                            @PathVariable Long taskId
+    ) {
 
         Task task = taskService.validateUserTask(taskId, user.getId());
 
@@ -132,13 +136,15 @@ public class TaskController {
 
         throw new ResponseStatusException(
                 HttpStatus.BAD_REQUEST,
-                "Task has already ended.");
+                "Task has already ended."
+        );
     }
 
     @PostMapping("/{taskId}/process")
     public TaskData updateTaskStatus(@AuthenticationPrincipal AccountabilitySessionUser user,
                                      @PathVariable Long taskId,
-                                     @RequestBody TaskStatusDto newStatus){
+                                     @RequestBody TaskStatusDto newStatus
+    ) {
 
         Task task = taskService.checkIfValidTaskProcess(user.getId(), taskId, newStatus);
 
@@ -155,7 +161,7 @@ public class TaskController {
         return taskDto;
     }
 
-    private TaskData convertTaskToDto(Task task){
+    private TaskData convertTaskToDto(Task task) {
 
         TaskData taskDto = new TaskData();
 

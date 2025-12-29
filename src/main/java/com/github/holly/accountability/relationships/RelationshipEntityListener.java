@@ -13,14 +13,14 @@ public class RelationshipEntityListener {
     @PostPersist
     public void postPersist(Relationship target) {
         RelationshipHistoryRepository repository = BeanContextHelper.getBean(RelationshipHistoryRepository.class);
-        var history = new RelationshipHistory(target.getId(), target.getUser().getId(), target.getPartner().getId(), target.getStatus(), LocalDateTime.now());
+        var history = new RelationshipHistory(target.getId(), target.getRequester().getId(), target.getRecipient().getId(), target.getStatus(), LocalDateTime.now());
         repository.save(history);
     }
 
     @PostUpdate
     public void postUpdate(Relationship target) {
         RelationshipHistoryRepository repository = BeanContextHelper.getBean(RelationshipHistoryRepository.class);
-        var history = new RelationshipHistory(target.getId(), target.getUser().getId(), target.getPartner().getId(), target.getStatus(), LocalDateTime.now());
+        var history = new RelationshipHistory(target.getId(), target.getRequester().getId(), target.getRecipient().getId(), target.getStatus(), LocalDateTime.now());
         repository.save(history);
     }
 

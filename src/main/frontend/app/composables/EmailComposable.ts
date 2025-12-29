@@ -1,64 +1,33 @@
-import type {GenericResponseDto} from '~/components/dto/GenericResponseDto';
+import type {GenericResponseDto} from '~/dto/GenericResponseDto';
 import axios from 'axios';
-import type {ResetPasswordDto} from '~/components/dto/ResetPasswordDto';
-import type {SuccessfulPasswordChangeResponse} from '~/components/dto/SuccessfulPasswordChangeResponse.ts';
-import type {ErrorResponse} from '~/components/dto/ErrorResponse.ts';
-import {useState} from "react";
+import type {ResetPasswordDto} from '~/dto/user/ResetPasswordDto';
 
-export function email() {
+export function useEmail() {
 
-  const api = axios.create({
-    baseURL: '/', // Base URL for all requests
-    headers: { 'Content-Type': 'application/json', }, // Send data as JSON
-    maxRedirects: 0 // Don't follow redirects automatically
-  });
+    const api = axios.create({
+        baseURL: '/', // Base URL for all requests
+        headers: {'Content-Type': 'application/json',}, // Send data as JSON
+        maxRedirects: 0 // Don't follow redirects automatically
+    });
 
-  const sendEmailResetPassword = async (email: string): Promise<GenericResponseDto> => {
-    return (await api.get<GenericResponseDto>('/email/send-token', {
-      params: {
-        email: email
-      },
-      paramsSerializer: {
-        indexes: null
-      }
-    })).data;
-  }
+    const sendEmailResetPassword = async (email: string): Promise<GenericResponseDto> => {
 
-  const [ error, setError ] = useState<ErrorResponse>();
-
-  const setNewPassword = async (resetPasswordDto: ResetPasswordDto) => {
-
-    try {
-        const response = await api.post<SuccessfulPasswordChangeResponse>('/email/set-new-password', resetPasswordDto);
-        return response.data.message; // Return the success message
-
-    } catch (err) {
-
-      if(axios.isAxiosError(err) && err.response){
-        const errorData = err.response.data as ErrorResponse;
-
-        // Create enhanced error with backend information
-        const enhancedError: ErrorResponse = {
-          message: errorData.message,
-          errors: errorData.errors,
-          errorCode: errorData.errorCode
-        };
-
-        setError(enhancedError);
-        throw enhancedError;
-
-      } else {
-        // Network or other errors
-        const networkError: ErrorResponse = {
-          message: 'Network error. Please check your connection.'
-        };
-
-        setError(networkError);
-        throw networkError;
-      }
+        try {
+            const response = await api.get<GenericResponseDto>('/email/send-token', {
+                params: {email: email}, paramsSerializer: {indexes: null}
+            })
+            return response.data;
+        } catch (e) {
+            return {
+                message: 'Email does not exist', error: true
+            }
+        }
     }
 
-  }
+    const setNewPassword = async (resetPasswordDto: ResetPasswordDto) => {
+        const response = await api.post<GenericResponseDto>('/email/set-new-password', resetPasswordDto);
+        return response.data;
+    }
 
-  return { sendEmailResetPassword, setNewPassword, error };
+    return {sendEmailResetPassword, setNewPassword};
 }
