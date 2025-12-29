@@ -10,7 +10,7 @@ import axios from 'axios';
  */
 export const api = axios.create({
     baseURL:
-        'http://localhost:8080/api', // For local dev against Spring Boot server
+        '/api', // For local dev against Spring Boot server
         withCredentials: true,
 });
 

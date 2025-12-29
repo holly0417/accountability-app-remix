@@ -19,7 +19,7 @@ import AppTheme from '~/dashboard/shared-theme/AppTheme';
 import ColorModeSelect from '~/dashboard/shared-theme/ColorModeSelect';
 import {NavLink, useNavigate} from "react-router";
 import {api} from "~/axios";
-import type {AxiosError} from "axios";
+import {type AxiosError} from "axios";
 import {useForm} from 'react-hook-form';
 import type {LoginDto} from "~/dto/user/LoginDto";
 import AppIcon from "~/img/app_icon.jpg";

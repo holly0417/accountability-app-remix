@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
-
 
 @Controller
 @RequestMapping("/registration")
@@ -43,11 +41,11 @@ public class RegistrationController {
     ) {
 
         if (userRepository.findUserByEmail(registerUser.getEmail()).isPresent()) {
-            bindingResult.rejectValue("email", "Email already in use.");
+            bindingResult.rejectValue("email", "Either the email or username is already in use.");
         }
 
         if (userRepository.findByUsernameIgnoreCase(registerUser.getUsername()).isPresent()) {
-            bindingResult.rejectValue("username", "Username already in use.");
+            bindingResult.rejectValue("username", "Either the email or username is already in use.");
         }
 
         if (!Objects.equals(registerUser.getPassword(), registerUser.getPasswordRepeated())) {
