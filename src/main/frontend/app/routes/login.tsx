@@ -24,6 +24,7 @@ import {useForm} from 'react-hook-form';
 import type {LoginDto} from "~/dto/user/LoginDto";
 import AppIcon from "~/img/app_icon.jpg";
 import Avatar from "@mui/material/Avatar";
+import PasswordInput from "~/components/PasswordInput";
 
 const Card = styled(MuiCard)(({theme}) => ({
     display: 'flex',
@@ -144,17 +145,10 @@ export default function Login(props: { disableCustomTheme?: boolean }) {
                         </FormControl>
                         <FormControl>
                             <FormLabel htmlFor="password">Password</FormLabel>
-                            <TextField
+                            <PasswordInput
+                                id="password"
                                 {...register("password")}
                                 placeholder="••••••"
-                                type="password"
-                                id="password"
-                                autoComplete="current-password"
-                                autoFocus
-                                required
-                                fullWidth
-                                variant="outlined"
-                                color='primary'
                             />
                         </FormControl>
                         <FormControlLabel
