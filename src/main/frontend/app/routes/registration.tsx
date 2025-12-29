@@ -14,7 +14,7 @@ import MuiCard from '@mui/material/Card';
 import {styled} from '@mui/material/styles';
 import AppTheme from '~/dashboard/shared-theme/AppTheme';
 import ColorModeSelect from '~/dashboard/shared-theme/ColorModeSelect';
-import {AccountabilityIcon, SitemarkIcon} from '~/dashboard/ui/SignIn/CustomIcons';
+import {AccountabilityIcon} from '~/dashboard/ui/SignIn/CustomIcons';
 import {NavLink} from "react-router";
 import Popover from '@mui/material/Popover';
 import axios from 'axios';
@@ -22,8 +22,6 @@ import type {RegisterUser} from "~/dto/user/RegisterUser";
 import {useForm} from 'react-hook-form';
 import {useConstraintViolations} from "~/composables/ConstraintViolations";
 import type {ConstraintViolation} from "~/dto/ConstraintViolation";
-import {InputLabel} from "@mui/material";
-import OutlinedInput from "@mui/material/OutlinedInput";
 import PasswordInput from "~/components/PasswordInput";
 import {toast, Toaster} from "react-hot-toast";
 
@@ -100,6 +98,7 @@ export default function Registration(props: { disableCustomTheme?: boolean }) {
         await api.post<any>('/registration', data)
             .then(response => {
                 console.log(response);
+                console.log(response.headers);
 
                 if (response.status && response.status === 200) {
 
@@ -107,7 +106,7 @@ export default function Registration(props: { disableCustomTheme?: boolean }) {
                         duration: 1000,
                     });
 
-                    setTimeout(() => window.location.href = response.headers['Location'], 1500);
+                    setTimeout(() => window.location.href = "/login", 1500);
                 }
 
             })
